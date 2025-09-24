@@ -1,0 +1,220 @@
+<html>
+<body>
+<svg id="svg" height="600" width="800" xmlns="http://www.w3.org/2000/svg">
+</svg>
+</body>
+<script>
+var svg = document.getElementById("svg");
+
+/*
+
+Interactive tool to visualize approximation of the length of a curve by line segments
+TODO: draw curve from formula
+	Recursive subdivision or parametrized?
+TODO: offer user control points or sliders/textbox/etc to modify shape of curve
+TODO: offer user clickable interval to add/remove endpoints of line segments to be mapped to curve
+TODO: allow user to add/remove line segment endpoints directly on rendered curve
+TODO: allow user to drag line segment endpoints along curve
+TODO: summarize all total lengths visited so far on colored bar along with marked supremum/maximum value for length of curve
+TODO: for a given number of line segments, what endpoints would give the closest approximation to the length of the curve?
+
+*/
+
+function getCurvePoint(t) {
+	// t is between 0 and 1
+	var point = [0,0];
+	// parabola
+	//point[0] = t*400+100;
+	//point[1] = (2*t-1)*(2*t-1)*500+10;
+	// circle (rectangular coordinates)
+	//point[0] = t*400+100;
+	//point[1] = Math.sqrt(1-(2*t-1)*(2*t-1))*200+200;
+	// circle (polar coordinates)
+	//point[0] = Math.cos(t*Math.PI)*200+300;
+	//point[1] = Math.sin(t*Math.PI)*200+200;
+	// twist
+	point[0] = -Math.cos(t*2*Math.PI)*200+300;
+	point[1] = Math.cos(t*5*Math.PI)*200+300;
+	// spiral
+	//point[0] = t*Math.cos(t*6*Math.PI)*200+300;
+	//point[1] = t*Math.sin(t*6*Math.PI)*200+300;
+	return point;
+}
+
+function adjacent(p1,p2) {
+	var a = p2[0]-p1[0];
+	var b = p2[1]-p1[1];
+	return (a*a+b*b)<1;
+}
+
+function paintLine(p1,p2) {
+	var line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+	line.setAttribute("style", "stroke:black;stroke-width:1");
+	svg.appendChild(line);
+	line.setAttribute("x1",p1[0]);
+	line.setAttribute("y1",p1[1]);
+	line.setAttribute("x2",p2[0]);
+	line.setAttribute("y2",p2[1]);
+}
+
+var curveDistanceSum = 0;
+
+function paintCurve(t1,t2) {
+	var p1 = getCurvePoint(t1);
+	var p2 = getCurvePoint(t2);
+	if(adjacent(p1,p2)) {
+		paintLine(p1,p2);
+		curveDistanceSum += distance(p1,p2);
+	} else {
+		var mid = 0.5*(t1+t2);
+		paintCurve(t1,mid);
+		paintCurve(mid,t2);
+	}
+}
+
+paintCurve(0,1);
+
+var cornerTimes = 
+ [0.0,
+  1.0]
+
+function setCornerTimes() {
+	cornerTimes = [];
+	var n = 3;
+	for(var k=0; k<=n; k++) {
+		cornerTimes.push(k*1.0/n);
+	}
+}
+
+setCornerTimes();
+
+function distance3times(t0,t1,t2) {
+	var p0 = getCurvePoint(t0);
+	var p1 = getCurvePoint(t1);
+	var p2 = getCurvePoint(t2);
+	var d0 = distance(p0,p1);
+	var d2 = distance(p1,p2);
+	return d0+d2;
+}
+
+function optimizeCornerTimes() {
+	if(cornerTimes.length<2) return;
+	// TODO: consider how best to optimize endpoints
+	cornerTimes[0] = 0.0;
+	cornerTimes[cornerTimes.length-1] = 1.0;
+	var epsilon = 0.2;
+	var cycles = 0;
+	while(true) {
+		cycles++;
+		var delta = 0;
+		for(var k=1; k<cornerTimes.length-1; k++) {
+			var t0 = cornerTimes[k-1];
+			var t1 = cornerTimes[k];
+			var t2 = cornerTimes[k+1];
+			var epsilon1 = epsilon*(t1-t0);
+			var epsilon2 = epsilon*(t2-t1);
+			var d = distance3times(t0,t1,t2);
+			var dminus = distance3times(t0,t1-epsilon1,t2);
+			var dplus = distance3times(t0,t1+epsilon2,t2);
+			if(dplus<dminus&&d<dminus) {
+				cornerTimes[k] = t1-epsilon1;
+				delta += dminus-d;
+			} else if(dplus>d&&dplus>dminus) {
+				cornerTimes[k] = t1+epsilon2;
+				delta += dplus-d;
+			}
+		}
+		if(delta<0.1&&epsilon<0.001) break;
+		epsilon = epsilon*0.9;
+	}
+	console.log(cycles);
+}
+
+optimizeCornerTimes();
+
+
+var lineDistanceSum = 0;
+
+function calculateLineDistanceSum() {
+	for(var k=0; k<cornerTimes.length-1; k++) {
+		var t1 = cornerTimes[k];
+		var t2 = cornerTimes[k+1];
+		var p1 = getCurvePoint(t1);
+		var p2 = getCurvePoint(t2);
+		lineDistanceSum += distance(p1,p2);
+	}
+}
+
+calculateLineDistanceSum();
+
+function paintLinearApproximation() {
+	for(var k=0; k<cornerTimes.length-1; k++) {
+		var t1 = cornerTimes[k];
+		var t2 = cornerTimes[k+1];
+		var p1 = getCurvePoint(t1);
+		var p2 = getCurvePoint(t2);
+		paintLine(p1,p2);
+	}
+}
+
+paintLinearApproximation();
+
+
+// TODO: paint these intervals more nicely and label them
+
+function paintInputInterval() {
+	paintLine([650,100],[750,100]);
+	paintLine([650,90],[650,110]);
+	paintLine([750,90],[750,110]);
+	for(var k=0; k<cornerTimes.length; k++) {
+		var s = cornerTimes[k]*100+650;
+		var p1 = [s,90];
+		var p2 = [s,110];
+		paintLine(p1,p2);
+	}
+}
+
+paintInputInterval();
+
+function distance(p1,p2) {
+	var a = p2[0]-p1[0];
+	var b = p2[1]-p1[1];
+	return Math.sqrt(a*a+b*b);
+}
+
+function paintOutputInterval() {
+	paintLine([650,300],[750,300]);
+	paintLine([650,290],[650,310]);
+	paintLine([750,290],[750,310]);
+	console.log(lineDistanceSum);
+	console.log(curveDistanceSum);
+	var t = lineDistanceSum/curveDistanceSum;
+	console.log(100*t);
+	var s = t*100+650;
+	var p1 = [s,290];
+	var p2 = [s,310];
+	paintLine(p1,p2);
+}
+
+paintOutputInterval();
+
+function paintLogOutputInterval() {
+	paintLine([650,500],[750,500]);
+	paintLine([650,490],[650,510]);
+	paintLine([750,490],[750,510]);
+	var t = Math.log(1-lineDistanceSum/curveDistanceSum)/Math.LN2;
+	var t = -0.1*(t+2);
+	console.log(t);
+	if(t>=0&&t<=1) {
+		var s = t*100+650;
+		var p1 = [s,490];
+		var p2 = [s,510];
+		paintLine(p1,p2);
+	}
+}
+
+paintLogOutputInterval();
+
+
+</script>
+</html>

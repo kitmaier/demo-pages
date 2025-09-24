@@ -1,0 +1,68 @@
+<html>
+<body>
+<svg id="svg" height="600" width="800" xmlns="http://www.w3.org/2000/svg">
+</svg>
+</body>
+<script>
+var svg = document.getElementById("svg");
+
+// TODO: consider other fractals, and creating a generic way for generating them
+// TODO: implement and animate box-counting algorithm and verify standard metrics
+
+/*
+
+The Devil's Staircase
+---------------------------
+-------------------------**
+---------------------******
+-------------------********
+---------******************
+-------********************
+---************************
+-**************************
+
+*/
+
+function paintStaircase(xmin,ymin,xmax,ymax) {
+	var polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+	svg.appendChild(polygon);
+	
+	var ratio = 0.333; // TODO: allow the ratio to vary based on how many levels down in the recursion it is
+	var complement = 1-ratio;
+	
+	var xmid1 = Math.round(complement*xmin+ratio*xmax);
+	var xmid2 = Math.round(ratio*xmin+complement*xmax);
+	var ymid = Math.round(0.5*ymin+0.5*ymax);
+	
+	var point = svg.createSVGPoint();
+	point.x = xmax;
+	point.y = ymin;
+	polygon.points.appendItem(point);
+	
+	point = svg.createSVGPoint();
+	point.x = xmax;
+	point.y = ymid;
+	polygon.points.appendItem(point);
+	
+	point = svg.createSVGPoint();
+	point.x = xmid1;
+	point.y = ymid;
+	polygon.points.appendItem(point);
+	
+	point = svg.createSVGPoint();
+	point.x = xmid1;
+	point.y = ymin;
+	polygon.points.appendItem(point);
+	
+	polygon.setAttribute("style", "fill:black;stroke:black;stroke-width:1");
+	
+	if(xmax-xmin>1&&ymax-ymin>1) {
+		paintStaircase(xmin,ymin,xmid1,ymid);
+		paintStaircase(xmid2,ymid,xmax,ymax);
+	}
+}
+
+paintStaircase(0,0,600,600);
+
+</script>
+</html>

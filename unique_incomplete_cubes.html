@@ -1,0 +1,523 @@
+<html>
+<body>
+
+
+<svg id="svg" height="600" width="800" xmlns="http://www.w3.org/2000/svg">
+<!-- 
+  <polygon id="e1" points="350,223 450,223 450,203 350,203" style="fill:black;stroke:black;stroke-width:0" />
+  <polygon id="e2" points="438,213 462,213 512,300 488,300" style="fill:black;stroke:black;stroke-width:0" />
+  <polygon id="e3" points="438,387 462,387 512,300 488,300" style="fill:black;stroke:black;stroke-width:0" />
+  <polygon id="e4" points="350,397 450,397 450,377 350,377" style="fill:black;stroke:black;stroke-width:0" />
+  <polygon id="e5" points="338,387 362,387 312,300 288,300" style="fill:black;stroke:black;stroke-width:0" />
+  <polygon id="e6" points="362,213 312,300 288,300 338,213" style="fill:black;stroke:black;stroke-width:0" />
+  <polygon id="e7" points="438,213 462,213 412,300 388,300" style="fill:black;stroke:black;stroke-width:0" />
+  <polygon id="e8" points="400,310 500,310 500,290 400,290" style="fill:black;stroke:black;stroke-width:0" />
+  <polygon id="e9" points="438,387 462,387 412,300 388,300" style="fill:black;stroke:black;stroke-width:0" />
+  <polygon id="e10" points="338,387 362,387 412,300 388,300" style="fill:black;stroke:black;stroke-width:0" />
+  <polygon id="e11" points="300,310 400,310 400,290 300,290" style="fill:black;stroke:black;stroke-width:0" />
+  <polygon id="e12" points="338,213 362,213 412,300 388,300" style="fill:black;stroke:black;stroke-width:0" />
+  <circle r="20" cx="300" cy="300" fill="black" />
+  <circle r="20" cx="400" cy="300" fill="black" />
+  <circle r="20" cx="500" cy="300" fill="black" />
+  <circle r="20" cx="350" cy="213" fill="black" />
+  <circle r="20" cx="450" cy="213" fill="black" />
+  <circle r="20" cx="350" cy="387" fill="black" />
+  <circle r="20" cx="450" cy="387" fill="black" />
+-->
+</svg>
+
+</body>
+<script>
+
+
+// TODO: list out rotation matrices (done)
+// TODO: create cube data structure
+// TODO: function to apply rotation matrix to cube
+// TODO: function to compare cubes
+// TODO: function to loop over possible cubes and compare them
+// TODO: list of unique cubes
+// TODO: display cube in simplified form in svg (done)
+// TODO: display array of cubes in simplified form in svg
+// TODO: filter cubes to remove disconnected, empty, full, 2D cases
+// TODO: verify each rotation matrix by applying it to its axis vector and checking that there is no change
+// TODO: create a loop that counts a numeric variable up but then interprets each bit as a flag for each edge in a cube
+
+
+rotIdentity = 
+ [[ 1, 0, 0],
+  [ 0, 1, 0],
+  [ 0, 0, 1]]
+rotX90 = 
+ [[ 1, 0, 0],
+  [ 0, 0,-1],
+  [ 0, 1, 0]]
+rotX180 = 
+ [[ 1, 0, 0],
+  [ 0,-1, 0],
+  [ 0, 0,-1]]
+rotX270 = 
+ [[ 1, 0, 0],
+  [ 0, 0, 1],
+  [ 0,-1, 0]]
+rotY90 = 
+ [[ 0, 0,-1],
+  [ 0, 1, 0],
+  [ 1, 0, 0]]
+rotY180 = 
+ [[-1, 0, 0],
+  [ 0, 1, 0],
+  [ 0, 0,-1]]
+rotY270 = 
+ [[ 0, 0, 1],
+  [ 0, 1, 0],
+  [-1, 0, 0]]
+rotZ90 = 
+ [[ 0,-1, 0],
+  [ 1, 0, 0],
+  [ 0, 0, 1]]
+rotZ180 = 
+ [[-1, 0, 0],
+  [ 0,-1, 0],
+  [ 0, 0, 1]]
+rotZ270 = 
+ [[ 0, 1, 0],
+  [-1, 0, 0],
+  [ 0, 0, 1]]
+rotEdgeXPos = 
+ [[-1, 0, 0],
+  [ 0, 0, 1],
+  [ 0, 1, 0]]
+rotEdgeXNeg = 
+ [[-1, 0, 0],
+  [ 0, 0,-1],
+  [ 0,-1, 0]]
+rotEdgeYPos = 
+ [[ 0, 0, 1],
+  [ 0,-1, 0],
+  [ 1, 0, 0]]
+rotEdgeYNeg = 
+ [[ 0, 0,-1],
+  [ 0,-1, 0],
+  [-1, 0, 0]]
+rotEdgeZPos = 
+ [[ 0, 1, 0],
+  [ 1, 0, 0],
+  [ 0, 0,-1]]
+rotEdgeZNeg = 
+ [[ 0,-1, 0],
+  [-1, 0, 0],
+  [ 0, 0,-1]]
+rotCornerXYZ120 = 
+ [[ 0, 0, 1],
+  [ 1, 0, 0],
+  [ 0, 1, 0]]
+rotCornerXYZ240 = 
+ [[ 0, 1, 0],
+  [ 0, 0, 1],
+  [ 1, 0, 0]]
+rotCornerX120 = 
+ [[ 0, 0,-1],
+  [-1, 0, 0],
+  [ 0, 1, 0]]
+rotCornerX240 = 
+ [[ 0,-1, 0],
+  [ 0, 0, 1],
+  [-1, 0, 0]]
+rotCornerY120 = 
+ [[ 0, 0, 1],
+  [-1, 0, 0],
+  [ 0,-1, 0]]
+rotCornerY240 = 
+ [[ 0,-1, 0],
+  [ 0, 0,-1],
+  [ 1, 0, 0]]
+rotCornerZ120 = 
+ [[ 0, 0,-1],
+  [ 1, 0, 0],
+  [ 0,-1, 0]]
+rotCornerZ240 = 
+ [[ 0, 1, 0],
+  [ 0, 0,-1],
+  [-1, 0, 0]]
+
+rotations = 
+ [rotIdentity,
+  rotX90,
+  rotX180,
+  rotX270,
+  rotY90,
+  rotY180,
+  rotY270,
+  rotZ90,
+  rotZ180,
+  rotZ270,
+  rotEdgeXPos,
+  rotEdgeXNeg,
+  rotEdgeYPos,
+  rotEdgeYNeg,
+  rotEdgeZPos,
+  rotEdgeZNeg,
+  rotCornerXYZ120,
+  rotCornerXYZ240,
+  rotCornerX120,
+  rotCornerX240,
+  rotCornerY120,
+  rotCornerY240,
+  rotCornerZ120,
+  rotCornerZ240]
+
+completeCube = 
+ [[[0,1,0],
+   [1,0,1],
+   [0,1,0]],
+  [[1,0,1],
+   [0,0,0],
+   [1,0,1]],
+  [[0,1,0],
+   [1,0,1],
+   [0,1,0]]]
+
+cubeEdgeCoordinates = 
+ [[0,0,1],
+  [0,1,0],
+  [0,1,2],
+  [0,2,1],
+  [1,0,0],
+  [1,0,2],
+  [1,2,0],
+  [1,2,2],
+  [2,0,1],
+  [2,1,0],
+  [2,1,2],
+  [2,2,1]]
+
+cubeEdgeCoordinates2 = 
+ [[ 6,[-1,-1, 0]],
+  [ 5,[-1, 0,-1]],
+  [12,[-1, 0, 1]],
+  [10,[-1, 1, 0]],
+  [11,[ 0,-1,-1]],
+  [ 1,[ 0,-1, 1]],
+  [ 4,[ 0, 1,-1]],
+  [ 8,[ 0, 1, 1]],
+  [ 7,[ 1,-1, 0]],
+  [ 9,[ 1, 0,-1]],
+  [ 2,[ 1, 0, 1]],
+  [ 3,[ 1, 1, 0]]]
+
+cubeEdgeIndices = 
+ [[[ 0, 0, 0],
+   [ 1, 0, 2],
+   [ 0, 3, 0]],
+  [[ 4, 0, 5],
+   [ 0, 0, 0],
+   [ 6, 0, 7]],
+  [[ 0, 8, 0],
+   [ 9, 0,10],
+   [ 0,11, 0]]]
+
+neighborIndices =
+ [[1,2,4,5],
+  [0,3,4,6],
+  [0,3,5,7],
+  [1,2,6,7],
+  [0,1,8,9],
+  [0,2,8,10],
+  [1,3,9,11],
+  [2,3,10,11],
+  [4,5,9,10],
+  [4,6,8,11],
+  [5,7,8,11],
+  [6,7,9,10]]
+
+function cubeEdgeToIndex(edge) {
+	var newEdge = cubeEdgeIndices[edge[0]+1][edge[1]+1][edge[2]+1];
+	return newEdge
+}
+
+function cubeIndexToEdge(index) {
+	return cubeEdgeCoordinates2[index][1];
+}
+
+function applyRotationToEdge(matrix,edge) {
+	var newEdge = [0,0,0];
+	for(var r=0; r<3; r++) {
+		var tmp = 0;
+		for(var c=0; c<3; c++) {
+			tmp += matrix[r][c]*edge[c];
+		}
+		newEdge[r] = tmp;
+	}
+	return newEdge;
+}
+
+function applyRotationToIndex(matrix,index) {
+	var edge = cubeIndexToEdge(index);
+	var newEdge = applyRotationToEdge(matrix,edge);
+	var newIndex = cubeEdgeToIndex(newEdge);
+	return newIndex;
+}
+
+function cubeToIndices(cube) {
+	var indices = [0,0,0,0,0,0,0,0,0,0,0,0];
+	for(var k=0; k<12; k++) {
+		var bit = (cube>>k)&1;
+		if(bit==1) {
+			indices[k] = 1;
+		}
+	}
+	return indices;
+}
+
+function indicesToCube(indices) {
+	var cube = 0;
+	for(var k=0; k<12; k++) {
+		var bit = indices[k];
+		cube = cube|(bit<<k);
+	}
+	return cube;
+}
+
+function rotateCube(matrix,cube) {
+	var indices = cubeToIndices(cube);
+	var newIndices = [0,0,0,0,0,0,0,0,0,0,0,0];
+	for(var k=0; k<12; k++) {
+		var bit = indices[k];
+		if(bit) {
+			var newIndex = applyRotationToIndex(matrix,k);
+			newIndices[newIndex] = 1;
+		}
+	}
+	var newCube = indicesToCube(newIndices);
+	return newCube;
+}
+
+function displayCube(bits) {
+	for(var k=0; k<12; k++) {
+		var edgeId = cubeEdgeCoordinates2[k][0];
+		var bit = (bits>>k)&1;
+		if(bit==1) {
+			document.getElementById("e"+edgeId).style.opacity = "1";
+		} else {
+			document.getElementById("e"+edgeId).style.opacity = "0";
+		}
+	}
+}
+
+function displayRandomCube() {
+	displayCube(Math.floor(Math.random()*4096));
+}
+
+//displayRandomCube();
+//displayCube(rotateCube(rotations[23],14));
+
+var distinctCubes = [];
+
+function iterateOverCubes() {
+	for(var bits=0; bits<4096; bits++) {
+		var duplicate = 0;
+		for(var rotationIndex=0; rotationIndex<24; rotationIndex++) {
+			rotation = rotations[rotationIndex];
+			var newBits = rotateCube(rotation,bits);
+			if(distinctCubes.includes(newBits)) {
+				duplicate = 1;
+				continue;
+			}
+		}
+		if(duplicate==0) {
+			distinctCubes.push(bits);
+		}
+	}
+	console.log(distinctCubes.length);
+}
+
+iterateOverCubes();
+
+//displayCube(distinctCubes[175]);
+
+var svg = document.getElementById("svg");
+
+function cubePointToScreenPointAsHexagon(x,y,z,xmax) {
+	// 0,0,0 on the cube maps to 0,0 on the screen
+	// -1,1,1 and 1,-1,-1 on the cube map to 0,0 on the screen
+	// screen points will be within ([-xmax,xmax],[-xmax,xmax]) bounding box
+	var r3 = 1.732;
+	var screenPoint = [0,0];
+	screenPoint[0] = Math.round((0.5*x+0.25*y+0.25*z)*xmax);
+	screenPoint[1] = Math.round((0.0*x+0.25*r3*y-0.25*r3*z)*xmax);
+	return screenPoint;
+}
+
+function cubePointToScreenPointAsSquare(x,y,z,xmax) {
+	// 0,0,0 on the cube maps to 0,0 on the screen
+	// 0,0,1 and 0,0,-1 on the cube map to 0,0 on the screen
+	// screen points will be within ([-xmax,xmax],[-xmax,xmax]) bounding box
+	var screenPoint = [0,0];
+	screenPoint[0] = Math.round(x*(0.66+0.33*z)*xmax);
+	screenPoint[1] = Math.round(y*(0.66+0.33*z)*xmax);
+	return screenPoint;
+}
+
+function paintCorner(x,y,z,offsetX,offsetY,size) {
+	//var screenPoint = cubePointToScreenPointAsHexagon(x,y,z,size);
+	var screenPoint = cubePointToScreenPointAsSquare(x,y,z,size);
+	var circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+	svg.appendChild(circle);
+	//circle.setAttribute("r","2");
+	circle.setAttribute("r","1");
+	circle.setAttribute("cx",""+(screenPoint[0]+offsetX));
+	circle.setAttribute("cy",""+(screenPoint[1]+offsetY));
+	circle.setAttribute("fill","black");
+}
+
+function paintEdge(edge, offsetX, offsetY, size) {
+	var x1 = edge[0]==0?-1:edge[0];
+	var y1 = edge[1]==0?-1:edge[1];
+	var z1 = edge[2]==0?-1:edge[2];
+	var x2 = edge[0]==0?1:edge[0];
+	var y2 = edge[1]==0?1:edge[1];
+	var z2 = edge[2]==0?1:edge[2];
+	//var screenPoint1 = cubePointToScreenPointAsHexagon(x1,y1,z1,size);
+	//var screenPoint2 = cubePointToScreenPointAsHexagon(x2,y2,z2,size);
+	var screenPoint1 = cubePointToScreenPointAsSquare(x1,y1,z1,size);
+	var screenPoint2 = cubePointToScreenPointAsSquare(x2,y2,z2,size);
+	var polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+	svg.appendChild(polygon);
+	polygon.setAttribute("style", "fill:black;stroke:black;stroke-width:1");
+	var point1 = svg.createSVGPoint();
+	point1.x = screenPoint1[0]+offsetX;
+	point1.y = screenPoint1[1]+offsetY;
+	polygon.points.appendItem(point1);
+	var point2 = svg.createSVGPoint();
+	point2.x = screenPoint2[0]+offsetX;
+	point2.y = screenPoint2[1]+offsetY;
+	polygon.points.appendItem(point2);
+}
+
+function paintCube(cube, offsetX, offsetY, size) {
+	var indices = cubeToIndices(cube);
+	for(var k=0; k<12; k++) {
+		var bit = indices[k];
+		if(bit) {
+			var edge = cubeEdgeCoordinates2[k][1];
+			paintEdge(edge,offsetX,offsetY,size);
+		}
+	}
+	for(var x=-1; x<=1; x+=2) {
+		for(var y=-1; y<=1; y+=2) {
+			for(var z=-1; z<=1; z+=2) {
+				paintCorner(x,y,z,offsetX,offsetY,size);
+			}
+		}
+	}
+}
+
+function paintAllDistinctCubes() {
+	for(var c=0; c<15; c++) {
+		for(var r=0; r<15; r++) {
+			if(c*15+r>=distinctCubes.length) break;
+			paintCube(distinctCubes[c*15+r],r*40+20,c*40+20,10);
+		}
+	}
+}
+
+//paintAllDistinctCubes()
+
+function countNumberOfEdges(bits) {
+	var indices = cubeToIndices(bits);
+	var numberOfEdges = 0;
+	for(var k=0; k<12; k++) {
+		if(indices[k]==1) {
+			numberOfEdges++;
+		}
+	}
+	return numberOfEdges;
+}
+
+function countNumberOfConnectedComponents(bits) {
+	var indices = cubeToIndices(bits);
+	var visited = [0,0,0,0,0,0,0,0,0,0,0,0];
+	var numberOfConnectedComponents = 0;
+	while(true) {
+		var finished = 1;
+		for(var k=0; k<12; k++) {
+			if(indices[k]==1&&visited[k]==0) {
+				finished = 0;
+				numberOfConnectedComponents++;
+				visited[k] = 1;
+				break;
+			}
+		}
+		if(finished==1) break;
+		while(true) {
+			var componentFinished = 1;
+			for(var k=0; k<12; k++) {
+				if(indices[k]==0) continue;
+				if(visited[k]==1) {
+					visited[k] = 2;
+					componentFinished = 0;
+					var neighbors = neighborIndices[k];
+					for(var n=0; n<neighbors.length; n++) {
+						var neighbor = neighbors[n];
+						if(indices[neighbor]==0) continue;
+						if(visited[neighbor]==0) {
+							visited[neighbor] = 1;
+						}
+					}
+				}
+			}
+			if(componentFinished==1) break;
+		}
+	}
+	return numberOfConnectedComponents;
+}
+
+// stratified by number of connected components and then number of edges
+var stratifiedCubes = 
+ [[[],[],[],[],[],[],[],[],[],[],[],[],[]],
+  [[],[],[],[],[],[],[],[],[],[],[],[],[]],
+  [[],[],[],[],[],[],[],[],[],[],[],[],[]],
+  [[],[],[],[],[],[],[],[],[],[],[],[],[]],
+  [[],[],[],[],[],[],[],[],[],[],[],[],[]]]
+
+function stratifyDistinctCubes() {
+	for(var k=0; k<distinctCubes.length; k++) {
+		var bits = distinctCubes[k];
+		var numberOfEdges = countNumberOfEdges(bits);
+		var numberOfConnectedComponents = countNumberOfConnectedComponents(bits);
+		stratifiedCubes[numberOfConnectedComponents][numberOfEdges].push(bits);
+	}
+}
+
+stratifyDistinctCubes();
+
+console.log(stratifiedCubes);
+
+function paintAllDistinctStratifiedCubes(numberOfEdges) {
+	var r = -1;
+	var c = -2;
+	for(var numberOfConnectedComponents=0; numberOfConnectedComponents<5; numberOfConnectedComponents++) {
+		c += 2;
+		r = -1;
+		var cubes = stratifiedCubes[numberOfConnectedComponents][numberOfEdges];
+		for(var k=0; k<cubes.length; k++) {
+			r++;
+			if(r==15) {
+				r = 0;
+				c++;
+			}
+			paintCube(cubes[k],r*40+20,c*40+20,10);
+		}
+	}
+}
+
+paintAllDistinctStratifiedCubes(6);
+
+
+// TODO: color code the corners by how many edges they are adjacent to
+// TODO: color code the edges by whether they are connected to leaves or between branch points
+// TODO: color code edges that are the middle of a C shape
+// TODO: color code corners that are adjacent to two edges and are one edge in from an endpoint and twist clockwise coming from that direction (to tell apart mirror images)
+
+</script>
+</html>

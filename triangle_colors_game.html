@@ -1,0 +1,142 @@
+<html>
+<body>
+<svg id="svg" height="600" width="800" xmlns="http://www.w3.org/2000/svg">
+  <rect width="80" height="80" x="10" y="10" style="fill:red;stroke:black;stroke-width:1" onclick="onClickLegend('red','triangle')"/>
+  <rect width="80" height="80" x="10" y="110" style="fill:blue;stroke:black;stroke-width:1" onclick="onClickLegend('blue','triangle')"/>
+  <polygon points="50,210 130,210 90,290 10,290" style="fill:white;stroke:black;stroke-width:1" onclick="onClickLegend('white','upright')"/>
+  <polygon points="10,310 90,310 130,390 50,390" style="fill:white;stroke:black;stroke-width:1" onclick="onClickLegend('white','upleft')"/>
+  <polygon points="150,210 105,300 150,390 195,300" style="fill:white;stroke:black;stroke-width:1" onclick="onClickLegend('white','updown')"/>
+  <text id="status" x="10" y="440" style="font:bold 30px sans-serif;">Unvalidated</text>
+</svg>
+</body>
+<script>
+
+var tip = [400,500];
+var N = 3;
+var tx = 250/N; // 25; // x dimension parameter of triangle tile
+var ty = 440/N;  // 44; // y dimension parameter of triangle tile
+var down_shape = [[0,0],[tx,-ty],[-tx,-ty]];
+var up_shape = [[0,-2*ty],[tx,-ty],[-tx,-ty]];
+var svg = document.getElementById("svg");
+var triangleData = [
+	['R','R','R','R','R','R','R','R','R','R'],
+		['R','R','R','R','R','R','R','R','R'],
+	['R','R','R','R','R','R','R','R','R'],
+		['R','R','R','R','R','R','R','R'],
+	['R','R','R','R','R','R','R','R'],
+		['R','R','R','R','R','R','R'],
+	['R','R','R','R','R','R','R'],
+		['R','R','R','R','R','R'],
+	['R','R','R','R','R','R'],
+		['R','R','R','R','R'],
+	['R','R','R','R','R'],
+		['R','R','R','R'],
+	['R','R','R','R'],
+		['R','R','R'],
+	['R','R','R'],
+		['R','R'],
+	['R','R'],
+		['R'],
+	['R']
+];
+var board = [];
+var selectedColor = 'red';
+var selectedShape = 'triangle';
+
+function paintTriangle(shape, orientation, color, x, y) {
+  var colorName = color+"";
+  if(colorName == 'R') colorName = 'red';
+  if(colorName == 'B') colorName = 'blue';
+  if(colorName == 'W') colorName = 'white';
+  var polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+  svg.appendChild(polygon);
+  for (value of shape) {
+    var point = svg.createSVGPoint();
+    point.x = value[0]+tip[0]+tx*(x-y);
+    point.y = value[1]+tip[1]-ty*(x+y);
+    polygon.points.appendItem(point);
+  }
+  polygon.setAttribute("style", "fill:"+colorName+";stroke:black;stroke-width:1");
+  polygon.setAttribute("onclick", "onClickTriangle(this,"+x+","+y+",'"+orientation+"')");
+  polygon.setAttribute("orientation", orientation);
+  polygon.setAttribute("rhombus_angle", "triangle");
+  return polygon;
+}
+
+function onClickTriangle(element,x,y,orientation) {
+	element.style.fill = selectedColor;
+	element.style.rhombus_angle = selectedShape;
+	console.log(selectedShape);
+	//validateColors();
+	element.style.stroke = "yellow";
+	element.style.strokeWidth = 5;
+}
+
+function onClickLegend(color,shape) {
+	selectedColor = color;
+	selectedShape = shape;
+}
+
+function randomColor() {
+  var randNum = Math.floor(Math.random() * 3);
+  if(randNum == 0) return "blue";
+  if(randNum == 1) return "red";
+  return "white";
+}
+
+function generateRandomTriangleData() {
+	randomTriangleData = [];
+	for(var x=0; x<N; x++) {
+	  randomTriangleData[2*x] = [];
+	  randomTriangleData[2*x+1] = [];
+	  for(var y=0; y<N; y++) {
+		if(x+y>=N) continue;
+		randomTriangleData[2*x][y] = randomColor();
+		if(x+y==N-1) continue;
+		randomTriangleData[2*x+1][y] = randomColor();
+	  }
+	}
+	return randomTriangleData;
+}
+
+function drawInitialTriangles() {
+	var randomTriangleData = generateRandomTriangleData();
+	for(var x=0; x<N; x++) {
+	  board[2*x] = [];
+	  board[2*x+1] = [];
+	  for(var y=0; y<N; y++) {
+		if(x+y>=N) continue;
+		board[2*x][y] = paintTriangle(down_shape,"down",randomTriangleData[2*x][y], x, y);
+		if(x+y==N-1) continue;
+		board[2*x+1][y] = paintTriangle(up_shape,"up",randomTriangleData[2*x+1][y], x, y);
+	  }
+	}
+	console.log(board);
+}
+
+drawInitialTriangles();
+
+// TODO: generate random triangle data that abides by the matching rules
+// TODO: create function that checks whether a given (filled or partially filled) triangle data abides by the matching rules (maybe only in a specified region?)
+// TODO: allow user to fill in only valid tiles (according to matching rules) by clicking on gui
+// TODO: take two sides as input and generate the rest from that automatically according to the matching rules
+// TODO: review state of board and display whether the configuration is valid according to matching rules
+// TODO: how to most easily determine relationship of white triangles?
+//   1) have user mark direction/orientation of triangles
+//      a) color
+//      b) display line/arrow pointing direction
+//      c) linear gradient (eg red/blue)
+//         https://www.w3schools.com/graphics/svg_grad_linear.asp
+//   2) compute based on overall configuration
+// TODO: resolve mismatch in how data is stored (in svg fill colors and in two dimensional array of strings)
+// TODO: add tags inserted onto SVG triangles when they are created that can be pulled when they are clicked on by the onclick event and recorded in the data store
+// TODO: add a UI element of a rhombus that can be clicked on to rotate into three angles to control how white pieces are placed and then update the logic to place white pieces that way, and to only allow it if they fit on the board, and to record which way the white piece is placed so that nothing can be placed that contradicts it, and also if a blue or red piece is going to be placed on it it must be placed on both tiles
+// TODO: add some representation in the data store of which way each white piece is facing
+// TODO: validate the tiles surrounding each tile and set the border of that tile to a different color if the matching rules show it is invalid (bold and yellow?)
+// TODO: modify z-value of any tile that is highlighted to bring it to the front so its border is visible, modify the z-value when it is not highlighted to send it to the back so it is not in the way of other highlighted tiles
+
+
+
+
+</script>
+</html>

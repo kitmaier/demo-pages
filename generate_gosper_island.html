@@ -1,0 +1,116 @@
+<html>
+<body>
+<button type="button" onclick ="buttonClick()">Click Me!</button>
+<svg id="svg" height="600" width="800" xmlns="http://www.w3.org/2000/svg">
+</svg>
+</body>
+<script>
+var svg = document.getElementById("svg");
+
+/*
+
+Gosper Island fractal from The Fractal Geometry of Nature page 46 and 70
+
+// TODO: create the other Peano style curve inside the island
+// TODO: create a tesselation of Gosper islands on a hexagonal grid
+// TODO: animate the stages of creation of the fractal from simple to complex
+
+Hexagonal grid points [(1/2,sqrt(3)/2),(0,sqrt(3))] rotated as complex numbers by the inverse of their midpoint (1/4,3*sqrt(3)/4) which is (1/7,-3*sqrt(3)/7) and then divided by 2 to get to [(5/14,-sqrt(3)/14),(9/14,sqrt(3)/14)] which are distance 1/sqrt(7) apart from each other and the points (0,0) and (1,0) and still lie on a rotated hexagonal grid
+
+*/
+
+var unitPoints =
+ [[0,0],
+  [5,-1],
+  [9,1],
+  [14,0]]
+
+function normalizeUnitPoints() {
+	for(var k=0; k<unitPoints.length; k++) {
+		var point = unitPoints[k];
+		point[0] = point[0]/14.0;
+		point[1] = point[1]*Math.sqrt(3)/14.0;
+	}
+}
+
+normalizeUnitPoints();
+
+
+var polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+polygon.setAttribute("style", "fill:black;stroke:black;stroke-width:0");
+//polygon.setAttribute("style", "fill:white;stroke:black;stroke-width:1");
+svg.appendChild(polygon);
+
+function appendPoint(x,y) {
+	var point = svg.createSVGPoint();
+	point.x = x;
+	point.y = y;
+	polygon.points.appendItem(point);
+}
+
+function buttonClick() {
+	if(polygon.style.fill=="black") {
+		polygon.style.fill = "white";
+		polygon.style.strokeWidth = 1;
+	} else {
+		polygon.style.fill = "black";
+		polygon.style.strokeWidth = 0;
+	}
+}
+
+function paintGosperCurve(x1,y1,x2,y2,level) {
+	// (a+bi)(c+di) = (ac-bd)+(ad+bc)i
+	var c = x2-x1;
+	var d = y2-y1;
+	var transformedPoints = [[0,0],[0,0],[0,0],[0,0]];
+	for(var k=0; k<unitPoints.length; k++) {
+		var a = unitPoints[k][0];
+		var b = unitPoints[k][1];
+		transformedPoints[k][0] = a*c-b*d+x1;
+		transformedPoints[k][1] = a*d+b*c+y1;
+	}
+	for(var k=0; k<transformedPoints.length-1; k++) {
+		var p1 = transformedPoints[k];
+		var p2 = transformedPoints[k+1];
+		if(level==0) {
+			appendPoint(p2[0],p2[1]);
+		} else {
+			paintGosperCurve(p1[0],p1[1],p2[0],p2[1],level-1);
+		}
+	}
+}
+
+var hexagonCorners = 
+ [[-2,0],
+  [-1,-1],
+  [1,-1],
+  [2,0],
+  [1,1],
+  [-1,1],
+  [-2,0]];
+
+function normalizeHexagonCorners() {
+	for(var k=0; k<hexagonCorners.length; k++) {
+		var point = hexagonCorners[k];
+		point[0] = 300*point[0]/2.0+400;
+		point[1] = 300*point[1]*Math.sqrt(3)/2.0+300;
+	}
+}
+
+normalizeHexagonCorners();
+
+function paintGosperIsland(level) {
+	appendPoint(hexagonCorners[0][0],hexagonCorners[0][1]);
+	for(var k=0; k<hexagonCorners.length-1; k++) {
+		var p1 = hexagonCorners[k];
+		var p2 = hexagonCorners[k+1];
+		paintGosperCurve(p1[0],p1[1],p2[0],p2[1],level);
+	}
+}
+
+paintGosperIsland(5);
+
+
+
+</script>
+</html>
