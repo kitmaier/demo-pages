@@ -1,5 +1,6 @@
 <html>
 <body>
+<button type="button" onclick ="buttonClick()">Click Me!</button>
 <svg id="svg" height="600" width="800" xmlns="http://www.w3.org/2000/svg">
 </svg>
 </body>
@@ -9,8 +10,9 @@ var svg = document.getElementById("svg");
 /*
 
 Monkey's Tree fractal from The Fractal Geometry of Nature page 31
-TODO: color in the area on one side of the line
 TODO: round off the corners
+TODO: add button to rerun the random generation with a new seed
+TODO: add user input to control number of stages of generation
 
 ...................
 ...................
@@ -24,8 +26,6 @@ TODO: round off the corners
 0/....0-----0-----0
 
 */
-
-var r3 = 1.732
 
 var unitPoints =
  [[0,0],
@@ -51,6 +51,28 @@ function normalizeUnitPoints() {
 
 normalizeUnitPoints();
 
+var polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+polygon.setAttribute("style", "fill:black;stroke:black;stroke-width:0");
+//polygon.setAttribute("style", "fill:white;stroke:black;stroke-width:1");
+svg.appendChild(polygon);
+
+function appendPoint(x,y) {
+	var point = svg.createSVGPoint();
+	point.x = x;
+	point.y = y;
+	polygon.points.appendItem(point);
+}
+
+function buttonClick() {
+	if(polygon.style.fill=="black") {
+		polygon.style.fill = "white";
+		polygon.style.strokeWidth = 1;
+	} else {
+		polygon.style.fill = "black";
+		polygon.style.strokeWidth = 0;
+	}
+}
+
 // TODO: there are actually four directions in the book, left vs right side and forward vs back hook
 var directions =
  [-1,
@@ -66,49 +88,47 @@ var directions =
    1]
 
 
-function paintMonkeysTree(x1,y1,x2,y2,level) {
+function paintMonkeysTree(x1,y1,x2,y2,level,direction) {
 	// (a+bi)(c+di) = (ac-bd)+(ad+bc)i
 	var c = x2-x1;
 	var d = y2-y1;
 	var transformedPoints = [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]];
 	var hookDirection = Math.floor(Math.random()*2); // TODO: control hook direction externally
 	for(var k=0; k<unitPoints.length; k++) {
+		var k2 = k;
 		var a = unitPoints[k][0];
 		var b = unitPoints[k][1];
-		if(hookDirection==0) {
-			transformedPoints[k][0] = a*c-b*d+x1;
-			transformedPoints[k][1] = a*d+b*c+y1;
-		} else {
-			transformedPoints[k][0] = (1.0-a)*c-b*d+x1;
-			transformedPoints[k][1] = (1.0-a)*d+b*c+y1;
+		if(hookDirection==1) {
+			a = 1.0-a;
+			k2 = unitPoints.length-1-k;
 		}
+		if(direction==-1) {
+			b = -b;
+		}
+		transformedPoints[k2][0] = a*c-b*d+x1;
+		transformedPoints[k2][1] = a*d+b*c+y1;
 	}
 	for(var k=0; k<transformedPoints.length-1; k++) {
 		var p1 = transformedPoints[k];
 		var p2 = transformedPoints[k+1];
 		if(level==0) {
-			var line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-			line.setAttribute("style", "stroke:black;stroke-width:1");
-			svg.appendChild(line);
-			line.setAttribute("x1",p1[0]);
-			line.setAttribute("y1",p1[1]);
-			line.setAttribute("x2",p2[0]);
-			line.setAttribute("y2",p2[1]);
+			appendPoint(p2[0],p2[1]);
 		} else {
-			var direction = directions[k];
-			if(hookDirection==1) {
-				direction = -1*direction // TODO: clean this up
-			}
-			if(direction==1) {
-				paintMonkeysTree(p1[0],p1[1],p2[0],p2[1],level-1);
-			} else {
-				paintMonkeysTree(p2[0],p2[1],p1[0],p1[1],level-1);
-			}
+			var k2 = hookDirection==1?directions.length-1-k:k;
+			var childDirection = directions[k2]*direction;
+			paintMonkeysTree(p1[0],p1[1],p2[0],p2[1],level-1,childDirection);
 		}
 	}
 }
 
-paintMonkeysTree(150,150,600,150,1);
+
+appendPoint(600,150);
+appendPoint(800,150);
+appendPoint(800,0);
+appendPoint(0,0);
+appendPoint(0,150);
+appendPoint(150,150);
+paintMonkeysTree(150,150,600,150,1,1);
 
 </script>
 </html>
