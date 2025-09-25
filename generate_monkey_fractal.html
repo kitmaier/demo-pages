@@ -1,6 +1,7 @@
 <html>
 <body>
-<button type="button" onclick ="buttonClick()">Click Me!</button>
+<button type="button" onclick ="buttonClick1()">Click Me!</button>
+<button type="button" onclick ="buttonClick2()">Click Me!</button>
 <svg id="svg" height="600" width="800" xmlns="http://www.w3.org/2000/svg">
 </svg>
 </body>
@@ -55,6 +56,7 @@ var polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
 polygon.setAttribute("style", "fill:black;stroke:black;stroke-width:0");
 //polygon.setAttribute("style", "fill:white;stroke:black;stroke-width:1");
 svg.appendChild(polygon);
+var polygonColor = "black";
 
 function appendPoint(x,y) {
 	var point = svg.createSVGPoint();
@@ -63,13 +65,15 @@ function appendPoint(x,y) {
 	polygon.points.appendItem(point);
 }
 
-function buttonClick() {
+function buttonClick1() {
 	if(polygon.style.fill=="black") {
 		polygon.style.fill = "white";
 		polygon.style.strokeWidth = 1;
+		polygonColor = "white";
 	} else {
 		polygon.style.fill = "black";
 		polygon.style.strokeWidth = 0;
+		polygonColor = "black";
 	}
 }
 
@@ -121,14 +125,33 @@ function paintMonkeysTree(x1,y1,x2,y2,level,direction) {
 	}
 }
 
+function paintMonkeysTreeAndBox() {
+	appendPoint(600,150);
+	appendPoint(800,150);
+	appendPoint(800,0);
+	appendPoint(0,0);
+	appendPoint(0,150);
+	appendPoint(150,150);
+	paintMonkeysTree(150,150,600,150,1,1);
+}
 
-appendPoint(600,150);
-appendPoint(800,150);
-appendPoint(800,0);
-appendPoint(0,0);
-appendPoint(0,150);
-appendPoint(150,150);
-paintMonkeysTree(150,150,600,150,1,1);
+paintMonkeysTreeAndBox();
+
+function buttonClick2() {
+	polygon.remove();
+	polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+	polygon.style.stroke = "black";
+	if(polygonColor=="black") {
+		polygon.style.fill = "black";
+		polygon.style.strokeWidth = 0;
+	} else {
+		polygon.style.fill = "white";
+		polygon.style.strokeWidth = 1;
+	}
+	svg.appendChild(polygon);
+	paintMonkeysTreeAndBox();
+}
+
 
 </script>
 </html>
