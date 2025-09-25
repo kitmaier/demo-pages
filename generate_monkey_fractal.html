@@ -2,6 +2,13 @@
 <body>
 <button type="button" onclick ="buttonClick1()">Click Me!</button>
 <button type="button" onclick ="buttonClick2()">Click Me!</button>
+<select id="numberSelect" name="selectedNumber" onchange="selectNumber()">
+  <option value="0">0</option>
+  <option value="1" selected>1</option>
+  <option value="2">2</option>
+  <option value="3">3</option>
+  <option value="4">4</option>
+</select>
 <svg id="svg" height="600" width="800" xmlns="http://www.w3.org/2000/svg">
 </svg>
 </body>
@@ -57,6 +64,7 @@ polygon.setAttribute("style", "fill:black;stroke:black;stroke-width:0");
 //polygon.setAttribute("style", "fill:white;stroke:black;stroke-width:1");
 svg.appendChild(polygon);
 var polygonColor = "black";
+var iterationLevel = 1;
 
 function appendPoint(x,y) {
 	var point = svg.createSVGPoint();
@@ -132,7 +140,7 @@ function paintMonkeysTreeAndBox() {
 	appendPoint(0,0);
 	appendPoint(0,150);
 	appendPoint(150,150);
-	paintMonkeysTree(150,150,600,150,1,1);
+	paintMonkeysTree(150,150,600,150,iterationLevel,1);
 }
 
 paintMonkeysTreeAndBox();
@@ -150,6 +158,11 @@ function buttonClick2() {
 	}
 	svg.appendChild(polygon);
 	paintMonkeysTreeAndBox();
+}
+
+function selectNumber() {
+	iterationLevel = document.getElementById("numberSelect").value;
+	buttonClick2();
 }
 
 
