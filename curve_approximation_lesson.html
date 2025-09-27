@@ -1,6 +1,13 @@
 <html>
 <body>
-<select id="numberSelect" name="selectedNumber" onchange="selectNumber()" style="font-size:50px;">
+<select id="curveSelect" onchange="selectCurve()" style="font-size:50px;">
+  <option value="parabola" selected>parabola</option>
+  <option value="circle">circle</option>
+  <option value="twist">twist</option>
+  <option value="spiral">spiral</option>
+</select>
+<select id="numberSelect" onchange="selectNumber()" style="font-size:50px;">
+  <option value="1">1</option>
   <option value="2">2</option>
   <option value="3">3</option>
   <option value="4">4</option>
@@ -37,24 +44,30 @@ TODO: for a given number of line segments, what endpoints would give the closest
 
 */
 
+var selectedCurve = "parabola";
+
 function getCurvePoint(t) {
 	// t is between 0 and 1
 	var point = [0,0];
-	// parabola
-	//point[0] = t*400+100;
-	//point[1] = (2*t-1)*(2*t-1)*500+10;
-	// circle (rectangular coordinates)
-	//point[0] = t*400+100;
-	//point[1] = Math.sqrt(1-(2*t-1)*(2*t-1))*200+200;
-	// circle (polar coordinates)
-	//point[0] = Math.cos(t*Math.PI)*200+300;
-	//point[1] = Math.sin(t*Math.PI)*200+200;
-	// twist
-	point[0] = -Math.cos(t*2*Math.PI)*200+300;
-	point[1] = Math.cos(t*5*Math.PI)*200+300;
-	// spiral
-	//point[0] = t*Math.cos(t*6*Math.PI)*200+300;
-	//point[1] = t*Math.sin(t*6*Math.PI)*200+300;
+	if(selectedCurve=="parabola") {
+		point[0] = t*400+100;
+		point[1] = (2*t-1)*(2*t-1)*500+10;
+	} else if(selectedCurve=="circle") {
+		// circle (rectangular coordinates)
+		point[0] = t*400+100;
+		point[1] = Math.sqrt(1-(2*t-1)*(2*t-1))*200+200;
+		// circle (polar coordinates)
+		//point[0] = Math.cos(t*Math.PI)*200+300;
+		//point[1] = Math.sin(t*Math.PI)*200+200;
+	} else if(selectedCurve=="twist") {
+		point[0] = -Math.cos(t*2*Math.PI)*200+300;
+		point[1] = Math.cos(t*5*Math.PI)*200+300;
+	} else if(selectedCurve=="spiral") {
+		point[0] = t*Math.cos(t*6*Math.PI)*200+300;
+		point[1] = t*Math.sin(t*6*Math.PI)*200+300;
+	} else {
+		console.log("Error - selectedCurve value ("+selectedCurve+") not recognized");
+	}
 	return point;
 }
 
@@ -265,6 +278,11 @@ function selectNumber() {
 
 function optimize() {
 	shouldOptimizeCornerTimes = document.getElementById("OptimizeCheckbox").checked;
+	redraw();
+}
+
+function selectCurve() {
+	selectedCurve = document.getElementById("curveSelect").value;
 	redraw();
 }
 
