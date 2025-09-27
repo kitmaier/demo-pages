@@ -16,6 +16,7 @@
   <option value="1000">1000</option>
   <option value="10000">10000</option>
 </select>
+<input type="checkbox" id="OptimizeCheckbox" onchange="optimize()" style="width:50px;height:50px;"> <span style="font-size:50px;">Optimize</span>
 <p/>
 <svg id="svg" height="600" width="800" xmlns="http://www.w3.org/2000/svg">
 </svg>
@@ -119,7 +120,10 @@ function distance3times(t0,t1,t2) {
 	return d0+d2;
 }
 
+var shouldOptimizeCornerTimes = false;
+
 function optimizeCornerTimes() {
+	if(!shouldOptimizeCornerTimes) return;
 	if(cornerTimes.length<2) return;
 	// TODO: consider how best to optimize endpoints
 	cornerTimes[0] = 0.0;
@@ -237,8 +241,7 @@ function paintLogOutputInterval() {
 
 paintLogOutputInterval();
 
-function selectNumber() {
-	numberOfSegments = document.getElementById("numberSelect").value;
+function redraw() {
 	for(var k=0; k<linesPainted.length; k++) {
 		linesPainted[k].remove();
 	}
@@ -254,6 +257,16 @@ function selectNumber() {
 	paintInputInterval();
 	paintOutputInterval();
 	paintLogOutputInterval();
+}
+
+function selectNumber() {
+	numberOfSegments = document.getElementById("numberSelect").value;
+	redraw();
+}
+
+function optimize() {
+	shouldOptimizeCornerTimes = document.getElementById("OptimizeCheckbox").checked;
+	redraw();
 }
 
 </script>
