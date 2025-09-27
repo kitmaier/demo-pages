@@ -1,5 +1,22 @@
 <html>
 <body>
+<select id="numberSelect" name="selectedNumber" onchange="selectNumber()" style="font-size:50px;">
+  <option value="2">2</option>
+  <option value="3">3</option>
+  <option value="4">4</option>
+  <option value="5">5</option>
+  <option value="6">6</option>
+  <option value="7">7</option>
+  <option value="8">8</option>
+  <option value="9">9</option>
+  <option value="10" selected>10</option>
+  <option value="20">20</option>
+  <option value="50">50</option>
+  <option value="100">100</option>
+  <option value="1000">1000</option>
+  <option value="10000">10000</option>
+</select>
+<p/>
 <svg id="svg" height="600" width="800" xmlns="http://www.w3.org/2000/svg">
 </svg>
 </body>
@@ -47,6 +64,8 @@ function adjacent(p1,p2) {
 	return (a*a+b*b)<1;
 }
 
+var linesPainted = [];
+
 function paintLine(p1,p2) {
 	var line = document.createElementNS("http://www.w3.org/2000/svg", "line");
 	line.setAttribute("style", "stroke:black;stroke-width:1");
@@ -55,6 +74,7 @@ function paintLine(p1,p2) {
 	line.setAttribute("y1",p1[1]);
 	line.setAttribute("x2",p2[0]);
 	line.setAttribute("y2",p2[1]);
+	linesPainted.push(line);
 }
 
 var curveDistanceSum = 0;
@@ -78,9 +98,11 @@ var cornerTimes =
  [0.0,
   1.0]
 
+var numberOfSegments = 10;
+
 function setCornerTimes() {
 	cornerTimes = [];
-	var n = 3;
+	var n = numberOfSegments;
 	for(var k=0; k<=n; k++) {
 		cornerTimes.push(k*1.0/n);
 	}
@@ -132,10 +154,10 @@ function optimizeCornerTimes() {
 
 optimizeCornerTimes();
 
-
 var lineDistanceSum = 0;
 
 function calculateLineDistanceSum() {
+	lineDistanceSum = 0;
 	for(var k=0; k<cornerTimes.length-1; k++) {
 		var t1 = cornerTimes[k];
 		var t2 = cornerTimes[k+1];
@@ -215,6 +237,24 @@ function paintLogOutputInterval() {
 
 paintLogOutputInterval();
 
+function selectNumber() {
+	numberOfSegments = document.getElementById("numberSelect").value;
+	for(var k=0; k<linesPainted.length; k++) {
+		linesPainted[k].remove();
+	}
+	linesPainted = [];
+	curveDistanceSum = 0;
+	paintCurve(0,1);
+	cornerTimes = [0.0, 1.0]
+	setCornerTimes();
+	optimizeCornerTimes();
+	lineDistanceSum = 0;
+	calculateLineDistanceSum();
+	paintLinearApproximation();
+	paintInputInterval();
+	paintOutputInterval();
+	paintLogOutputInterval();
+}
 
 </script>
 </html>
