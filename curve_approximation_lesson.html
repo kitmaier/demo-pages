@@ -24,7 +24,7 @@
 </select>
 <input type="checkbox" id="OptimizeCheckbox" onchange="optimize()" style="width:50px;height:50px;"> <span style="font-size:50px;">Optimize</span>
 <p/>
-<svg id="svg" height="600" width="800" xmlns="http://www.w3.org/2000/svg">
+<svg id="svg" height="600" width="900" xmlns="http://www.w3.org/2000/svg">
 </svg>
 </body>
 <script>
@@ -77,7 +77,7 @@ function adjacent(p1,p2) {
 	return (a*a+b*b)<1;
 }
 
-var linesPainted = [];
+var visualElementsPainted = [];
 
 function paintLine(p1,p2) {
 	var line = document.createElementNS("http://www.w3.org/2000/svg", "line");
@@ -87,7 +87,18 @@ function paintLine(p1,p2) {
 	line.setAttribute("y1",p1[1]);
 	line.setAttribute("x2",p2[0]);
 	line.setAttribute("y2",p2[1]);
-	linesPainted.push(line);
+	visualElementsPainted.push(line);
+}
+
+function paintText(x,y,textContent) {
+	var text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+	text.setAttribute('x',x);
+	text.setAttribute('y',y);
+	text.setAttribute('fill','#000');
+	text.setAttribute("style","font-size:30px;");
+	text.textContent = textContent;
+	svg.appendChild(text); 
+	visualElementsPainted.push(text);
 }
 
 var curveDistanceSum = 0;
@@ -210,6 +221,8 @@ function paintInputInterval() {
 		var p2 = [s,110];
 		paintLine(p1,p2);
 	}
+	paintText(600,110,"0.0");
+	paintText(760,110,"1.0");
 }
 
 paintInputInterval();
@@ -232,6 +245,13 @@ function paintOutputInterval() {
 	var p1 = [s,290];
 	var p2 = [s,310];
 	paintLine(p1,p2);
+	paintText(600,310,"0%");
+	paintText(760,310,"100%");
+	paintText(s-30,275,Math.round(100*t)+"%");
+	// TODO: label each of these outputs (eg input / output / log output) and move the numbers below the lines
+	// TODO: align variable length text on the left to the right
+	// https://stackoverflow.com/questions/71082814/how-to-justify-svg-text-to-the-right
+	// https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Element/textPath
 }
 
 paintOutputInterval();
@@ -240,7 +260,8 @@ function paintLogOutputInterval() {
 	paintLine([650,500],[750,500]);
 	paintLine([650,490],[650,510]);
 	paintLine([750,490],[750,510]);
-	var t = Math.log(1-lineDistanceSum/curveDistanceSum)/Math.LN2;
+	var r = lineDistanceSum/curveDistanceSum;
+	var t = Math.log(1-r)/Math.LN2;
 	var t = -0.1*(t+2);
 	console.log(t);
 	if(t>=0&&t<=1) {
@@ -248,16 +269,19 @@ function paintLogOutputInterval() {
 		var p1 = [s,490];
 		var p2 = [s,510];
 		paintLine(p1,p2);
+		paintText(s-30,475,(""+100*r).substring(0,5)+"%");
 	}
+	paintText(590,510,"75%");
+	paintText(760,510,"99.98%");
 }
 
 paintLogOutputInterval();
 
 function redraw() {
-	for(var k=0; k<linesPainted.length; k++) {
-		linesPainted[k].remove();
+	for(var k=0; k<visualElementsPainted.length; k++) {
+		visualElementsPainted[k].remove();
 	}
-	linesPainted = [];
+	visualElementsPainted = [];
 	curveDistanceSum = 0;
 	paintCurve(0,1);
 	cornerTimes = [0.0, 1.0]
