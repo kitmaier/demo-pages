@@ -224,6 +224,7 @@ function paintInputInterval() {
 	}
 	paintText(600,110,"0.0");
 	paintText(760,110,"1.0");
+	paintText(650,75,"Spacing");
 }
 
 paintInputInterval();
@@ -248,8 +249,8 @@ function paintOutputInterval() {
 	paintLine(p1,p2);
 	paintText(600,310,"0%");
 	paintText(760,310,"100%");
-	paintText(s-30,275,Math.round(100*t)+"%");
-	// TODO: label each of these outputs (eg input / output / log output) and move the numbers below the lines
+	paintText(655,275,"Length");
+	paintText(s-30,340,Math.round(100*t)+"%");
 	// TODO: align variable length text on the left to the right
 	// https://stackoverflow.com/questions/71082814/how-to-justify-svg-text-to-the-right
 	// https://developer.mozilla.org/en-US/docs/Web/SVG/Reference/Element/textPath
@@ -270,10 +271,11 @@ function paintLogOutputInterval() {
 		var p1 = [s,490];
 		var p2 = [s,510];
 		paintLine(p1,p2);
-		paintText(s-30,475,(""+100*r).substring(0,5)+"%");
+		paintText(s-30,540,(""+100*r).substring(0,5)+"%");
 	}
 	paintText(590,510,"75%");
 	paintText(760,510,"99.98%");
+	paintText(640,475,"Log Scale");
 }
 
 paintLogOutputInterval();
