@@ -1,0 +1,181 @@
+<html>
+<body>
+<button type="button" onclick ="buttonClick1()" style="font-size:50px;">Click Me!</button>
+<button type="button" onclick ="buttonClick2()" style="font-size:50px;">Click Me!</button>
+<select id="numberSelect" name="selectedNumber" onchange="selectNumber()" style="font-size:50px;">
+  <option value="0">0</option>
+  <option value="1" selected>1</option>
+  <option value="2">2</option>
+  <option value="3">3</option>
+  <option value="4">4</option>
+</select>
+<p/>
+<svg id="svg" height="600" width="800" xmlns="http://www.w3.org/2000/svg">
+</svg>
+</body>
+<script>
+var svg = document.getElementById("svg");
+
+/*
+
+Alternative Koch island / Gosper lake fractals from The Fractal Geometry of Nature page 48
+
+
+*/
+
+var unitPoints4 =
+ [[0,0],
+  [0,0],
+  [0,0],
+  [1,0]];
+var unitPoints8 =
+ [[0,0],
+  [0,0],
+  [0,0],
+  [1,0]];
+var unitPoints16 =
+ [[0,0],
+  [0,0],
+  [0,0],
+  [1,0]];
+var unitPoints32 =
+ [[0,0],
+  [0,0],
+  [0,0],
+  [1,0]];
+
+/*
+Generating the basic unit shape
+*---*
+     \
+      \
+       *---*
+where the points are (0,0),(1,0),(1+A,-B),(2+A,-B)
+If the angle of the second segment below the horizontal is T=2PI/M a subdivision of the circle of ratio 1/M with M>=4 then A = cos(T) and B = sin(T)
+The squared length L2 of (2+A,-B) is L2=(2+A)(2+A)+BB=4+4A+AA+BB=5+4A
+The inverse of (2+A,-B) as a complex number is (1/L2)*(2+A,B)
+The goal now is to rotate and scale the unit shape so that the endpoints are at (0,0) and (1,0)
+The second target point moves to (1,0)*(1/L2)*(2+A,B)=(1/L2)*(2+A,B)
+The third target point moves to (1+A,-B)*(1/L2)*(2+A,B) = (1/L2)*((1+A)(2+A)+BB,-B) = (1/L2)*((1+A)(2+A)+BB,-B) = (1/L2)*(3+3A,-B)
+*/
+function generateUnitPoints(M) {
+	var theta = 2*Math.PI/M;
+	var L2 = 5+4*Math.cos(theta);
+	var unitPoints = [[0,0],[0,0],[0,0],[1,0]];
+	unitPoints[1][0] = (1/L2)*(2+Math.cos(theta));
+	unitPoints[1][1] = (1/L2)*(Math.sin(theta));
+	unitPoints[2][0] = 3*(1/L2)*(1+Math.cos(theta));
+	unitPoints[2][1] = -1*(1/L2)*(Math.sin(theta));
+	return unitPoints;
+}
+
+function generateUnitPoints() {
+	unitPoints4 = generateUnitPoints(4);
+	unitPoints8 = generateUnitPoints(8);
+	unitPoints16 = generateUnitPoints(16);
+	unitPoints32 = generateUnitPoints(32);
+}
+
+generateUnitPoints();
+
+
+
+
+// TODO: the rest of it
+
+
+var polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+polygon.setAttribute("style", "fill:black;stroke:black;stroke-width:0");
+//polygon.setAttribute("style", "fill:white;stroke:black;stroke-width:1");
+svg.appendChild(polygon);
+var polygonColor = "black";
+var iterationLevel = 1;
+
+function appendPoint(x,y) {
+	var point = svg.createSVGPoint();
+	point.x = x;
+	point.y = y;
+	polygon.points.appendItem(point);
+}
+
+function buttonClick1() {
+	if(polygon.style.fill=="black") {
+		polygon.style.fill = "white";
+		polygon.style.strokeWidth = 1;
+		polygonColor = "white";
+	} else {
+		polygon.style.fill = "black";
+		polygon.style.strokeWidth = 0;
+		polygonColor = "black";
+	}
+}
+
+
+function paintMonkeysTree(x1,y1,x2,y2,level,direction) {
+	// (a+bi)(c+di) = (ac-bd)+(ad+bc)i
+	var c = x2-x1;
+	var d = y2-y1;
+	var transformedPoints = [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]];
+	var hookDirection = Math.floor(Math.random()*2); // TODO: control hook direction externally
+	for(var k=0; k<unitPoints.length; k++) {
+		var k2 = k;
+		var a = unitPoints[k][0];
+		var b = unitPoints[k][1];
+		if(hookDirection==1) {
+			a = 1.0-a;
+			k2 = unitPoints.length-1-k;
+		}
+		if(direction==-1) {
+			b = -b;
+		}
+		transformedPoints[k2][0] = a*c-b*d+x1;
+		transformedPoints[k2][1] = a*d+b*c+y1;
+	}
+	for(var k=0; k<transformedPoints.length-1; k++) {
+		var p1 = transformedPoints[k];
+		var p2 = transformedPoints[k+1];
+		if(level==0) {
+			appendPoint(p2[0],p2[1]);
+		} else {
+			var k2 = hookDirection==1?directions.length-1-k:k;
+			var childDirection = directions[k2]*direction;
+			paintMonkeysTree(p1[0],p1[1],p2[0],p2[1],level-1,childDirection);
+		}
+	}
+}
+
+function paintMonkeysTreeAndBox() {
+	appendPoint(600,150);
+	appendPoint(800,150);
+	appendPoint(800,0);
+	appendPoint(0,0);
+	appendPoint(0,150);
+	appendPoint(150,150);
+	paintMonkeysTree(150,150,600,150,iterationLevel,1);
+}
+
+paintMonkeysTreeAndBox();
+
+function buttonClick2() {
+	polygon.remove();
+	polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+	polygon.style.stroke = "black";
+	if(polygonColor=="black") {
+		polygon.style.fill = "black";
+		polygon.style.strokeWidth = 0;
+	} else {
+		polygon.style.fill = "white";
+		polygon.style.strokeWidth = 1;
+	}
+	svg.appendChild(polygon);
+	paintMonkeysTreeAndBox();
+}
+
+function selectNumber() {
+	iterationLevel = document.getElementById("numberSelect").value;
+	buttonClick2();
+}
+
+
+</script>
+</html>
