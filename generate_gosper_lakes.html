@@ -51,12 +51,36 @@ Generating the basic unit shape
       \
        *---*
 where the points are (0,0),(1,0),(1+A,-B),(2+A,-B)
-If the angle of the second segment below the horizontal is T=2PI/M a subdivision of the circle of ratio 1/M with M>=4 then A = cos(T) and B = sin(T)
-The squared length L2 of (2+A,-B) is L2=(2+A)(2+A)+BB=4+4A+AA+BB=5+4A
+If the angle of the second segment below the horizontal is T=2PI/M a subdivision of the circle of ratio 1/M with M>=4 then A = cos(T) and B = sin(T) and A^2+B^2=1
+The squared length L2 of (2+A,-B) is L2=(2+A)(2+A)+B^2=4+4A+A^2+B^2=5+4A
 The inverse of (2+A,-B) as a complex number is (1/L2)*(2+A,B)
 The goal now is to rotate and scale the unit shape so that the endpoints are at (0,0) and (1,0)
-The second target point moves to (1,0)*(1/L2)*(2+A,B)=(1/L2)*(2+A,B) and is on the circle of radius 1/3 centered at (2/3,0)
-The third target point moves to (1+A,-B)*(1/L2)*(2+A,B) = (1/L2)*((1+A)(2+A)+BB,-B) = (1/L2)*((1+A)(2+A)+BB,-B) = (1/L2)*(3+3A,-B) and is on the circle of radius 1/3 centered at (1/3,0)
+The second target point moves to (1,0)*(1/L2)*(2+A,B)=(1/L2)*(2+A,B)
+The third target point moves to (1+A,-B)*(1/L2)*(2+A,B) = (1/L2)*((1+A)(2+A)+B^2,-B) = (1/L2)*((1+A)(2+A)+B^2,-B) = (1/L2)*(3+3A,-B)
+
+The second target point is on the circle of radius 1/3 centered at (2/3,0)
+X = (2+A)/(5+4A)
+3X(5+4A) = 6+3A
+(3X-2)(5+4A) = 6+3A-10-8A = -(4+5A)
+X-2/3 = (-1/3)(4+5A)/(5+4A)
+Y = B/(5+4A)
+3Y(5+4A) = 3B
+((3X-2)^2+9Y^2)(5+4A)^2 = (4+5A)^2+9B^2 = 16+40A+25A^2+9B^2 = 25+40A+16A^2 = (5+4A)^2
+(X-2/3)^2+Y^2 = (1/3)^2
+
+The third target point is on the circle of radius 1/3 centered at (1/3,0)
+X = 3(1+A)/(5+4A)
+3X(5+4A) = 9+9A
+(3X-1)(5+4A) = 9+9A-5-4A = 4+5A
+X-1/3 = (1/3)(4+5A)/(5+4A)
+Y = -B/(5+4A)
+3Y(5+4A) = -3B
+((3X-1)^2+9Y^2)(5+4A)^2 = (4+5A)^2+9B^2 = 16+40A+25A^2+9B^2 = 25+40A+16A^2 = (5+4A)^2
+(X-1/3)^2+Y^2 = (1/3)^2
+
+https://en.wikipedia.org/wiki/Circles_of_Apollonius
+	Apollonius showed that a circle can be defined as the set of points in a plane that have a specified ratio of distances to two fixed points, known as foci.
+
 */
 function generateUnitPointsFromRatio(M) {
 	var theta = 2*Math.PI/M;
