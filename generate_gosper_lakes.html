@@ -145,6 +145,24 @@ function paintGosperLake(R,level,M,color) {
 		var Y2 = 300+R*Math.sin((2*Math.PI*(k+1))/M);
 		paintGosperCurve(X1,Y1,X2,Y2,level,M,polygon);
 	}
+	var rotationAngle = 90;
+	var rotationTime = 120;
+	if(M==16) {
+		rotationTime = 60;
+	} else if(M==8) {
+		rotationTime = 40;
+	} else if(M==4) {
+		rotationTime = 30;
+	}
+	var animateTransform = document.createElementNS("http://www.w3.org/2000/svg", "animateTransform");
+	animateTransform.setAttribute("attributeName", "transform");
+	animateTransform.setAttribute("type", "rotate");
+	animateTransform.setAttribute("from", "0 400 300");
+	animateTransform.setAttribute("to", rotationAngle+" 400 300");
+	animateTransform.setAttribute("begin", "0s");
+	animateTransform.setAttribute("dur", rotationTime+"s");
+	animateTransform.setAttribute("repeatCount", "indefinite");
+	polygon.appendChild(animateTransform);
 }
 
 paintGosperLake(1000,6,32,1);
@@ -153,7 +171,8 @@ paintGosperLake(300,6,16,1);
 paintGosperLake(200,6,8,0);
 paintGosperLake(150,6,4,1);
 
-// TODO: animate rotations or transformations
+// TODO: button to enable/disable animated rotations
+// TODO: explore other animated transformations
 // TODO: randomize direction of crinkling
 // TODO: randomize angle of crinkling
 
