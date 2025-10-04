@@ -86,15 +86,7 @@ function generateUnitPoints() {
 
 generateUnitPoints();
 
-
-var polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-//polygon.setAttribute("style", "fill:black;stroke:black;stroke-width:0");
-polygon.setAttribute("style", "fill:none;stroke:black;stroke-width:1");
-svg.appendChild(polygon);
-var polygonColor = "black";
-var iterationLevel = 1;
-
-function appendPoint(x,y) {
+function appendPoint(x,y,polygon) {
 	var point = svg.createSVGPoint();
 	point.x = x;
 	point.y = y;
@@ -102,6 +94,7 @@ function appendPoint(x,y) {
 }
 
 function paintUnitPointsExample() {
+	// TODO: copy the polygon creation code here
 	for(var M=4; M<=32; M+=4) {
 		var unitPoints = generateUnitPointsFromRatio(M);
 		for(var k=0; k<4; k++) {
@@ -114,7 +107,7 @@ function paintUnitPointsExample() {
 //paintUnitPointsExample();
 
 
-function paintGosperCurve(x1,y1,x2,y2,level,M) {
+function paintGosperCurve(x1,y1,x2,y2,level,M,polygon) {
 	// (a+bi)(c+di) = (ac-bd)+(ad+bc)i
 	var c = x2-x1;
 	var d = y2-y1;
@@ -130,102 +123,39 @@ function paintGosperCurve(x1,y1,x2,y2,level,M) {
 		var p1 = transformedPoints[k];
 		var p2 = transformedPoints[k+1];
 		if(level==0) {
-			appendPoint(p2[0],p2[1]);
+			appendPoint(p2[0],p2[1],polygon);
 		} else {
-			paintGosperCurve(p1[0],p1[1],p2[0],p2[1],level-1,M);
+			paintGosperCurve(p1[0],p1[1],p2[0],p2[1],level-1,M,polygon);
 		}
 	}
 }
 
-function paintGosperCurve4() {
-	paintGosperCurve(200,200,200,400,6,4);
-	paintGosperCurve(200,400,400,400,6,4);
-	paintGosperCurve(400,400,400,200,6,4);
-	paintGosperCurve(400,200,200,200,6,4);
-}
-
-paintGosperCurve4();
-
-// TODO: the rest of it
-/*
-function buttonClick1() {
-	if(polygon.style.fill=="black") {
-		polygon.style.fill = "white";
-		polygon.style.strokeWidth = 1;
-		polygonColor = "white";
+function paintGosperLake(R,level,M,color) {
+	var polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+	if(color==1) {
+		polygon.setAttribute("style", "fill:black;stroke:black;stroke-width:0");
 	} else {
-		polygon.style.fill = "black";
-		polygon.style.strokeWidth = 0;
-		polygonColor = "black";
-	}
-}
-
-
-function paintMonkeysTree(x1,y1,x2,y2,level,direction) {
-	// (a+bi)(c+di) = (ac-bd)+(ad+bc)i
-	var c = x2-x1;
-	var d = y2-y1;
-	var transformedPoints = [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]];
-	var hookDirection = Math.floor(Math.random()*2); // TODO: control hook direction externally
-	for(var k=0; k<unitPoints.length; k++) {
-		var k2 = k;
-		var a = unitPoints[k][0];
-		var b = unitPoints[k][1];
-		if(hookDirection==1) {
-			a = 1.0-a;
-			k2 = unitPoints.length-1-k;
-		}
-		if(direction==-1) {
-			b = -b;
-		}
-		transformedPoints[k2][0] = a*c-b*d+x1;
-		transformedPoints[k2][1] = a*d+b*c+y1;
-	}
-	for(var k=0; k<transformedPoints.length-1; k++) {
-		var p1 = transformedPoints[k];
-		var p2 = transformedPoints[k+1];
-		if(level==0) {
-			appendPoint(p2[0],p2[1]);
-		} else {
-			var k2 = hookDirection==1?directions.length-1-k:k;
-			var childDirection = directions[k2]*direction;
-			paintMonkeysTree(p1[0],p1[1],p2[0],p2[1],level-1,childDirection);
-		}
-	}
-}
-
-function paintMonkeysTreeAndBox() {
-	appendPoint(600,150);
-	appendPoint(800,150);
-	appendPoint(800,0);
-	appendPoint(0,0);
-	appendPoint(0,150);
-	appendPoint(150,150);
-	paintMonkeysTree(150,150,600,150,iterationLevel,1);
-}
-
-paintMonkeysTreeAndBox();
-
-function buttonClick2() {
-	polygon.remove();
-	polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-	polygon.style.stroke = "black";
-	if(polygonColor=="black") {
-		polygon.style.fill = "black";
-		polygon.style.strokeWidth = 0;
-	} else {
-		polygon.style.fill = "white";
-		polygon.style.strokeWidth = 1;
+		polygon.setAttribute("style", "fill:white;stroke:black;stroke-width:1");
 	}
 	svg.appendChild(polygon);
-	paintMonkeysTreeAndBox();
+	for(var k=0; k<M; k++) {
+		var X1 = 400+R*Math.cos((2*Math.PI*k)/M);
+		var Y1 = 300+R*Math.sin((2*Math.PI*k)/M);
+		var X2 = 400+R*Math.cos((2*Math.PI*(k+1))/M);
+		var Y2 = 300+R*Math.sin((2*Math.PI*(k+1))/M);
+		paintGosperCurve(X1,Y1,X2,Y2,level,M,polygon);
+	}
 }
 
-function selectNumber() {
-	iterationLevel = document.getElementById("numberSelect").value;
-	buttonClick2();
-}
-*/
+paintGosperLake(1000,6,32,1);
+paintGosperLake(400,6,32,0);
+paintGosperLake(300,6,16,1);
+paintGosperLake(200,6,8,0);
+paintGosperLake(150,6,4,1);
+
+// TODO: animate rotations or transformations
+// TODO: randomize direction of crinkling
+// TODO: randomize angle of crinkling
 
 </script>
 </html>
