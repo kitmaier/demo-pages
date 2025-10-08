@@ -1,11 +1,21 @@
 <html>
 <body>
-<button type="button" onclick ="buttonClick()">Click Me!</button>
+<button type="button" onclick ="buttonClick()" style="font-size:50px;">Click Me!</button>
+<select id="numberSelect" name="selectedNumber" onchange="selectNumber()" style="font-size:50px;">
+  <option value="0">0</option>
+  <option value="1" selected>1</option>
+  <option value="2">2</option>
+  <option value="3">3</option>
+</select>
+<p/>
 <svg id="svg" height="600" width="800" xmlns="http://www.w3.org/2000/svg">
 </svg>
 </body>
 <script>
 var svg = document.getElementById("svg");
+
+var levelOfIteration = 1;
+var isFilled = true;
 
 /*
 
@@ -46,14 +56,15 @@ function appendPoint(x,y,polygon) {
 }
 
 function buttonClick() {
+	isFilled = !isFilled;
 	for(var k=0; k<polygons.length; k++) {
 		var polygon = polygons[k];
-		if(polygon.style.fill=="black") {
-			polygon.style.fill = "none";
-			polygon.style.strokeWidth = 1;
-		} else {
+		if(isFilled) {
 			polygon.style.fill = "black";
 			polygon.style.strokeWidth = 0;
+		} else {
+			polygon.style.fill = "none";
+			polygon.style.strokeWidth = 1;
 		}
 	}
 }
@@ -107,7 +118,11 @@ X...............|...
 */
 function paintKochPolygon(x,y,a,b,level) {
 	var polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-	polygon.setAttribute("style", "fill:black;stroke:black;stroke-width:0");
+	if(isFilled) {
+		polygon.setAttribute("style", "fill:black;stroke:black;stroke-width:0");
+	} else {
+		polygon.setAttribute("style", "fill:none;stroke:black;stroke-width:1");
+	}
 	svg.appendChild(polygon);
 	polygons.push(polygon);
 	paintKochCurve(x+b,y,x+a+b,y+b,level,polygon);
@@ -135,8 +150,20 @@ function paintKochPolygonTiles(level) {
 	}
 }
 
-paintKochPolygonTiles(1);
+paintKochPolygonTiles(levelOfIteration);
 
+function redraw() {
+	for(var k=0; k<polygons.length; k++) {
+		polygons[k].remove();
+	}
+	polygons = [];
+	paintKochPolygonTiles(levelOfIteration);
+}
+
+function selectNumber() {
+	levelOfIteration = document.getElementById("numberSelect").value;
+	redraw();
+}
 
 
 </script>
