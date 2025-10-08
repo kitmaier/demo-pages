@@ -2,12 +2,15 @@
 <body>
 <input type="checkbox" id="FilledCheckbox" onchange="filledCheckboxClicked()" style="width:50px;height:50px;" checked="true">
 <span style="font-size:50px;" onclick="filledTextClicked()">Filled</span>
-<select id="numberSelect" name="selectedNumber" onchange="selectNumber()" style="font-size:50px;">
-  <option value="0">0</option>
-  <option value="1" selected>1</option>
-  <option value="2">2</option>
+<span style="padding-left:5px;padding-right:5px;">
+<select id="numberSelect" name="selectedNumber" onchange="selectNumber()" style="font-size:50px;padding-left:5px;padding-right:5px;">
+  <option value="1">1</option>
+  <option value="2" selected>2</option>
   <option value="3">3</option>
+  <option value="4">4</option>
 </select>
+</span>
+<span style="font-size:50px;">Detail</span>
 <p/>
 <svg id="svg" height="600" width="800" xmlns="http://www.w3.org/2000/svg">
 </svg>
@@ -15,7 +18,7 @@
 <script>
 var svg = document.getElementById("svg");
 
-var levelOfIteration = 1;
+var levelOfIteration = 2;
 var isFilled = true;
 
 /*
@@ -137,14 +140,14 @@ function paintKochPolygonTiles(level) {
 	}
 }
 
-paintKochPolygonTiles(levelOfIteration);
+paintKochPolygonTiles(levelOfIteration-1);
 
 function redraw() {
 	for(var k=0; k<polygons.length; k++) {
 		polygons[k].remove();
 	}
 	polygons = [];
-	paintKochPolygonTiles(levelOfIteration);
+	paintKochPolygonTiles(levelOfIteration-1);
 }
 
 function selectNumber() {
