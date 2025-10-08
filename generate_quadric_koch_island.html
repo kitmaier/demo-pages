@@ -12,7 +12,6 @@ var svg = document.getElementById("svg");
 Quadric Koch Island (The Fractal Geometry of Nature page 50)
 TODO: randomize whether the spike points inwards or outwards
 TODO: randomize or vary the angles
-TODO: flip only every other curve around the main hexagon around to create a shape that tiles the plane
 
 */
 
@@ -37,12 +36,9 @@ function normalizeUnitPoints() {
 
 normalizeUnitPoints();
 
+var polygons = [];
 
-var polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-polygon.setAttribute("style", "fill:black;stroke:black;stroke-width:0");
-svg.appendChild(polygon);
-
-function appendPoint(x,y) {
+function appendPoint(x,y,polygon) {
 	var point = svg.createSVGPoint();
 	point.x = x;
 	point.y = y;
@@ -50,16 +46,19 @@ function appendPoint(x,y) {
 }
 
 function buttonClick() {
-	if(polygon.style.fill=="black") {
-		polygon.style.fill = "none";
-		polygon.style.strokeWidth = 1;
-	} else {
-		polygon.style.fill = "black";
-		polygon.style.strokeWidth = 0;
+	for(var k=0; k<polygons.length; k++) {
+		var polygon = polygons[k];
+		if(polygon.style.fill=="black") {
+			polygon.style.fill = "none";
+			polygon.style.strokeWidth = 1;
+		} else {
+			polygon.style.fill = "black";
+			polygon.style.strokeWidth = 0;
+		}
 	}
 }
 
-function paintKochCurve(x1,y1,x2,y2,level) {
+function paintKochCurve(x1,y1,x2,y2,level,polygon) {
 	// (a+bi)(c+di) = (ac-bd)+(ad+bc)i
 	var c = x2-x1;
 	var d = y2-y1;
@@ -74,22 +73,69 @@ function paintKochCurve(x1,y1,x2,y2,level) {
 		var p1 = transformedPoints[k];
 		var p2 = transformedPoints[k+1];
 		if(level==0) {
-			appendPoint(p2[0],p2[1]);
+			appendPoint(p2[0],p2[1],polygon);
 		} else {
-			paintKochCurve(p1[0],p1[1],p2[0],p2[1],level-1);
+			paintKochCurve(p1[0],p1[1],p2[0],p2[1],level-1,polygon);
 		}
 	}
 }
 
-function paintKochSnowflake(level) {
-	appendPoint(200,50);
-	paintKochCurve(200,50,500,200,level);
-	paintKochCurve(500,200,350,500,level);
-	paintKochCurve(350,500,50,350,level);
-	paintKochCurve(50,350,200,50,level);
+/*
+corners of the large square:
+x,y
+x+a+b,y
+x+a+b,y+a+b
+x,y+a+b
+
+corners of the small square:
+x+b,y
+x+a+b,y+b
+x+a,y+a+b
+x,y+a
+
+.....X----..........
+....|.....----......
+...|..........----..
+..|...............-X
+..|................|
+.|................|.
+|................|..
+X...............|...
+.----..........|....
+.....----.....|.....
+.........----X......
+*/
+function paintKochPolygon(x,y,a,b,level) {
+	var polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+	polygon.setAttribute("style", "fill:black;stroke:black;stroke-width:0");
+	svg.appendChild(polygon);
+	polygons.push(polygon);
+	paintKochCurve(x+b,y,x+a+b,y+b,level,polygon);
+	paintKochCurve(x+a+b,y+b,x+a,y+a+b,level,polygon);
+	paintKochCurve(x+a,y+a+b,x,y+a,level,polygon);
+	paintKochCurve(x,y+a,x+b,y,level,polygon);
 }
 
-paintKochSnowflake(3);
+// TODO: allow the user to control level of iterations
+// TODO: allow the user to control size of tiling
+function paintKochPolygonTiles(level) {
+	var x=400;
+	var y=300;
+	var a=100;
+	var b=50;
+	for(var r=-10; r<=10; r++) {
+		for(var c=-10; c<=10; c++) {
+			if(Math.abs(r+c)%2==0) {
+				var x2 = x+r*a-c*b;
+				var y2 = y+r*b+c*a;
+				if(x2>1000||y2>1000||x2+a+b<0||y2+a+b<0) continue;
+				paintKochPolygon(x2,y2,a,b,level);
+			}
+		}
+	}
+}
+
+paintKochPolygonTiles(1);
 
 
 
