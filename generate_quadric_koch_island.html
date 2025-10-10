@@ -31,6 +31,8 @@ var svg = document.getElementById("svg");
 var levelOfIteration = 1;
 var isFilled = true;
 var selectedCurve = "L8/L4";
+var svgWidth = 800;
+var svgHeight = 600;
 
 /*
 
@@ -183,6 +185,10 @@ function paintKochCurve(x1,y1,x2,y2,level,polygon) {
 	// (a+bi)(c+di) = (ac-bd)+(ad+bc)i
 	var c = x2-x1;
 	var d = y2-y1;
+	if(c*c+d*d<1) {
+		appendPoint(x2,y2,polygon);
+		return;
+	}
 	var transformedPoints = [];
 	for(var k=0; k<unitPoints.length; k++) {
 		var a = unitPoints[k][0];
@@ -246,8 +252,8 @@ function paintKochPolygon(x,y,a,b,level) {
 // TODO: allow the user to control level of iterations
 // TODO: allow the user to control size of tiling
 function paintKochPolygonTiles(level) {
-	var x=400;
-	var y=300;
+	var x=svgWidth/2;
+	var y=svgHeight/2;
 	var a=100;
 	var b=50;
 	for(var r=-10; r<=10; r++) {
@@ -255,7 +261,7 @@ function paintKochPolygonTiles(level) {
 			if(Math.abs(r+c)%2==0) {
 				var x2 = x+r*a-c*b;
 				var y2 = y+r*b+c*a;
-				if(x2>1000||y2>1000||x2+a+b<0||y2+a+b<0) continue;
+				if(x2>svgWidth||y2>svgHeight||x2+a+b<0||y2+a+b<0) continue;
 				paintKochPolygon(x2,y2,a,b,level);
 			}
 		}
