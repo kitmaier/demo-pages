@@ -5,13 +5,15 @@
 <select id="curveSelect" name="selectedCurve" onchange="selectCurve()" style="font-size:50px;padding-left:5px;padding-right:5px;">
   <option value="L8/L4" selected>L8/L4</option>
   <option value="L18/L6">L18/L6</option>
+  <option value="L32/L8">L32/L8</option>
+  <!--option value="L98/L14">L98/L14</option-->
 </select>
 </span>
 <span style="font-size:50px;">Detail:</span>
 <span style="padding-left:5px;padding-right:5px;">
 <select id="numberSelect" name="selectedNumber" onchange="selectNumber()" style="font-size:50px;padding-left:5px;padding-right:5px;">
-  <option value="1">1</option>
-  <option value="2" selected>2</option>
+  <option value="1" selected>1</option>
+  <option value="2">2</option>
   <option value="3">3</option>
   <option value="4">4</option>
 </select>
@@ -26,7 +28,7 @@
 var svg = document.getElementById("svg");
 
 // TODO: initialize these values by reading from the html or vice versa
-var levelOfIteration = 2;
+var levelOfIteration = 1;
 var isFilled = true;
 var selectedCurve = "L8/L4";
 
@@ -37,6 +39,7 @@ TODO: randomize whether the spike points inwards or outwards
 TODO: randomize or vary the angles
 TODO: include 0-detail option with just straight lines
 TODO: create a table to align the options and labels
+TODO: make algorithm adaptable to scale so that it doesn't generate details smaller than one pixel in diameter
 
 */
 
@@ -90,6 +93,63 @@ function normalizeUnitPointsL18L6() {
 }
 normalizeUnitPointsL18L6();
 
+var unitPointsL32L8 = 
+ [[0,0],
+  [0,1],
+  [1,1],
+  [1,2],
+  [0,2],
+  [0,3],
+  [1,3],
+  [2,3],
+  [2,4],
+  [3,4],
+  [3,3],
+  [3,2],
+  [2,2],
+  [2,1],
+  [3,1],
+  [4,1],
+  [4,0],
+  [4,-1],
+  [5,-1],
+  [6,-1],
+  [6,-2],
+  [5,-2],
+  [5,-3],
+  [5,-4],
+  [6,-4],
+  [6,-3],
+  [7,-3],
+  [8,-3],
+  [8,-2],
+  [7,-2],
+  [7,-1],
+  [8,-1],
+  [8,0]];
+function normalizeUnitPointsL32L8() {
+	for(var k=0; k<unitPointsL32L8.length; k++) {
+		var point = unitPointsL32L8[k];
+		point[0] = point[0]/8.0;
+		point[1] = point[1]/8.0;
+	}
+}
+normalizeUnitPointsL32L8();
+
+// TODO: finish setting this one up
+var unitPointsL98L14 = 
+ [[0,0],
+  [5,0],
+  [6,0]];
+function normalizeUnitPointsL98L14() {
+	for(var k=0; k<unitPointsL98L14.length; k++) {
+		var point = unitPointsL98L14[k];
+		point[0] = point[0]/14.0;
+		point[1] = point[1]/14.0;
+	}
+}
+normalizeUnitPointsL98L14();
+
 function setUnitPoints() {
 	unitPoints = [];
 	var unitPointsSource = [];
@@ -97,6 +157,10 @@ function setUnitPoints() {
 		unitPointsSource = unitPointsL8L4;
 	} else if(selectedCurve=="L18/L6") {
 		unitPointsSource = unitPointsL18L6;
+	} else if(selectedCurve=="L32/L8") {
+		unitPointsSource = unitPointsL32L8;
+	} else if(selectedCurve=="L98/L14") {
+		unitPointsSource = unitPointsL98L14;
 	} else {
 		console.log("ERROR - curve name not recognized: "+selectedCurve);
 	}
