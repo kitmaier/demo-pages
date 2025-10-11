@@ -1,0 +1,178 @@
+<html>
+<body>
+<span style="font-size:50px;">Detail:</span>
+<span style="padding-left:5px;padding-right:5px;">
+<select id="numberSelect" name="selectedNumber" onchange="selectNumber()" style="font-size:50px;padding-left:5px;padding-right:5px;">
+  <option value="1">1</option>
+  <option value="2">2</option>
+  <option value="3">3</option>
+  <option value="4">4</option>
+  <option value="5">5</option>
+  <option value="6" selected>6</option>
+  <option value="7">7</option>
+  <option value="8">8</option>
+  <option value="9">9</option>
+  <option value="10">10</option>
+</select>
+</span>
+<p/>
+<span style="font-size:50px;" onclick="filledTextClicked()">Filled:</span>
+<input type="checkbox" id="FilledCheckbox" onchange="filledCheckboxClicked()" style="width:50px;height:50px;" checked="true">
+<p/>
+<span style="font-size:50px;">Height:</span>
+<input type="range" min="1" max="100" value="57" id="heightRange" onmouseup="selectRanges()">
+<p/>
+<span style="font-size:50px;">Midline:</span>
+<input type="range" min="1" max="100" value="50" id="midlineRange" onmouseup="selectRanges()">
+<p/>
+<span style="font-size:50px;">Left:</span>
+<input type="range" min="1" max="100" value="67" id="leftRange" onmouseup="selectRanges()">
+<p/>
+<span style="font-size:50px;">Right:</span>
+<input type="range" min="1" max="100" value="33" id="rightRange" onmouseup="selectRanges()">
+<p/>
+<svg id="svg" height="600" width="800" xmlns="http://www.w3.org/2000/svg">
+</svg>
+</body>
+<script>
+var svg = document.getElementById("svg");
+
+// TODO: initialize these values by reading from the html or vice versa
+var levelOfIteration = 6;
+var isFilled = true;
+var selectedHeight = 57;
+var selectedMidline = 50;
+var selectedLeft = 67;
+var selectedRight = 33;
+var svgWidth = 800;
+var svgHeight = 600;
+
+/*
+
+Generalized Koch Curve (The Fractal Geometry of Nature page 56)
+TODO: include 0-detail option with just straight lines
+TODO: create a table to align the options and labels
+TODO: offer shortcuts for interesting combinations of settings such as the ones in the book
+TODO: display the numeric value of each slider to the right of the slider and allow numerical text input
+
+*/
+
+var unitPoints = [
+  [0,0],
+  [0.5,0],
+  [0.5,1],
+  [0.5,0],
+  [1,0]];
+
+function setUnitPoints() {
+	var height = selectedHeight/100.0;
+	var midline = selectedMidline/100.0;
+	var left = selectedLeft/100.0;
+	var right = selectedRight/100.0;
+	unitPoints[1][0] = left*midline;
+	unitPoints[1][1] = 0;
+	unitPoints[2][0] = midline;
+	unitPoints[2][1] = -height/2;
+	unitPoints[3][0] = midline+(1-midline)*right;
+	unitPoints[3][1] = 0;
+}
+setUnitPoints();
+
+var polygons = [];
+
+function appendPoint(x,y,polygon) {
+	var point = svg.createSVGPoint();
+	point.x = x;
+	point.y = y;
+	polygon.points.appendItem(point);
+}
+
+function paintKochCurve(x1,y1,x2,y2,level,polygon) {
+	// (a+bi)(c+di) = (ac-bd)+(ad+bc)i
+	var c = x2-x1;
+	var d = y2-y1;
+	if(c*c+d*d<1) {
+		appendPoint(x2,y2,polygon);
+		return;
+	}
+	var transformedPoints = [];
+	for(var k=0; k<unitPoints.length; k++) {
+		var a = unitPoints[k][0];
+		var b = unitPoints[k][1];
+		var transformedPoint = [0,0];
+		transformedPoints.push(transformedPoint);
+		transformedPoint[0] = a*c-b*d+x1;
+		transformedPoint[1] = a*d+b*c+y1;
+	}
+	for(var k=0; k<transformedPoints.length-1; k++) {
+		var p1 = transformedPoints[k];
+		var p2 = transformedPoints[k+1];
+		if(level==0) {
+			appendPoint(p2[0],p2[1],polygon);
+		} else {
+			paintKochCurve(p1[0],p1[1],p2[0],p2[1],level-1,polygon);
+		}
+	}
+}
+
+function paintKochPolygon(level) {
+	var polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+	if(isFilled) {
+		polygon.setAttribute("style", "fill:black;stroke:black;stroke-width:0");
+	} else {
+		polygon.setAttribute("style", "fill:none;stroke:black;stroke-width:1");
+	}
+	svg.appendChild(polygon);
+	polygons.push(polygon);
+	paintKochCurve(50,350,750,350,level,polygon);
+	appendPoint(750,400,polygon);
+	appendPoint(50,400,polygon);
+	appendPoint(50,350,polygon);
+}
+
+paintKochPolygon(levelOfIteration-1);
+
+function redraw() {
+	for(var k=0; k<polygons.length; k++) {
+		polygons[k].remove();
+	}
+	polygons = [];
+	paintKochPolygon(levelOfIteration-1);
+}
+
+function selectNumber() {
+	levelOfIteration = document.getElementById("numberSelect").value;
+	redraw();
+}
+
+function filledCheckboxClicked() {
+	isFilled = document.getElementById("FilledCheckbox").checked;
+	for(var k=0; k<polygons.length; k++) {
+		var polygon = polygons[k];
+		if(isFilled) {
+			polygon.style.fill = "black";
+			polygon.style.strokeWidth = 0;
+		} else {
+			polygon.style.fill = "none";
+			polygon.style.strokeWidth = 1;
+		}
+	}
+}
+
+function filledTextClicked() {
+	var checked = document.getElementById("FilledCheckbox").checked;
+	document.getElementById("FilledCheckbox").checked = !checked;
+	filledCheckboxClicked();
+}
+
+function selectRanges() {
+	selectedHeight = document.getElementById("heightRange").value;
+	selectedMidline = document.getElementById("midlineRange").value;
+	selectedLeft = document.getElementById("leftRange").value;
+	selectedRight = document.getElementById("rightRange").value;
+	setUnitPoints();
+	redraw();
+}
+
+</script>
+</html>
