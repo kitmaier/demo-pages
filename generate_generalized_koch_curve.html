@@ -35,10 +35,13 @@
          <option value="4">4</option>
          <option value="5">5</option>
          <option value="6">6</option>
+         <option value="7">7</option>
        </select>
      </span>
     </td>
     <td>
+     <span style="font-size:50px;">D: </span>
+     <span style="font-size:50px;" id="dimension">1.258</span>
     </td>
   </tr>
   <tr>
@@ -87,7 +90,6 @@ TODO: include 0-detail option with just straight lines
 TODO: create a table to align the options and labels
 TODO: offer shortcuts for interesting combinations of settings such as the ones in the book
 TODO: display the numeric value of each slider to the right of the slider and allow numerical text input
-TODO: calculate and display estimated fractal dimension
 
 */
 
@@ -166,12 +168,61 @@ function paintKochPolygon(level) {
 
 paintKochPolygon(levelOfIteration-1);
 
+function Dsum(a,b,c,d,D) {
+	return Math.pow(a,D)+Math.pow(b,D)+Math.pow(c,D)+Math.pow(d,D);
+}
+
+/*
+This algorithm will calculate an estimated fractal dimension for the boundary of the displayed region.
+This will probably be invalid if the curve intersects itself, and will definitely be invalid if the value
+calculated is above 2 or below 1.
+This makes the assumption that the dimension exists, that the length of the curve with respect to that
+dimension exists, and that the length scales in the manner expected, so that if the length of the whole curve 
+is 1 in the dimension D, and if each of the main legs of the curve is a, b, c, d, then the dimension D can 
+be calculated as the solution to a^D+b^D+c^D+d^D = 1, which can be estimated numerically with binary search. 
+This calculation can be validated in special cases, such as the Koch curve with dimension ln4/ln3 = 1.262.
+*/
+function calculateDimension() {
+	var height = selectedHeight/100.0;
+	var midline = selectedMidline/100.0;
+	var left = selectedLeft/100.0;
+	var right = selectedRight/100.0;
+	var leftLength = left*midline;
+	var heightValue = height/2;
+	var rightLength = (1-midline)*(1-right);
+	var leftMidLength = Math.sqrt(Math.pow(midline-leftLength,2)+Math.pow(heightValue,2));
+	var rightMidLength = Math.sqrt(Math.pow((1-midline)-rightLength,2)+Math.pow(heightValue,2));
+	if(Dsum(leftLength,leftMidLength,rightMidLength,rightLength,1)<=1) return 1;
+	if(Dsum(leftLength,leftMidLength,rightMidLength,rightLength,2)>=1) return 2;
+	var min = 1;
+	var max = 2;
+	while(min+0.0001<max) {
+		var mid = 0.5*(min+max);
+		var dimension = Dsum(leftLength,leftMidLength,rightMidLength,rightLength,mid);
+		if(dimension>1) {
+			min = mid;
+		} else if(dimension<1) {
+			max = mid;
+		} else {
+			min = mid;
+			max = mid;
+		}
+	}
+	return 0.5*(min+max);
+}
+
+function updateDimension() {
+	var dimension = calculateDimension();
+	document.getElementById("dimension").innerText = dimension.toFixed(3);
+}
+
 function redraw() {
 	for(var k=0; k<polygons.length; k++) {
 		polygons[k].remove();
 	}
 	polygons = [];
 	paintKochPolygon(levelOfIteration-1);
+	updateDimension();
 }
 
 function selectNumber() {
@@ -246,6 +297,12 @@ function selectCurve() {
 		document.getElementById("midlineRange").value = 30;
 		document.getElementById("leftRange").value = 95;
 		document.getElementById("rightRange").value = 20;
+		document.getElementById("numberSelect").value = 10;
+	} else if(selectedCurve=="7") {
+		document.getElementById("heightRange").value = 100;
+		document.getElementById("midlineRange").value = 50;
+		document.getElementById("leftRange").value = 100;
+		document.getElementById("rightRange").value = 0;
 		document.getElementById("numberSelect").value = 10;
 	}
 	selectedHeight = document.getElementById("heightRange").value;
