@@ -15,8 +15,19 @@
   <option value="10">10</option>
 </select>
 </span>
-<span style="font-size:50px;padding-left:50px;" onclick="filledTextClicked()">Filled:</span>
+<span style="font-size:50px;padding-left:5px;" onclick="filledTextClicked()">Filled:</span>
 <input type="checkbox" id="FilledCheckbox" onchange="filledCheckboxClicked()" style="width:50px;height:50px;" checked="true">
+<span style="font-size:50px;padding-left:5px;">Curve:</span>
+<span style="padding-left:5px;padding-right:5px;">
+<select id="curveSelect" name="selectedCurve" onchange="selectCurve()" style="font-size:50px;padding-left:5px;padding-right:5px;">
+  <option value="1" selected>1</option>
+  <option value="2">2</option>
+  <option value="3">3</option>
+  <option value="4">4</option>
+  <option value="5">5</option>
+  <option value="6">6</option>
+</select>
+</span>
 <p/>
 <table style="width:800px;">
   <tr>
@@ -54,6 +65,7 @@ var selectedHeight = 57;
 var selectedMidline = 50;
 var selectedLeft = 67;
 var selectedRight = 33;
+var selectedCurve = "1";
 var svgWidth = 800;
 var svgHeight = 600;
 
@@ -180,6 +192,55 @@ function selectRanges() {
 	selectedMidline = document.getElementById("midlineRange").value;
 	selectedLeft = document.getElementById("leftRange").value;
 	selectedRight = document.getElementById("rightRange").value;
+	setUnitPoints();
+	redraw();
+	// TODO: reset selected curve if range is changed manually, avoid circular function reference
+}
+
+function selectCurve() {
+	selectedCurve = document.getElementById("curveSelect").value;
+	if(selectedCurve=="1") {
+		document.getElementById("heightRange").value = 57;
+		document.getElementById("midlineRange").value = 50;
+		document.getElementById("leftRange").value = 67;
+		document.getElementById("rightRange").value = 33;
+		document.getElementById("numberSelect").value = 6;
+	} else if(selectedCurve=="2") {
+		document.getElementById("heightRange").value = 85;
+		document.getElementById("midlineRange").value = 50;
+		document.getElementById("leftRange").value = 50;
+		document.getElementById("rightRange").value = 50;
+		document.getElementById("numberSelect").value = 10;
+	} else if(selectedCurve=="3") {
+		document.getElementById("heightRange").value = 85;
+		document.getElementById("midlineRange").value = 30;
+		document.getElementById("leftRange").value = 94;
+		document.getElementById("rightRange").value = 3;
+		document.getElementById("numberSelect").value = 10;
+	} else if(selectedCurve=="4") {
+		document.getElementById("heightRange").value = 5;
+		document.getElementById("midlineRange").value = 30;
+		document.getElementById("leftRange").value = 94;
+		document.getElementById("rightRange").value = 3;
+		document.getElementById("numberSelect").value = 10
+	} else if(selectedCurve=="5") {
+		document.getElementById("heightRange").value = 40;
+		document.getElementById("midlineRange").value = 50;
+		document.getElementById("leftRange").value = 5;
+		document.getElementById("rightRange").value = 95;
+		document.getElementById("numberSelect").value = 10;
+	} else if(selectedCurve=="6") {
+		document.getElementById("heightRange").value = 75;
+		document.getElementById("midlineRange").value = 30;
+		document.getElementById("leftRange").value = 95;
+		document.getElementById("rightRange").value = 20;
+		document.getElementById("numberSelect").value = 10;
+	}
+	selectedHeight = document.getElementById("heightRange").value;
+	selectedMidline = document.getElementById("midlineRange").value;
+	selectedLeft = document.getElementById("leftRange").value;
+	selectedRight = document.getElementById("rightRange").value;
+	levelOfIteration = document.getElementById("numberSelect").value;
 	setUnitPoints();
 	redraw();
 }
