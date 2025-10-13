@@ -1,37 +1,48 @@
 <html>
 <body>
-<span style="font-size:50px;">Detail:</span>
-<span style="padding-left:5px;padding-right:5px;">
-<select id="numberSelect" name="selectedNumber" onchange="selectNumber()" style="font-size:50px;padding-left:5px;padding-right:5px;">
-  <option value="1">1</option>
-  <option value="2">2</option>
-  <option value="3">3</option>
-  <option value="4">4</option>
-  <option value="5">5</option>
-  <option value="6" selected>6</option>
-  <option value="7">7</option>
-  <option value="8">8</option>
-  <option value="9">9</option>
-  <option value="10">10</option>
-</select>
-</span>
-<span style="font-size:50px;padding-left:5px;" onclick="filledTextClicked()">Filled:</span>
-<input type="checkbox" id="FilledCheckbox" onchange="filledCheckboxClicked()" style="width:50px;height:50px;" checked="true">
-<span style="font-size:50px;padding-left:5px;">Curve:</span>
-<span style="padding-left:5px;padding-right:5px;">
-<select id="curveSelect" name="selectedCurve" onchange="selectCurve()" style="font-size:50px;padding-left:5px;padding-right:5px;">
-  <option value="1" selected>1</option>
-  <option value="2">2</option>
-  <option value="3">3</option>
-  <option value="4">4</option>
-  <option value="5">5</option>
-  <option value="6">6</option>
-</select>
-</span>
-<p/>
 <table style="width:800px;">
   <tr>
     <td style="width:400px;">
+     <span style="font-size:50px;">Detail:</span>
+     <span style="padding-left:5px;">
+       <select id="numberSelect" name="selectedNumber" onchange="selectNumber()" style="font-size:50px;padding-left:5px;padding-right:5px;">
+         <option value="1">1</option>
+         <option value="2">2</option>
+         <option value="3">3</option>
+         <option value="4">4</option>
+         <option value="5">5</option>
+         <option value="6" selected>6</option>
+         <option value="7">7</option>
+         <option value="8">8</option>
+         <option value="9">9</option>
+         <option value="10">10</option>
+       </select>
+     </span>
+    </td>
+    <td>
+     <span style="font-size:50px;" onclick="filledTextClicked()">Filled:</span>
+     <input type="checkbox" id="FilledCheckbox" onchange="filledCheckboxClicked()" style="width:50px;height:50px;padding-left:5px;" checked="true">
+    </td>
+  </tr>
+  <tr>
+    <td>
+     <span style="font-size:50px;">Curve:</span>
+     <span style="padding-left:5px;padding-right:5px;">
+       <select id="curveSelect" name="selectedCurve" onchange="selectCurve()" style="font-size:50px;padding-left:5px;padding-right:5px;">
+         <option value="1" selected>1</option>
+         <option value="2">2</option>
+         <option value="3">3</option>
+         <option value="4">4</option>
+         <option value="5">5</option>
+         <option value="6">6</option>
+       </select>
+     </span>
+    </td>
+    <td>
+    </td>
+  </tr>
+  <tr>
+    <td>
      <span style="font-size:50px;">Height:</span>
      <input type="range" min="1" max="100" value="57" id="heightRange" onmouseup="selectRanges()" ontouchend="selectRanges()">
     </td>
@@ -52,7 +63,7 @@
   </tr>
 </table>
 <p/>
-<svg id="svg" height="600" width="800" xmlns="http://www.w3.org/2000/svg">
+<svg id="svg" height="450" width="800" xmlns="http://www.w3.org/2000/svg">
 </svg>
 </body>
 <script>
