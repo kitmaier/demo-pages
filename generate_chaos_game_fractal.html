@@ -1,14 +1,50 @@
 <html>
 <body>
 <!-- TODO: insert user controls -->
+<span style="font-size:50px;">Curve:</span>
+<span style="padding-left:5px;padding-right:5px;">
+  <select id="curveSelect" name="selectedCurve" onchange="selectCurve()" style="font-size:50px;padding-left:5px;padding-right:5px;">
+    <option value="1" selected>1</option>
+    <option value="2">2</option>
+  </select>
+</span>
+<span style="font-size:50px;">Detail:</span>
+<span style="padding-left:5px;">
+  <select id="numberSelect" name="selectedNumber" onchange="selectNumber()" style="font-size:50px;padding-left:5px;padding-right:5px;">
+    <option value="10">10</option>
+    <option value="100">100</option>
+    <option value="1000">1000</option>
+    <option value="10000" selected>10000</option>
+    <option value="100000">100000</option>
+    <option value="1000000">1000000</option>
+  </select>
+</span>
+<p/>
 <svg id="svg" height="600" width="800" xmlns="http://www.w3.org/2000/svg">
 </svg>
 </body>
 <script>
 var svg = document.getElementById("svg");
+var levelOfIteration;
+var sizeOfPoints;
+var selectedCurve;
 
 // TODO: initialize these values by reading from the html or vice versa
 // TODO: global variables like svg width and height, number of points to draw, and selected curve
+function calculateSizeOfPoints() {
+	sizeOfPoints = 0.2;
+	if(levelOfIteration<=100) {
+		sizeOfPoints = 10;
+	} else if(levelOfIteration<=10000) {
+		sizeOfPoints = 1;
+	}
+}
+function initializeGlobalVariables() {
+	levelOfIteration = Number(document.getElementById("numberSelect").value);
+	selectedCurve = document.getElementById("curveSelect").value;
+	calculateSizeOfPoints();
+}
+initializeGlobalVariables();
 
 /*
 
@@ -31,7 +67,7 @@ function drawPoint(point) {
 	var circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
 	circle.setAttribute('cx', x);
 	circle.setAttribute('cy', y);
-	circle.setAttribute('r', 0.2);
+	circle.setAttribute('r', sizeOfPoints);
 	circle.setAttribute('fill', "black");
 	circle.setAttribute('fill', "black");
 	svg.appendChild(circle);
@@ -76,7 +112,7 @@ function convertPointToScreen(z) {
 	];
 }
 
-function paintSomething() {
+function paintChaosGame() {
 	var z = [1,0];
 	var sierpinskiTriangleTransforms = [
 		[[   0,   0],[0.5,0]],
@@ -93,8 +129,13 @@ function paintSomething() {
 		[[0.333333,-0.666667],[0.333333,0]],
 		[[0.666667,-0.666667],[0.333333,0]],
 	];
-	var transforms = sierpinskiCarpetTransforms;
-	for(var k=0; k<1000000; k++) {
+	var transforms = [];
+	if(selectedCurve=="1") {
+		transforms = sierpinskiTriangleTransforms;
+	} else if(selectedCurve=="2") {
+		transforms = sierpinskiCarpetTransforms;
+	}
+	for(var k=0; k<levelOfIteration; k++) {
 		var transform = transforms[Math.floor(Math.random()*transforms.length)];
 		//console.log(transform);
 		z = applyTransformation(z,transform);
@@ -103,7 +144,27 @@ function paintSomething() {
 	}
 }
 
-paintSomething();
+paintChaosGame();
+
+function redraw() {
+	for(var k=0; k<drawnPoints.length; k++) {
+		drawnPoints[k].remove();
+	}
+	drawnPoints = [];
+	paintChaosGame();
+}
+
+function selectCurve() {
+	selectedCurve = document.getElementById("curveSelect").value;
+	redraw();
+}
+
+function selectNumber() {
+	levelOfIteration = document.getElementById("numberSelect").value;
+	calculateSizeOfPoints();
+	redraw();
+}
+
 
 </script>
 </html>
