@@ -1,0 +1,97 @@
+<html>
+<body>
+<!-- TODO: insert user controls -->
+<svg id="svg" height="600" width="800" xmlns="http://www.w3.org/2000/svg">
+</svg>
+</body>
+<script>
+var svg = document.getElementById("svg");
+
+// TODO: initialize these values by reading from the html or vice versa
+// TODO: global variables like svg width and height, number of points to draw, and selected curve
+
+/*
+
+Chaos Game fractal generator
+
+TODO: chaos game iterating simple complex-coefficient polynomials eg az+b or az^2+bz+c
+TODO: allow user to select from predefined interesting configurations
+TODO: allow user to input custom configurations for a fixed number of generators
+TODO: allow user to specify a variable-length list of generators
+TODO: allow user to specify bounds of viewing box
+TODO: ensure even coverage by biasing iteration towards low density areas
+
+*/
+
+var drawnPoints = [];
+
+function drawPoint(point) {
+	var x = point[0];
+	var y = point[1];
+	var circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+	circle.setAttribute('cx', x);
+	circle.setAttribute('cy', y);
+	circle.setAttribute('r', 2);
+	circle.setAttribute('fill', "black");
+	svg.appendChild(circle);
+	drawnPoints.push(circle);
+}
+
+// functions to apply arithmetic operations to complex numbers
+function plus(a,b) {
+	return [
+		a[0]+b[0],
+		a[1]+b[1]
+	];
+}
+function times(a,b) {
+	return [
+		a[0]*b[0]-a[1]*b[1],
+		a[0]*b[1]+a[1]*b[0]
+	];
+}
+function pow(z,n) {
+	var zNext = [1,0];
+	for(var k=0; k<n; k++) {
+		zNext = times(zNext,z);
+	}
+	return zNext;
+}
+
+// apply polynomial to a complex valued input
+function applyTransformation(z,transformation) {
+	var zNext = [0,0];
+	for(var k=0; k<transformation.length; k++) {
+		var c = transformation[k];
+		zNext = plus(zNext,times(c,pow(z,k)));
+	}
+	return zNext;
+}
+
+function convertPointToScreen(z) {
+	return [
+		300*z[0]+300,
+		300*z[1]+300
+	];
+}
+
+function paintSomething() {
+	var z = [1,0];
+	var transforms = [
+		[[0,0],[0.5,0]],
+		[[0.5,0],[0.5,0]],
+		[[0.25,-0.5],[0.5,0]]
+	];
+	for(var k=0; k<10000; k++) {
+		var transform = transforms[Math.floor(Math.random()*transforms.length)];
+		//console.log(transform);
+		z = applyTransformation(z,transform);
+		//console.log(z);
+		drawPoint(convertPointToScreen(z));
+	}
+}
+
+paintSomething();
+
+</script>
+</html>
