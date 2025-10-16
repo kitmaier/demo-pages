@@ -6,6 +6,7 @@
   <select id="curveSelect" name="selectedCurve" onchange="selectCurve()" style="font-size:50px;padding-left:5px;padding-right:5px;">
     <option value="1" selected>1</option>
     <option value="2">2</option>
+    <option value="3">3</option>
   </select>
 </span>
 <span style="font-size:50px;">Detail:</span>
@@ -56,6 +57,7 @@ TODO: allow user to input custom configurations for a fixed number of generators
 TODO: allow user to specify a variable-length list of generators
 TODO: allow user to specify bounds of viewing box
 TODO: ensure even coverage by biasing iteration towards low density areas
+	Maybe measure standard deviation of points after each transformation and bias based on that
 
 */
 
@@ -95,6 +97,7 @@ function pow(z,n) {
 	return zNext;
 }
 
+// TODO: may need to use roots instead of powers to get something that converges
 // apply polynomial to a complex valued input
 function applyTransformation(z,transformation) {
 	var zNext = [0,0];
@@ -129,11 +132,18 @@ function paintChaosGame() {
 		[[0.333333,-0.666667],[0.333333,0]],
 		[[0.666667,-0.666667],[0.333333,0]],
 	];
+	var transform3 = [
+		[[   0,   0],[0.39,0],[0.0,0]],
+		[[ 0.5,   0],[0.39,0],[0.1,0]],
+		[[0.25,-0.5],[0.39,0],[0.2,0]]
+	];
 	var transforms = [];
 	if(selectedCurve=="1") {
 		transforms = sierpinskiTriangleTransforms;
 	} else if(selectedCurve=="2") {
 		transforms = sierpinskiCarpetTransforms;
+	} else if(selectedCurve=="3") {
+		transforms = transform3;
 	}
 	for(var k=0; k<levelOfIteration; k++) {
 		var transform = transforms[Math.floor(Math.random()*transforms.length)];
