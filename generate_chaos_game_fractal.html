@@ -4,9 +4,9 @@
 <span style="font-size:50px;">Curve:</span>
 <span style="padding-left:5px;padding-right:5px;">
   <select id="curveSelect" name="selectedCurve" onchange="selectCurve()" style="font-size:50px;padding-left:5px;padding-right:5px;">
-    <option value="1" selected>1</option>
+    <option value="1">1</option>
     <option value="2">2</option>
-    <option value="3">3</option>
+    <option value="3" selected>3</option>
   </select>
 </span>
 <span style="font-size:50px;">Detail:</span>
@@ -15,8 +15,8 @@
     <option value="10">10</option>
     <option value="100">100</option>
     <option value="1000">1000</option>
-    <option value="10000" selected>10000</option>
-    <option value="100000">100000</option>
+    <option value="10000">10000</option>
+    <option value="100000" selected>100000</option>
     <option value="1000000">1000000</option>
   </select>
 </span>
@@ -58,6 +58,7 @@ TODO: allow user to specify a variable-length list of generators
 TODO: allow user to specify bounds of viewing box
 TODO: ensure even coverage by biasing iteration towards low density areas
 	Maybe measure standard deviation of points after each transformation and bias based on that
+TODO: maybe take the whole thing as like a dynamic programming problem, just have a two dimensional array of what points have been colored black previously and recently, and at each step all the last stage colored black are moved through all the transformations and any new black cells are the next stage, might not work perfectly if the path from one point to another does not align well with the grid
 
 */
 
@@ -97,13 +98,42 @@ function pow(z,n) {
 	return zNext;
 }
 
+var varianceData = [];
+
+function storeVarianceData(z,k) {
+	varianceData.push([z,k]);
+}
+function calculateVarianceData() {
+	// iterate over the list splitting it up by k-value
+	//   could start with just k=3
+	// in each k-group
+	//   find the X-mean and Y-mean
+	//     sum up over all point values and divide by count
+	//     running sum of values and running sum of 1 for counts
+	//   find the X-variance and Y-variance
+	//     for each point find the squared deviation
+	//     sum up over all points
+	//     divide by one less than number of points
+	//   find the overall variance and standard deviation
+	var sumX = 0;
+	for(var n=0; n<varianceData.length; n++) {
+		var data = varianceData[n];
+		var x = data[0][0];
+		var y = data[0][1];
+		var k = data[1];
+		
+	}
+}
+
 // TODO: may need to use roots instead of powers to get something that converges
+// TODO: include generic affine transformations such as squeezing in only one direction
 // apply polynomial to a complex valued input
 function applyTransformation(z,transformation) {
 	var zNext = [0,0];
 	for(var k=0; k<transformation.length; k++) {
 		var c = transformation[k];
 		zNext = plus(zNext,times(c,pow(z,k)));
+		storeVarianceData(zNext,k);
 	}
 	return zNext;
 }
@@ -111,7 +141,7 @@ function applyTransformation(z,transformation) {
 function convertPointToScreen(z) {
 	return [
 		300*z[0]+300,
-		300*z[1]+300
+		300*z[1]+400
 	];
 }
 
@@ -146,12 +176,16 @@ function paintChaosGame() {
 		transforms = transform3;
 	}
 	for(var k=0; k<levelOfIteration; k++) {
-		var transform = transforms[Math.floor(Math.random()*transforms.length)];
+		// TODO: allow user to bias transform selection for artistic effect
+		//var transform = transforms[Math.floor(Math.random()*transforms.length)];
+		//var transform = transforms[Math.floor(Math.pow(Math.random(),0.6)*transforms.length)];
+		var transform = transforms[[0,0,0,0,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2][Math.floor(Math.random()*21)]];
 		//console.log(transform);
 		z = applyTransformation(z,transform);
 		//console.log(z);
 		drawPoint(convertPointToScreen(z));
 	}
+	calculateVarianceData();
 }
 
 paintChaosGame();
