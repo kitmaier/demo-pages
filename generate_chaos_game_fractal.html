@@ -15,11 +15,38 @@
     <option value="10">10</option>
     <option value="100">100</option>
     <option value="1000">1000</option>
-    <option value="10000">10000</option>
-    <option value="100000" selected>100000</option>
+    <option value="10000" selected>10000</option>
+    <option value="100000">100000</option>
     <option value="1000000">1000000</option>
   </select>
 </span>
+<p/>
+
+<table id="configsTable" style="width:800px;">
+  <!--tr>
+    <td style="width:400px;">
+     <span style="font-size:50px;">Detail:</span>
+     <span style="padding-left:5px;">
+       <select id="numberSelect" name="selectedNumber" onchange="selectNumber()" style="font-size:50px;padding-left:5px;padding-right:5px;">
+         <option value="1">1</option>
+         <option value="2">2</option>
+         <option value="3">3</option>
+         <option value="4">4</option>
+         <option value="5">5</option>
+         <option value="6" selected>6</option>
+         <option value="7">7</option>
+         <option value="8">8</option>
+         <option value="9">9</option>
+         <option value="10">10</option>
+       </select>
+     </span>
+    </td>
+    <td>
+     <span style="font-size:50px;" onclick="filledTextClicked()">Filled:</span>
+     <input type="checkbox" id="FilledCheckbox" onchange="filledCheckboxClicked()" style="width:50px;height:50px;padding-left:5px;" checked="true">
+    </td>
+  </tr-->
+</table>
 <p/>
 <svg id="svg" height="600" width="800" xmlns="http://www.w3.org/2000/svg">
 </svg>
@@ -145,6 +172,28 @@ function convertPointToScreen(z) {
 	];
 }
 
+function createTable(transforms) {
+	// TODO: format width of cells
+	// TODO: add column for probability bias
+	// TODO: allow user to modify values
+	// TODO: allow user to add and delete rows
+	configsTable = document.getElementById("configsTable");
+	configsTable.style.width = '800px';
+	configsTable.style.border = '1px solid black';
+	tableBody = configsTable.getElementsByTagName('tbody')[0];
+	if(tableBody) {
+		tableBody.innerHTML = ''; // Clears all content within the tbody
+	}
+	for(let i = 0; i < transforms.length; i++) {
+		const tr = configsTable.insertRow();
+		for(let j = 0; j < transforms[0].length; j++) {
+			const td = tr.insertCell();
+			td.appendChild(document.createTextNode(transforms[i][j][0]+","+transforms[i][j][1]));
+			td.style.border = '1px solid black';
+		}
+	}
+}
+
 function paintChaosGame() {
 	var z = [1,0];
 	var sierpinskiTriangleTransforms = [
@@ -175,11 +224,12 @@ function paintChaosGame() {
 	} else if(selectedCurve=="3") {
 		transforms = transform3;
 	}
+	createTable(transforms);
 	for(var k=0; k<levelOfIteration; k++) {
 		// TODO: allow user to bias transform selection for artistic effect
-		//var transform = transforms[Math.floor(Math.random()*transforms.length)];
+		var transform = transforms[Math.floor(Math.random()*transforms.length)];
 		//var transform = transforms[Math.floor(Math.pow(Math.random(),0.6)*transforms.length)];
-		var transform = transforms[[0,0,0,0,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2][Math.floor(Math.random()*21)]];
+		//var transform = transforms[[0,0,0,0,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2][Math.floor(Math.random()*21)]];
 		//console.log(transform);
 		z = applyTransformation(z,transform);
 		//console.log(z);
@@ -208,7 +258,6 @@ function selectNumber() {
 	calculateSizeOfPoints();
 	redraw();
 }
-
 
 </script>
 </html>
