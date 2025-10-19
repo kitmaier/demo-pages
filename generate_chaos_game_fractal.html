@@ -173,11 +173,18 @@ function convertPointToScreen(z) {
 	];
 }
 
+function deleteTableRow(rowId) {
+	let row = document.getElementById("rowId"+rowId);
+	row.remove();
+	// TODO: remove this transform from the list and redraw
+}
+
 function createTable(transforms) {
 	// TODO: add column for probability bias
 	// TODO: allow user to modify values
 	// TODO: allow user to add and delete rows
 	// TODO: add column headers or additional columns with static data explaining what each column is for
+	// TODO: consider changing all instances of var to let based on https://www.educative.io/answers/difference-between-var-let-and-const-keyword-in-javascript
 	configsTable = document.getElementById("configsTable");
 	configsTable.style.width = '800px';
 	configsTable.style.border = '1px solid black';
@@ -186,12 +193,24 @@ function createTable(transforms) {
 		tableBody.innerHTML = ''; // Clears all content within the tbody
 	}
 	for(let i = 0; i < transforms.length; i++) {
-		const tr = configsTable.insertRow();
+		let rowId = Math.random();
+		let tr = configsTable.insertRow();
+		tr.id = "rowId"+rowId;
+		let td = tr.insertCell();
+		td.style.width = '20px';
+		td.style.border = '1px solid black';
+		td.style.fontSize = '20px';
+		td.style.textAlign = 'center';
+		let minusButton = document.createElement("button");
+		minusButton.innerText = "-";
+		minusButton.onclick = function(event){deleteTableRow(rowId);};
+		td.appendChild(minusButton);
 		for(let j = 0; j < transforms[0].length; j++) {
-			const td = tr.insertCell();
+			td = tr.insertCell();
 			td.appendChild(document.createTextNode(transforms[i][j][0]+","+transforms[i][j][1]));
-			td.style.width = (800.0/transforms[0].length)+'px';
+			td.style.width = (780.0/transforms[0].length)+'px';
 			td.style.border = '1px solid black';
+			td.style.fontSize = '20px';
 		}
 	}
 }
