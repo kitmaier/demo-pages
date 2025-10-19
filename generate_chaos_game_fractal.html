@@ -6,7 +6,8 @@
   <select id="curveSelect" name="selectedCurve" onchange="selectCurve()" style="font-size:50px;padding-left:5px;padding-right:5px;">
     <option value="1">1</option>
     <option value="2">2</option>
-    <option value="3" selected>3</option>
+    <option value="3">3</option>
+    <option value="4" selected>4</option>
   </select>
 </span>
 <span style="font-size:50px;">Detail:</span>
@@ -173,10 +174,10 @@ function convertPointToScreen(z) {
 }
 
 function createTable(transforms) {
-	// TODO: format width of cells
 	// TODO: add column for probability bias
 	// TODO: allow user to modify values
 	// TODO: allow user to add and delete rows
+	// TODO: add column headers or additional columns with static data explaining what each column is for
 	configsTable = document.getElementById("configsTable");
 	configsTable.style.width = '800px';
 	configsTable.style.border = '1px solid black';
@@ -217,13 +218,20 @@ function paintChaosGame() {
 		[[ 0.5,   0],[0.39,0],[0.1,0]],
 		[[0.25,-0.5],[0.39,0],[0.2,0]]
 	];
+	var transform4 = [
+		[[ 0.5,   0],[0.39,0],[-0.15,0]],
+		[[ 0,   0],[0.39,0],[0,0]],
+		[[0.5,-0.5],[0.39,0],[0.15,0]]
+	];
 	var transforms = [];
 	if(selectedCurve=="1") {
 		transforms = sierpinskiTriangleTransforms;
 	} else if(selectedCurve=="2") {
 		transforms = sierpinskiCarpetTransforms;
 	} else if(selectedCurve=="3") {
-		transforms = transform3;
+		transforms = transform3
+	} else if(selectedCurve=="4") {
+		transforms = transform4;
 	}
 	createTable(transforms);
 	for(var k=0; k<levelOfIteration; k++) {
