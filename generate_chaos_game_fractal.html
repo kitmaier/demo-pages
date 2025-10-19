@@ -57,6 +57,33 @@ let svg = document.getElementById("svg");
 let levelOfIteration;
 let sizeOfPoints;
 let selectedCurve;
+let selectedTransforms;
+let sierpinskiTriangleTransforms = [
+	[[   0,   0],[0.5,0]],
+	[[ 0.5,   0],[0.5,0]],
+	[[0.25,-0.5],[0.5,0]]
+];
+let sierpinskiCarpetTransforms = [
+	[[       0,        0],[0.333333,0]],
+	[[0.333333,        0],[0.333333,0]],
+	[[0.666667,        0],[0.333333,0]],
+	[[       0,-0.333333],[0.333333,0]],
+	[[0.666667,-0.333333],[0.333333,0]],
+	[[       0,-0.666667],[0.333333,0]],
+	[[0.333333,-0.666667],[0.333333,0]],
+	[[0.666667,-0.666667],[0.333333,0]],
+];
+let transform3 = [
+	[[   0,   0],[0.39,0],[0.0,0]],
+	[[ 0.5,   0],[0.39,0],[0.1,0]],
+	[[0.25,-0.5],[0.39,0],[0.2,0]]
+];
+let transform4 = [
+	[[ 0.5,   0],[0.39,0],[-0.15,0]],
+	[[ 0,   0],[0.39,0],[0,0]],
+	[[0.5,-0.5],[0.39,0],[0.15,0]]
+];
+
 
 // TODO: initialize these values by reading from the html or vice versa
 // TODO: global variables like svg width and height, number of points to draw, and selected curve
@@ -68,10 +95,22 @@ function calculateSizeOfPoints() {
 		sizeOfPoints = 1;
 	}
 }
+function selectTransforms() {
+	if(selectedCurve=="1") {
+		selectedTransforms = structuredClone(sierpinskiTriangleTransforms);
+	} else if(selectedCurve=="2") {
+		selectedTransforms = structuredClone(sierpinskiCarpetTransforms);
+	} else if(selectedCurve=="3") {
+		selectedTransforms = structuredClone(transform3);
+	} else if(selectedCurve=="4") {
+		selectedTransforms = structuredClone(transform4);
+	}
+}
 function initializeGlobalVariables() {
 	levelOfIteration = Number(document.getElementById("numberSelect").value);
 	selectedCurve = document.getElementById("curveSelect").value;
 	calculateSizeOfPoints();
+	selectTransforms();
 }
 initializeGlobalVariables();
 
@@ -174,9 +213,8 @@ function convertPointToScreen(z) {
 }
 
 function deleteTableRow(rowId) {
-	let row = document.getElementById("rowId"+rowId);
-	row.remove();
-	// TODO: remove this transform from the list and redraw
+	selectedTransforms.splice(rowId,1);
+	redraw();
 }
 
 function createTable(transforms) {
@@ -192,9 +230,7 @@ function createTable(transforms) {
 		tableBody.innerHTML = ''; // Clears all content within the tbody
 	}
 	for(let i = 0; i < transforms.length; i++) {
-		let rowId = Math.random();
 		let tr = configsTable.insertRow();
-		tr.id = "rowId"+rowId;
 		let td = tr.insertCell();
 		td.style.width = '20px';
 		td.style.border = '1px solid black';
@@ -202,7 +238,7 @@ function createTable(transforms) {
 		td.style.textAlign = 'center';
 		let minusButton = document.createElement("button");
 		minusButton.innerText = "-";
-		minusButton.onclick = function(event){deleteTableRow(rowId);};
+		minusButton.onclick = function(event){deleteTableRow(i);};
 		td.appendChild(minusButton);
 		for(let j = 0; j < transforms[0].length; j++) {
 			td = tr.insertCell();
@@ -216,41 +252,7 @@ function createTable(transforms) {
 
 function paintChaosGame() {
 	let z = [1,0];
-	let sierpinskiTriangleTransforms = [
-		[[   0,   0],[0.5,0]],
-		[[ 0.5,   0],[0.5,0]],
-		[[0.25,-0.5],[0.5,0]]
-	];
-	let sierpinskiCarpetTransforms = [
-		[[       0,        0],[0.333333,0]],
-		[[0.333333,        0],[0.333333,0]],
-		[[0.666667,        0],[0.333333,0]],
-		[[       0,-0.333333],[0.333333,0]],
-		[[0.666667,-0.333333],[0.333333,0]],
-		[[       0,-0.666667],[0.333333,0]],
-		[[0.333333,-0.666667],[0.333333,0]],
-		[[0.666667,-0.666667],[0.333333,0]],
-	];
-	let transform3 = [
-		[[   0,   0],[0.39,0],[0.0,0]],
-		[[ 0.5,   0],[0.39,0],[0.1,0]],
-		[[0.25,-0.5],[0.39,0],[0.2,0]]
-	];
-	let transform4 = [
-		[[ 0.5,   0],[0.39,0],[-0.15,0]],
-		[[ 0,   0],[0.39,0],[0,0]],
-		[[0.5,-0.5],[0.39,0],[0.15,0]]
-	];
-	let transforms = [];
-	if(selectedCurve=="1") {
-		transforms = sierpinskiTriangleTransforms;
-	} else if(selectedCurve=="2") {
-		transforms = sierpinskiCarpetTransforms;
-	} else if(selectedCurve=="3") {
-		transforms = transform3
-	} else if(selectedCurve=="4") {
-		transforms = transform4;
-	}
+	let transforms = selectedTransforms;
 	createTable(transforms);
 	for(let k=0; k<levelOfIteration; k++) {
 		// TODO: allow user to bias transform selection for artistic effect
@@ -277,6 +279,7 @@ function redraw() {
 
 function selectCurve() {
 	selectedCurve = document.getElementById("curveSelect").value;
+	selectTransforms();
 	redraw();
 }
 
