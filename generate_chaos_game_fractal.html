@@ -189,6 +189,7 @@ function createTable(transforms) {
 		for(let j = 0; j < transforms[0].length; j++) {
 			const td = tr.insertCell();
 			td.appendChild(document.createTextNode(transforms[i][j][0]+","+transforms[i][j][1]));
+			td.style.width = (800.0/transforms[0].length)+'px';
 			td.style.border = '1px solid black';
 		}
 	}
