@@ -6,8 +6,8 @@
   <select id="curveSelect" name="selectedCurve" onchange="selectCurve()" style="font-size:50px;padding-left:5px;padding-right:5px;">
     <option value="1">1</option>
     <option value="2">2</option>
-    <option value="3">3</option>
-    <option value="4" selected>4</option>
+    <option value="3" selected>3</option>
+    <option value="4">4</option>
   </select>
 </span>
 <span style="font-size:50px;">Detail:</span>
@@ -254,6 +254,12 @@ function paintChaosGame() {
 	let z = [1,0];
 	let transforms = selectedTransforms;
 	createTable(transforms);
+	let trashIterations = Math.sqrt(levelOfIteration);
+	for(let k=0; k<trashIterations; k++) {
+		// run through a small number of iterations in order to converge to fractal and not display a bunch of noisy dots
+		let transform = transforms[Math.floor(Math.random()*transforms.length)];
+		z = applyTransformation(z,transform);
+	}
 	for(let k=0; k<levelOfIteration; k++) {
 		// TODO: allow user to bias transform selection for artistic effect
 		let transform = transforms[Math.floor(Math.random()*transforms.length)];
