@@ -131,17 +131,21 @@ TODO: maybe take the whole thing as like a dynamic programming problem, just hav
 
 let drawnPoints = [];
 
-function drawPoint(point) {
+function drawPointSize(point,size) {
 	let x = point[0];
 	let y = point[1];
 	let circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
 	circle.setAttribute('cx', x);
 	circle.setAttribute('cy', y);
-	circle.setAttribute('r', sizeOfPoints);
+	circle.setAttribute('r', size);
 	circle.setAttribute('fill', "black");
 	circle.setAttribute('fill', "black");
 	svg.appendChild(circle);
 	drawnPoints.push(circle);
+}
+
+function drawPoint(point) {
+	drawPointSize(point,sizeOfPoints);
 }
 
 // functions to apply arithmetic operations to complex numbers
@@ -163,6 +167,13 @@ function pow(z,n) {
 		zNext = times(zNext,z);
 	}
 	return zNext;
+}
+function abs(z) {
+	return Math.sqrt(z[0]*z[0]+z[1]*z[1]);
+}
+function distance(z1,z2) {
+	let difference = plus(z1,times([-1,0],z2));
+	return abs(difference);
 }
 
 let varianceData = [];
@@ -250,6 +261,59 @@ function createTable(transforms) {
 	}
 }
 
+// TODO: optimize this instead of recalculating a lot
+function selectRandomBiasedTransform(transforms,biasWeights) {
+	let cumulativeWeights = [];
+	let sum = 0;
+	for(let k=0; k<biasWeights.length; k++) {
+		sum += biasWeights[k];
+		cumulativeWeights.push(sum);
+	}
+	let randomValue = Math.random()*sum;
+	let index = 0;
+	for(let k=0; k<biasWeights.length; k++) {
+		if(randomValue<cumulativeWeights[k]) {
+			index = k;
+			break;
+		}
+	}
+	return transforms[index];
+}
+
+function optimizeBiasWeights(transforms,z) {
+	let fixedPoints = [];
+	let volume = [];
+	for(let k=0; k<transforms.length; k++) {
+		let z2 = structuredClone(z);
+		let transform = transforms[k];
+		// TODO: try running this until the point stops moving
+		for(let m=0; m<10; m++) {
+			z2 = applyTransformation(z2,transform);
+		}
+		// TODO: what if a transform has more than one fixed point?
+		fixedPoints.push(z2);
+		volume.push(1.0);
+		drawPointSize(convertPointToScreen(z2),10);
+	}
+	for(let k=0; k<transforms.length; k++) {
+		let f0 = fixedPoints[k];
+		let transform = transforms[k];
+		for(let j=0; j<transforms.length; j++) {
+			// TODO: handle case where there's only one transform?
+			if(j==k) continue;
+			let f1 = fixedPoints[j];
+			f2 = applyTransformation(f1,transform);
+			let dist1 = distance(f0,f1);
+			let dist2 = distance(f0,f2);
+			volume[k] = volume[k]*(dist2/dist1);
+			drawPointSize(convertPointToScreen(f2),10);
+		}
+		// Geometric mean of distance ratios for summary data
+		volume[k] = Math.pow(volume[k],1.0/(transforms.length-1));
+	}
+	// TODO: finish implementing algorithm
+}
+
 function paintChaosGame() {
 	let z = [1,0];
 	let transforms = selectedTransforms;
@@ -260,14 +324,16 @@ function paintChaosGame() {
 		let transform = transforms[Math.floor(Math.random()*transforms.length)];
 		z = applyTransformation(z,transform);
 	}
+	let biasWeights = [];
+	for(let k=0; k<transforms.length; k++) {
+		biasWeights.push(1.0/transforms.length);
+	}
+	optimizeBiasWeights(transforms,z);
+	//biasWeights = optimizeBiasWeights(transforms,z);
 	for(let k=0; k<levelOfIteration; k++) {
 		// TODO: allow user to bias transform selection for artistic effect
-		let transform = transforms[Math.floor(Math.random()*transforms.length)];
-		//let transform = transforms[Math.floor(Math.pow(Math.random(),0.6)*transforms.length)];
-		//let transform = transforms[[0,0,0,0,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2][Math.floor(Math.random()*21)]];
-		//console.log(transform);
+		let transform = selectRandomBiasedTransform(transforms,biasWeights);
 		z = applyTransformation(z,transform);
-		//console.log(z);
 		drawPoint(convertPointToScreen(z));
 	}
 	calculateVarianceData();
