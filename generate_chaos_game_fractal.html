@@ -146,21 +146,21 @@ TODO: study examples from this website and github repo https://rezuaq.be/fractal
 
 let drawnPoints = [];
 
-function drawPointSize(point,size) {
+function drawPointSize(point,size,color) {
 	let x = point[0];
 	let y = point[1];
 	let circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
 	circle.setAttribute('cx', x);
 	circle.setAttribute('cy', y);
 	circle.setAttribute('r', size);
-	circle.setAttribute('fill', "black");
-	circle.setAttribute('fill', "black");
+	circle.setAttribute('fill', color);
+	circle.setAttribute('fill', color);
 	svg.appendChild(circle);
 	drawnPoints.push(circle);
 }
 
 function drawPoint(point) {
-	drawPointSize(point,sizeOfPoints);
+	drawPointSize(point,sizeOfPoints,'black');
 }
 
 // functions to apply arithmetic operations to complex numbers
@@ -323,23 +323,10 @@ function calculateDimension(volumes) {
 	return 0.5*(min+max);
 }
 
-function optimizeBiasWeights(transforms,z) {
-	let fixedPoints = [];
+function calculateVolumeRatios1(transforms,fixedPoints) {
 	let volume = [];
 	for(let k=0; k<transforms.length; k++) {
-		let z2 = structuredClone(z);
-		let transform = transforms[k];
-		// TODO: try running this until the point stops moving
-		for(let m=0; m<10; m++) {
-			z2 = applyTransformation(z2,transform);
-		}
-		// TODO: what if a transform has more than one fixed point?
-		fixedPoints.push(z2);
 		volume.push(1.0);
-		// TODO: allow user to decide to draw these
-		// drawPointSize(convertPointToScreen(z2),10);
-	}
-	for(let k=0; k<transforms.length; k++) {
 		let f0 = fixedPoints[k];
 		let transform = transforms[k];
 		for(let j=0; j<transforms.length; j++) {
@@ -351,17 +338,68 @@ function optimizeBiasWeights(transforms,z) {
 			let dist2 = distance(f0,f2);
 			volume[k] = volume[k]*(dist2/dist1);
 			// TODO: allow user to decide to draw these
-			// drawPointSize(convertPointToScreen(f2),10);
+			// drawPointSize(convertPointToScreen(f2),10,'red');
 		}
 		// Geometric mean of distance ratios for summary data
 		volume[k] = Math.pow(volume[k],1.0/(transforms.length-1));
 	}
+	return volume
+}
+
+function calculateVolumeRatios2(transforms,fixedPoints) {
+	let volume = [];
+	for(let k=0; k<transforms.length; k++) {
+		volume.push(1.0);
+		let transform = transforms[k];
+		for(let j=0; j<transforms.length; j++) {
+			// TODO: handle case where there's only one transform?
+			if(j==k) continue;
+			let distances = [];
+			let f1 = fixedPoints[j];
+			// TODO: try out different number of iterations or try continuing until point stops moving
+			for(let m=0; m<20; m++) {
+				f2 = applyTransformation(f1,transform);
+				distances.push(distance(f1,f2));
+				f1 = f2;
+				// TODO: allow user to decide to draw these
+				drawPointSize(convertPointToScreen(f2),5,'red');
+			}
+			// TODO: what if the ratio is zero?
+			let distanceRatioBundle = 1.0;
+			for(let m=1; m<distances.length; m++) {
+				distanceRatioBundle = distanceRatioBundle*distances[m]/distances[m-1];
+			}
+			volume[k] = volume[k]*Math.pow(distanceRatioBundle,1.0/(distances.length-1));
+		}
+		// Geometric mean of distance ratios for summary data
+		volume[k] = Math.pow(volume[k],1.0/(transforms.length-1));
+	}
+	return volume
+}
+
+function optimizeBiasWeights(transforms,z) {
+	let fixedPoints = [];
+	for(let k=0; k<transforms.length; k++) {
+		let z2 = structuredClone(z);
+		let transform = transforms[k];
+		// TODO: try running this until the point stops moving
+		for(let m=0; m<10; m++) {
+			z2 = applyTransformation(z2,transform);
+		}
+		// TODO: what if a transform has more than one fixed point?
+		fixedPoints.push(z2);
+		// TODO: allow user to decide to draw these
+		// drawPointSize(convertPointToScreen(z2),10,'red');
+	}
+	//let volume = calculateVolumeRatios1(transforms,fixedPoints);
+	let volume = calculateVolumeRatios2(transforms,fixedPoints);
 	console.log(volume);
 	let D = calculateDimension(volume);
 	let weights = []
 	for(let k=0; k<transforms.length; k++) {
 		weights.push(Math.pow(volume[k],D));
 	}
+	// TODO: add a small amount to each value and renormalize to handle case where something is set too close to zero
 	console.log(weights);
 	return weights;
 }
@@ -412,11 +450,6 @@ function selectNumber() {
 	calculateSizeOfPoints();
 	redraw();
 }
-
-//drawPointSize(convertPointToScreen([1,0]),5);
-//drawPointSize(convertPointToScreen([0,-1]),5);
-//drawPointSize(convertPointToScreen([1,-1]),5);
-//drawPointSize(convertPointToScreen([1,-0.577]),5);
 
 </script>
 </html>
