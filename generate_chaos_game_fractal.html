@@ -295,6 +295,34 @@ function selectRandomBiasedTransform(transforms,biasWeights) {
 	return transforms[index];
 }
 
+function Dsum(volumes,D) {
+	let total = 0;
+	for(let k=0; k<volumes.length; k++) {
+		total += Math.pow(volumes[k],D);
+	}
+	return total;
+}
+
+function calculateDimension(volumes) {
+	if(Dsum(volumes,1)<=1) return 1;
+	if(Dsum(volumes,2)>=1) return 2;
+	var min = 1;
+	var max = 2;
+	while(min+0.0001<max) {
+		var mid = 0.5*(min+max);
+		var dimension = Dsum(volumes,mid);
+		if(dimension>1) {
+			min = mid;
+		} else if(dimension<1) {
+			max = mid;
+		} else {
+			min = mid;
+			max = mid;
+		}
+	}
+	return 0.5*(min+max);
+}
+
 function optimizeBiasWeights(transforms,z) {
 	let fixedPoints = [];
 	let volume = [];
@@ -308,7 +336,8 @@ function optimizeBiasWeights(transforms,z) {
 		// TODO: what if a transform has more than one fixed point?
 		fixedPoints.push(z2);
 		volume.push(1.0);
-		drawPointSize(convertPointToScreen(z2),10);
+		// TODO: allow user to decide to draw these
+		// drawPointSize(convertPointToScreen(z2),10);
 	}
 	for(let k=0; k<transforms.length; k++) {
 		let f0 = fixedPoints[k];
@@ -321,12 +350,20 @@ function optimizeBiasWeights(transforms,z) {
 			let dist1 = distance(f0,f1);
 			let dist2 = distance(f0,f2);
 			volume[k] = volume[k]*(dist2/dist1);
-			drawPointSize(convertPointToScreen(f2),10);
+			// TODO: allow user to decide to draw these
+			// drawPointSize(convertPointToScreen(f2),10);
 		}
 		// Geometric mean of distance ratios for summary data
 		volume[k] = Math.pow(volume[k],1.0/(transforms.length-1));
 	}
-	// TODO: finish implementing algorithm
+	console.log(volume);
+	let D = calculateDimension(volume);
+	let weights = []
+	for(let k=0; k<transforms.length; k++) {
+		weights.push(Math.pow(volume[k],D));
+	}
+	console.log(weights);
+	return weights;
 }
 
 function paintChaosGame() {
@@ -343,8 +380,8 @@ function paintChaosGame() {
 	for(let k=0; k<transforms.length; k++) {
 		biasWeights.push(1.0/transforms.length);
 	}
-	optimizeBiasWeights(transforms,z);
-	//biasWeights = optimizeBiasWeights(transforms,z);
+	//optimizeBiasWeights(transforms,z);
+	biasWeights = optimizeBiasWeights(transforms,z);
 	for(let k=0; k<levelOfIteration; k++) {
 		// TODO: allow user to bias transform selection for artistic effect
 		let transform = selectRandomBiasedTransform(transforms,biasWeights);
