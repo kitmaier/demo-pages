@@ -243,7 +243,7 @@ function deleteTableRow(rowId) {
 	redraw();
 }
 
-function createTable(transforms) {
+function createTable(transforms,biasWeights) {
 	// TODO: add column for probability bias
 	// TODO: allow user to modify values
 	// TODO: allow user to add and delete rows
@@ -257,19 +257,25 @@ function createTable(transforms) {
 	}
 	for(let i = 0; i < transforms.length; i++) {
 		let tr = configsTable.insertRow();
-		let td = tr.insertCell();
-		td.style.width = '20px';
-		td.style.border = '1px solid black';
-		td.style.fontSize = '20px';
-		td.style.textAlign = 'center';
+		let td1 = tr.insertCell();
+		td1.style.width = '20px';
+		td1.style.border = '1px solid black';
+		td1.style.fontSize = '20px';
+		td1.style.textAlign = 'center';
 		let minusButton = document.createElement("button");
 		minusButton.innerText = "-";
 		minusButton.onclick = function(event){deleteTableRow(i);};
-		td.appendChild(minusButton);
+		td1.appendChild(minusButton);
+		let td2 = tr.insertCell();
+		td2.style.width = '20px';
+		td2.style.border = '1px solid black';
+		// TODO: why does this not restrict to 20px?
+		td2.style.fontSize = '20px';
+		td2.innerText = Math.round(100*biasWeights[i])+"%";
 		for(let j = 0; j < transforms[0].length; j++) {
-			td = tr.insertCell();
+			let td = tr.insertCell();
 			td.appendChild(document.createTextNode(transforms[i][j][0]+","+transforms[i][j][1]));
-			td.style.width = (780.0/transforms[0].length)+'px';
+			td.style.width = (760.0/transforms[0].length)+'px';
 			td.style.border = '1px solid black';
 			td.style.fontSize = '20px';
 		}
@@ -407,19 +413,19 @@ function optimizeBiasWeights(transforms,z) {
 function paintChaosGame() {
 	let z = [1,0];
 	let transforms = selectedTransforms;
-	createTable(transforms);
-	let trashIterations = Math.sqrt(levelOfIteration);
-	for(let k=0; k<trashIterations; k++) {
-		// run through a small number of iterations in order to converge to fractal and not display a bunch of noisy dots
-		let transform = transforms[Math.floor(Math.random()*transforms.length)];
-		z = applyTransformation(z,transform);
-	}
 	let biasWeights = [];
 	for(let k=0; k<transforms.length; k++) {
 		biasWeights.push(1.0/transforms.length);
 	}
 	//optimizeBiasWeights(transforms,z);
 	biasWeights = optimizeBiasWeights(transforms,z);
+	createTable(transforms,biasWeights);
+	let trashIterations = Math.sqrt(levelOfIteration);
+	for(let k=0; k<trashIterations; k++) {
+		// run through a small number of iterations in order to converge to fractal and not display a bunch of noisy dots
+		let transform = transforms[Math.floor(Math.random()*transforms.length)];
+		z = applyTransformation(z,transform);
+	}
 	for(let k=0; k<levelOfIteration; k++) {
 		// TODO: allow user to bias transform selection for artistic effect
 		let transform = selectRandomBiasedTransform(transforms,biasWeights);
