@@ -55,6 +55,7 @@
 </body>
 <script>
 let svg = document.getElementById("svg");
+let overrideBiasWeights;
 let levelOfIteration;
 let sizeOfPoints;
 let selectedCurve;
@@ -119,6 +120,7 @@ function selectTransforms() {
 	} else {
 		console.log("error - unrecognized transform: "+selectedCurve);
 	}
+	overrideBiasWeights = [];
 }
 function initializeGlobalVariables() {
 	levelOfIteration = Number(document.getElementById("numberSelect").value);
@@ -240,6 +242,14 @@ function convertPointToScreen(z) {
 
 function deleteTableRow(rowId) {
 	selectedTransforms.splice(rowId,1);
+	overrideBiasWeights.splice(rowId,1);
+	redraw();
+}
+
+function updateBiasOverride(event,i,biasWeights) {
+	overrideBiasWeights = structuredClone(biasWeights);
+	// TODO: renormalize biases and prevent out-of-range issues
+	overrideBiasWeights[i] = Number(event.target.value)*0.01;
 	redraw();
 }
 
@@ -267,15 +277,24 @@ function createTable(transforms,biasWeights) {
 		minusButton.onclick = function(event){deleteTableRow(i);};
 		td1.appendChild(minusButton);
 		let td2 = tr.insertCell();
-		td2.style.width = '20px';
+		td2.style.width = '30px';
 		td2.style.border = '1px solid black';
 		// TODO: why does this not restrict to 20px?
 		td2.style.fontSize = '20px';
-		td2.innerText = Math.round(100*biasWeights[i])+"%";
+		// TODO: figure out how to include a non-editable percentage character here
+		let textInput = document.createElement("input");
+		textInput.type = 'text';
+		textInput.value = Math.round(100*biasWeights[i]);
+		textInput.onchange = function(event){updateBiasOverride(event,i,biasWeights);};
+		textInput.style.width = '30px';
+		td2.appendChild(textInput);
+		/*
+		Enter some text: <input type="text" name="txt" value="Hello" onchange="myFunction(this.value)">
+		*/
 		for(let j = 0; j < transforms[0].length; j++) {
 			let td = tr.insertCell();
 			td.appendChild(document.createTextNode(transforms[i][j][0]+","+transforms[i][j][1]));
-			td.style.width = (760.0/transforms[0].length)+'px';
+			td.style.width = (750.0/transforms[0].length)+'px';
 			td.style.border = '1px solid black';
 			td.style.fontSize = '20px';
 		}
@@ -419,6 +438,9 @@ function paintChaosGame() {
 	}
 	//optimizeBiasWeights(transforms,z);
 	biasWeights = optimizeBiasWeights(transforms,z);
+	if(overrideBiasWeights.length>0) {
+		biasWeights = structuredClone(overrideBiasWeights);
+	}
 	createTable(transforms,biasWeights);
 	let trashIterations = Math.sqrt(levelOfIteration);
 	for(let k=0; k<trashIterations; k++) {
