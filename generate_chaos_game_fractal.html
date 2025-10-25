@@ -23,32 +23,10 @@
   </select>
 </span>
 <p/>
-
-<table id="configsTable" style="width:800px;">
-  <!--tr>
-    <td style="width:400px;">
-     <span style="font-size:50px;">Detail:</span>
-     <span style="padding-left:5px;">
-       <select id="numberSelect" name="selectedNumber" onchange="selectNumber()" style="font-size:50px;padding-left:5px;padding-right:5px;">
-         <option value="1">1</option>
-         <option value="2">2</option>
-         <option value="3">3</option>
-         <option value="4">4</option>
-         <option value="5">5</option>
-         <option value="6" selected>6</option>
-         <option value="7">7</option>
-         <option value="8">8</option>
-         <option value="9">9</option>
-         <option value="10">10</option>
-       </select>
-     </span>
-    </td>
-    <td>
-     <span style="font-size:50px;" onclick="filledTextClicked()">Filled:</span>
-     <input type="checkbox" id="FilledCheckbox" onchange="filledCheckboxClicked()" style="width:50px;height:50px;padding-left:5px;" checked="true">
-    </td>
-  </tr-->
-</table>
+<span style="font-size:50px;" onclick="optimizeTextClicked()">Optimize:</span>
+<input type="checkbox" id="OptimizeCheckbox" onchange="optimizeCheckboxClicked()" style="width:50px;height:50px;" checked="true">
+<p/>
+<table id="configsTable" style="width:800px;"></table>
 <p/>
 <svg id="svg" height="600" width="800" xmlns="http://www.w3.org/2000/svg">
 </svg>
@@ -56,6 +34,7 @@
 <script>
 let svg = document.getElementById("svg");
 let overrideBiasWeights;
+let doOptimizeBiasWeights;
 let levelOfIteration;
 let sizeOfPoints;
 let selectedCurve;
@@ -125,6 +104,7 @@ function selectTransforms() {
 function initializeGlobalVariables() {
 	levelOfIteration = Number(document.getElementById("numberSelect").value);
 	selectedCurve = document.getElementById("curveSelect").value;
+	doOptimizeBiasWeights = document.getElementById("OptimizeCheckbox").checked;
 	calculateSizeOfPoints();
 	selectTransforms();
 }
@@ -276,21 +256,21 @@ function createTable(transforms,biasWeights) {
 		minusButton.innerText = "-";
 		minusButton.onclick = function(event){deleteTableRow(i);};
 		td1.appendChild(minusButton);
-		let td2 = tr.insertCell();
-		td2.style.width = '30px';
-		td2.style.border = '1px solid black';
-		// TODO: why does this not restrict to 20px?
-		td2.style.fontSize = '20px';
-		// TODO: figure out how to include a non-editable percentage character here
-		let textInput = document.createElement("input");
-		textInput.type = 'text';
-		textInput.value = Math.round(100*biasWeights[i]);
-		textInput.onchange = function(event){updateBiasOverride(event,i,biasWeights);};
-		textInput.style.width = '30px';
-		td2.appendChild(textInput);
-		/*
-		Enter some text: <input type="text" name="txt" value="Hello" onchange="myFunction(this.value)">
-		*/
+		if(doOptimizeBiasWeights) {
+			// TODO: update width of other cells based on whether this one is displayed or not
+			let td2 = tr.insertCell();
+			td2.style.width = '30px';
+			td2.style.border = '1px solid black';
+			// TODO: why does this not restrict to 20px?
+			td2.style.fontSize = '20px';
+			// TODO: figure out how to include a non-editable percentage character here
+			let textInput = document.createElement("input");
+			textInput.type = 'text';
+			textInput.value = Math.round(100*biasWeights[i]);
+			textInput.onchange = function(event){updateBiasOverride(event,i,biasWeights);};
+			textInput.style.width = '30px';
+			td2.appendChild(textInput);
+		}
 		for(let j = 0; j < transforms[0].length; j++) {
 			let td = tr.insertCell();
 			td.appendChild(document.createTextNode(transforms[i][j][0]+","+transforms[i][j][1]));
@@ -387,7 +367,7 @@ function calculateVolumeRatios2(transforms,fixedPoints) {
 				distances.push(distance(f1,f2));
 				f1 = f2;
 				// TODO: allow user to decide to draw these
-				drawPointSize(convertPointToScreen(f2),5,'red');
+				// drawPointSize(convertPointToScreen(f2),5,'red');
 			}
 			// TODO: what if the ratio is zero?
 			let distanceRatioBundle = 1.0;
@@ -418,14 +398,12 @@ function optimizeBiasWeights(transforms,z) {
 	}
 	//let volume = calculateVolumeRatios1(transforms,fixedPoints);
 	let volume = calculateVolumeRatios2(transforms,fixedPoints);
-	console.log(volume);
 	let D = calculateDimension(volume);
 	let weights = []
 	for(let k=0; k<transforms.length; k++) {
 		weights.push(Math.pow(volume[k],D));
 	}
 	// TODO: add a small amount to each value and renormalize to handle case where something is set too close to zero
-	console.log(weights);
 	return weights;
 }
 
@@ -437,8 +415,10 @@ function paintChaosGame() {
 		biasWeights.push(1.0/transforms.length);
 	}
 	//optimizeBiasWeights(transforms,z);
-	biasWeights = optimizeBiasWeights(transforms,z);
-	if(overrideBiasWeights.length>0) {
+	if(doOptimizeBiasWeights) {
+		biasWeights = optimizeBiasWeights(transforms,z);
+	}
+	if(doOptimizeBiasWeights&&overrideBiasWeights.length>0) {
 		biasWeights = structuredClone(overrideBiasWeights);
 	}
 	createTable(transforms,biasWeights);
@@ -478,6 +458,18 @@ function selectNumber() {
 	calculateSizeOfPoints();
 	redraw();
 }
+
+function optimizeCheckboxClicked() {
+	doOptimizeBiasWeights = document.getElementById("OptimizeCheckbox").checked;
+	redraw();
+}
+
+function optimizeTextClicked() {
+	let checked = document.getElementById("OptimizeCheckbox").checked;
+	document.getElementById("OptimizeCheckbox").checked = !checked;
+	filledCheckboxClicked();
+}
+
 
 </script>
 </html>
