@@ -6,9 +6,9 @@
   <select id="curveSelect" name="selectedCurve" onchange="selectCurve()" style="font-size:50px;padding-left:5px;padding-right:5px;">
     <option value="1">1</option>
     <option value="2">2</option>
-    <option value="3">3</option>
+    <option value="3" selected>3</option>
     <option value="4">4</option>
-    <option value="5" selected>5</option>
+    <option value="5">5</option>
   </select>
 </span>
 <span style="font-size:50px;">Detail:</span>
@@ -382,6 +382,37 @@ function calculateVolumeRatios2(transforms,fixedPoints) {
 	return volume
 }
 
+function calculateVolumeRatios3(transforms,fixedPoints) {
+	let volume = calculateVolumeRatios2(transforms,fixedPoints);
+	if(transforms.length<=2) return volume;
+	for(let k=0; k<transforms.length; k++) {
+		let newVolume = 1.0;
+		let transform = transforms[k];
+		for(let j=0; j<transforms.length; j++) {
+			// TODO: handle case where there's only one transform?
+			if(j==k) continue;
+			let nextJ = j+(j+1==k?2:1);
+			if(nextJ>=transforms.length) {
+				nextJ -= transforms.length;
+				if(nextJ==k) nextJ++;
+			}
+			let f1 = fixedPoints[j];
+			let f2 = fixedPoints[nextJ];
+			let dist1 = distance(f1,f2);
+			let f3 = applyTransformation(f1,transform);
+			let f4 = applyTransformation(f2,transform);
+			let dist2 = distance(f3,f4);
+			// TODO: what if the ratio is zero?
+			newVolume *= dist2/dist1;
+		}
+		// Geometric mean of distance ratios for summary data
+		//volume[k] *= Math.pow(newVolume,1.0/(transforms.length-1));
+		//volume[k] = Math.pow(volume[k],0.5);
+		volume[k] = Math.pow(newVolume,1.0/(transforms.length-1));
+	}
+	return volume
+}
+
 function optimizeBiasWeights(transforms,z) {
 	let fixedPoints = [];
 	for(let k=0; k<transforms.length; k++) {
@@ -397,7 +428,8 @@ function optimizeBiasWeights(transforms,z) {
 		// drawPointSize(convertPointToScreen(z2),10,'red');
 	}
 	//let volume = calculateVolumeRatios1(transforms,fixedPoints);
-	let volume = calculateVolumeRatios2(transforms,fixedPoints);
+	//let volume = calculateVolumeRatios2(transforms,fixedPoints);
+	let volume = calculateVolumeRatios3(transforms,fixedPoints);
 	let D = calculateDimension(volume);
 	let weights = []
 	for(let k=0; k<transforms.length; k++) {
