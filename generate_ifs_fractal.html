@@ -5,7 +5,7 @@
 <span style="padding-left:5px;padding-right:5px;">
   <select id="curveSelect" name="selectedCurve" onchange="selectCurve()" style="font-size:50px;padding-left:5px;padding-right:5px;">
     <option value="1">1</option>
-    <option value="2">2</option>
+    <!-- TODO: optimize until this can be efficiently displayed option value="2">2</option-->
     <option value="3" selected>3</option>
     <option value="4">4</option>
     <option value="5">5</option>
@@ -246,10 +246,24 @@ function calculateDimension(volumes) {
 	return 0.5*(min+max);
 }
 
+function shapeSmallerThan(points,epsilon) {
+	let xMin = points[0][0];
+	let xMax = points[0][0];
+	let yMin = points[0][1];
+	let yMax = points[0][1];
+	for(let k=0; k<points.length; k++) {
+		xMin = Math.min(xMin,points[k][0]);
+		xMax = Math.max(xMax,points[k][0]);
+		yMin = Math.min(yMin,points[k][1]);
+		yMax = Math.max(yMax,points[k][1]);
+	}
+	return (xMax-xMin<epsilon)&&(yMax-yMin<epsilon);
+}
+
 function paintIFSLevels(transforms,points,level) {
-	if(level<=0) {
-		// TODO: make level of iteration adaptive to scale (stop when size of shape is below threshold)
+	if(level<=0 || shapeSmallerThan(points,0.001)) {
 		// TODO: force these points to grid
+		// TODO: make this more efficient (use fewer polygon objects?)
 		drawShape(points);
 		return;
 	}
@@ -267,7 +281,7 @@ function paintIteratedFunctionSystem() {
 	let initialPoints = [[0,0],[1,0],[1,-1],[0,-1]];
 	let transforms = selectedTransforms;
 	createTable(transforms);
-	paintIFSLevels(transforms,initialPoints,6);
+	paintIFSLevels(transforms,initialPoints,20);
 }
 
 paintIteratedFunctionSystem();
