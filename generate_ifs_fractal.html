@@ -1,0 +1,296 @@
+<html>
+<body>
+<!-- TODO: insert user controls -->
+<span style="font-size:50px;">Curve:</span>
+<span style="padding-left:5px;padding-right:5px;">
+  <select id="curveSelect" name="selectedCurve" onchange="selectCurve()" style="font-size:50px;padding-left:5px;padding-right:5px;">
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3" selected>3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+  </select>
+</span>
+<span style="font-size:50px;">Detail:</span>
+<span style="padding-left:5px;">
+  <select id="numberSelect" name="selectedNumber" onchange="selectNumber()" style="font-size:50px;padding-left:5px;padding-right:5px;">
+    <option value="10">10</option>
+    <option value="100">100</option>
+    <option value="1000">1000</option>
+    <option value="10000" selected>10000</option>
+    <option value="100000">100000</option>
+    <option value="1000000">1000000</option>
+  </select>
+</span>
+<p/>
+<table id="configsTable" style="width:800px;"></table>
+<p/>
+<svg id="svg" height="600" width="800" xmlns="http://www.w3.org/2000/svg">
+</svg>
+</body>
+<script>
+let svg = document.getElementById("svg");
+let levelOfIteration;
+let sizeOfPoints;
+let selectedCurve;
+let selectedTransforms;
+let sierpinskiTriangleTransforms = [
+	[[   0,   0],[0.5,0]],
+	[[ 0.5,   0],[0.5,0]],
+	[[0.25,-0.5],[0.5,0]]
+];
+let sierpinskiCarpetTransforms = [
+	[[       0,        0],[0.333333,0]],
+	[[0.333333,        0],[0.333333,0]],
+	[[0.666667,        0],[0.333333,0]],
+	[[       0,-0.333333],[0.333333,0]],
+	[[0.666667,-0.333333],[0.333333,0]],
+	[[       0,-0.666667],[0.333333,0]],
+	[[0.333333,-0.666667],[0.333333,0]],
+	[[0.666667,-0.666667],[0.333333,0]],
+];
+let transform3 = [
+	[[   0,   0],[0.39,0],[0.0,0]],
+	[[ 0.5,   0],[0.39,0],[0.1,0]],
+	[[0.25,-0.5],[0.39,0],[0.2,0]]
+];
+let transform4 = [
+	[[ 0.5,   0],[0.39,0],[-0.15,0]],
+	[[ 0,   0],[0.39,0],[0,0]],
+	[[0.5,-0.5],[0.39,0],[0.15,0]]
+];
+// equilateral triangle scaled down by 1/3 towards all 3 corners,
+// and scaled down by 1/sqrt(3) towards center with 30 degree rotation
+// TODO: make slightly larger and closer to the middle of the screen
+let rezuaqTriangle = [
+	[[    0,     0],[0.333,0]],
+	[[0.667, 0.385],[0.333,0]],
+	[[0.667,-0.385],[0.333,0]],
+	[[0.333,0.192],[0.5,-0.289]]
+];
+
+
+// TODO: initialize these values by reading from the html or vice versa
+// TODO: global variables like svg width and height, number of points to draw, and selected curve
+function calculateSizeOfPoints() {
+	sizeOfPoints = 0.2;
+	if(levelOfIteration<=100) {
+		sizeOfPoints = 10;
+	} else if(levelOfIteration<=10000) {
+		sizeOfPoints = 1;
+	}
+}
+function selectTransforms() {
+	if(selectedCurve=="1") {
+		selectedTransforms = structuredClone(sierpinskiTriangleTransforms);
+	} else if(selectedCurve=="2") {
+		selectedTransforms = structuredClone(sierpinskiCarpetTransforms);
+	} else if(selectedCurve=="3") {
+		selectedTransforms = structuredClone(transform3);
+	} else if(selectedCurve=="4") {
+		selectedTransforms = structuredClone(transform4);
+	} else if(selectedCurve=="5") {
+		selectedTransforms = structuredClone(rezuaqTriangle);
+	} else {
+		console.log("error - unrecognized transform: "+selectedCurve);
+	}
+}
+function initializeGlobalVariables() {
+	levelOfIteration = Number(document.getElementById("numberSelect").value);
+	selectedCurve = document.getElementById("curveSelect").value;
+	calculateSizeOfPoints();
+	selectTransforms();
+}
+initializeGlobalVariables();
+
+/*
+
+Iterated Function System fractal generator
+TODO: removed unused code and comments copied over from Chaos Game file
+
+TODO: chaos game iterating simple complex-coefficient polynomials eg az+b or az^2+bz+c
+TODO: allow user to select from predefined interesting configurations
+TODO: allow user to input custom configurations for a fixed number of generators
+TODO: allow user to specify a variable-length list of generators
+TODO: allow user to specify bounds of viewing box
+TODO: maybe take the whole thing as like a dynamic programming problem, just have a two dimensional array of what points have been colored black previously and recently, and at each step all the last stage colored black are moved through all the transformations and any new black cells are the next stage, might not work perfectly if the path from one point to another does not align well with the grid
+TODO: study examples from this website and github repo https://rezuaq.be/fractal/
+
+*/
+
+let drawnShapes = [];
+
+function drawShape(points) {
+	let polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+	polygon.setAttribute("style", "fill:black;stroke:black;stroke-width:0");
+	svg.appendChild(polygon);
+	drawnShapes.push(polygon);
+	for(let k=0; k<points.length; k++) {
+		let screenPoint = convertPointToScreen(points[k]);
+		let point = svg.createSVGPoint();
+		point.x = screenPoint[0];
+		point.y = screenPoint[1];
+		polygon.points.appendItem(point);
+	}
+}
+
+// functions to apply arithmetic operations to complex numbers
+function plus(a,b) {
+	return [
+		a[0]+b[0],
+		a[1]+b[1]
+	];
+}
+function times(a,b) {
+	return [
+		a[0]*b[0]-a[1]*b[1],
+		a[0]*b[1]+a[1]*b[0]
+	];
+}
+function pow(z,n) {
+	let zNext = [1,0];
+	for(let k=0; k<n; k++) {
+		zNext = times(zNext,z);
+	}
+	return zNext;
+}
+function abs(z) {
+	return Math.sqrt(z[0]*z[0]+z[1]*z[1]);
+}
+function distance(z1,z2) {
+	let difference = plus(z1,times([-1,0],z2));
+	return abs(difference);
+}
+
+// TODO: may need to use roots instead of powers to get something that converges
+// TODO: include generic affine transformations such as squeezing in only one direction
+// apply polynomial to a complex valued input
+function applyTransformation(z,transformation) {
+	let zNext = [0,0];
+	for(let k=0; k<transformation.length; k++) {
+		let c = transformation[k];
+		zNext = plus(zNext,times(c,pow(z,k)));
+	}
+	return zNext;
+}
+
+function convertPointToScreen(z) {
+	return [
+		300*z[0]+300,
+		300*z[1]+400
+	];
+}
+
+function deleteTableRow(rowId) {
+	selectedTransforms.splice(rowId,1);
+	redraw();
+}
+
+function createTable(transforms) {
+	// TODO: allow user to modify values
+	// TODO: allow user to add and delete rows
+	// TODO: add column headers or additional columns with static data explaining what each column is for
+	configsTable = document.getElementById("configsTable");
+	configsTable.style.width = '800px';
+	configsTable.style.border = '1px solid black';
+	tableBody = configsTable.getElementsByTagName('tbody')[0];
+	if(tableBody) {
+		tableBody.innerHTML = ''; // Clears all content within the tbody
+	}
+	for(let i = 0; i < transforms.length; i++) {
+		let tr = configsTable.insertRow();
+		let td1 = tr.insertCell();
+		td1.style.width = '20px';
+		td1.style.border = '1px solid black';
+		td1.style.fontSize = '20px';
+		td1.style.textAlign = 'center';
+		let minusButton = document.createElement("button");
+		minusButton.innerText = "-";
+		minusButton.onclick = function(event){deleteTableRow(i);};
+		td1.appendChild(minusButton);
+		for(let j = 0; j < transforms[0].length; j++) {
+			let td = tr.insertCell();
+			td.appendChild(document.createTextNode(transforms[i][j][0]+","+transforms[i][j][1]));
+			td.style.width = (750.0/transforms[0].length)+'px';
+			td.style.border = '1px solid black';
+			td.style.fontSize = '20px';
+		}
+	}
+}
+
+function Dsum(volumes,D) {
+	let total = 0;
+	for(let k=0; k<volumes.length; k++) {
+		total += Math.pow(volumes[k],D);
+	}
+	return total;
+}
+
+function calculateDimension(volumes) {
+	if(Dsum(volumes,1)<=1) return 1;
+	if(Dsum(volumes,2)>=1) return 2;
+	var min = 1;
+	var max = 2;
+	while(min+0.0001<max) {
+		var mid = 0.5*(min+max);
+		var dimension = Dsum(volumes,mid);
+		if(dimension>1) {
+			min = mid;
+		} else if(dimension<1) {
+			max = mid;
+		} else {
+			min = mid;
+			max = mid;
+		}
+	}
+	return 0.5*(min+max);
+}
+
+function paintIFSLevels(transforms,points,level) {
+	if(level<=0) {
+		// TODO: make level of iteration adaptive to scale (stop when size of shape is below threshold)
+		// TODO: force these points to grid
+		drawShape(points);
+		return;
+	}
+	for(let k=0; k<transforms.length; k++) {
+		let transform = transforms[k];
+		let newPoints = [];
+		for(let m=0; m<points.length; m++) {
+			newPoints.push(applyTransformation(points[m],transform));
+		}
+		paintIFSLevels(transforms,newPoints,level-1);
+	}
+}
+
+function paintIteratedFunctionSystem() {
+	let initialPoints = [[0,0],[1,0],[1,-1],[0,-1]];
+	let transforms = selectedTransforms;
+	createTable(transforms);
+	paintIFSLevels(transforms,initialPoints,6);
+}
+
+paintIteratedFunctionSystem();
+
+function redraw() {
+	for(let k=0; k<drawnShapes.length; k++) {
+		drawnShapes[k].remove();
+	}
+	drawnShapes = [];
+	paintIteratedFunctionSystem();
+}
+
+function selectCurve() {
+	selectedCurve = document.getElementById("curveSelect").value;
+	selectTransforms();
+	redraw();
+}
+
+function selectNumber() {
+	levelOfIteration = document.getElementById("numberSelect").value;
+	calculateSizeOfPoints();
+	redraw();
+}
+
+</script>
+</html>
