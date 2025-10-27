@@ -260,11 +260,32 @@ function shapeSmallerThan(points,epsilon) {
 	return (xMax-xMin<epsilon)&&(yMax-yMin<epsilon);
 }
 
-function paintIFSLevels(transforms,points,level) {
-	if(level<=0 || shapeSmallerThan(points,0.001)) {
+function quadrilateralAreaLessThan(points,epsilon) {
+	// https://en.wikipedia.org/wiki/Quadrilateral#Vector_formulas
+	// TODO: what if the shape is not a quadrilateral
+	// TODO: what if the shape is not convex
+	// TODO: test for convexity by checking all angles are <180 degrees? (complex number upper half)
+	let X1 = points[0][0]-points[2][0];
+	let Y1 = points[0][1]-points[2][1];
+	let X2 = points[1][0]-points[3][0];
+	let Y2 = points[1][1]-points[3][1];
+	let area = 0.5*Math.abs(X1*Y2-X2*Y1);
+	return area<epsilon;
+}
+
+countSmallShapes = [];
+
+function paintIFSLevels(transforms,points,level,parentId) {
+	//let stopBecauseSmall = shapeSmallerThan(points,0.001);
+	let stopBecauseSmall = quadrilateralAreaLessThan(points,0.000001);
+	if(level<=0 || stopBecauseSmall) {
 		// TODO: force these points to grid
 		// TODO: make this more efficient (use fewer polygon objects?)
+		// TODO: what about all the overlaps between small shapes from different transforms?
+		// TODO: what about the area not contained in the small distorted shape because it has straight sides?
+		// TODO: what about small shapes that accumulate in one area of the big shape just because they happen to pass the size threshold there? (generate in reverse order to avoid this problem)
 		drawShape(points);
+		countSmallShapes[parentId]++;
 		return;
 	}
 	for(let k=0; k<transforms.length; k++) {
@@ -273,7 +294,11 @@ function paintIFSLevels(transforms,points,level) {
 		for(let m=0; m<points.length; m++) {
 			newPoints.push(applyTransformation(points[m],transform));
 		}
-		paintIFSLevels(transforms,newPoints,level-1);
+		let newParentId = parentId;
+		if(parentId==-1) {
+			newParentId = k;
+		}
+		paintIFSLevels(transforms,newPoints,level-1,newParentId);
 	}
 }
 
@@ -281,7 +306,12 @@ function paintIteratedFunctionSystem() {
 	let initialPoints = [[0,0],[1,0],[1,-1],[0,-1]];
 	let transforms = selectedTransforms;
 	createTable(transforms);
-	paintIFSLevels(transforms,initialPoints,20);
+	countSmallShapes = [];
+	for(let k=0; k<transforms.length; k++) {
+		countSmallShapes.push(0);
+	}
+	paintIFSLevels(transforms,initialPoints,20,-1);
+	console.log(countSmallShapes);
 }
 
 paintIteratedFunctionSystem();
