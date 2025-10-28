@@ -1,0 +1,29 @@
+<html>
+<body>
+<h1>Is π^3.14 or 3.14^π bigger?</h1>
+<p style="text-indent:40px;">As a rule of thumb, changes to the exponent should have greater impact than changes to the base, so it should be the case that: </p>
+<p style="text-indent:80px;"><tt>3.14^3.14 &lt π^3.14 &lt 3.14^π &lt π^π</tt></p>
+<p style="text-indent:40px;">We can rearrange the target expression as follows:</p>
+<p style="text-indent:80px;"><tt>π^3.14 =? 3.14^π</tt></p>
+<p style="text-indent:80px;"><tt>3.14*ln(π) =? π*ln(3.14)</tt></p>
+<p style="text-indent:80px;"><tt>ln(π)/π =? ln(3.14)/3.14</tt></p>
+<p style="text-indent:40px;">This now represents the difference in output given two different inputs for the same function f(x) = ln(x)/x. </p>
+<p style="text-indent:40px;">This function can be analyzed to determine its behavior.</p>
+<p style="text-indent:40px;">ln(x) will be defined for x&gt0, zero at x=1, and increasing everywhere, quickly when negative and slowly when positive. </p>
+<p style="text-indent:40px;">1/x will be defined for x&gt0, and positive and decreasing rapidly.</p>
+<p style="text-indent:40px;">ln(x)/x then will be expected to have a single maximum value for some x>1, and be increasing up to that value and decreasing after it.</p>
+<!-- TODO: insert a graph of this function with interactive features -->
+<p style="text-indent:40px;">This unique maximum value can be determined with calculus.</p>
+<p style="text-indent:80px;"><tt>d/dx(ln(x)) = 1/x</tt></p>
+<p style="text-indent:80px;"><tt>d/dx(ln(x)/x) = (1-ln(x))/x^2</tt></p>
+<p style="text-indent:80px;"><tt>(1-ln(x))/x^2 = 0</tt></p>
+<p style="text-indent:80px;"><tt>1-ln(x) = 0</tt></p>
+<p style="text-indent:80px;"><tt>ln(x) = 1</tt></p>
+<p style="text-indent:80px;"><tt>x = e</tt></p>
+<!-- TODO: insert a graph of this derivative function with interactive features -->
+<p style="text-indent:40px;">Because e &lt 3.14 &lt π it follows that f(3.14) &gt f(π).</p>
+<p style="text-indent:80px;"><tt>ln(π)/π &lt ln(3.14)/3.14</tt></p>
+<p style="text-indent:80px;"><tt>3.14*ln(π) &lt π*ln(3.14)</tt></p>
+<p style="text-indent:80px;"><tt>π^3.14 &lt 3.14^π</tt></p>
+</body>
+</html>
