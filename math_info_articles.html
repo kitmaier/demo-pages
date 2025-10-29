@@ -20,7 +20,7 @@
 <p style="text-indent:80px;"><tt>1-ln(x) = 0</tt></p>
 <p style="text-indent:80px;"><tt>ln(x) = 1</tt></p>
 <p style="text-indent:80px;"><tt>x = e</tt></p>
-<!-- TODO: insert a graph of this derivative function with interactive features -->
+<p><svg id="svg2" height="200" width="800" xmlns="http://www.w3.org/2000/svg"></svg></p>
 <p style="text-indent:40px;">Because e &lt 3.14 &lt π it follows that f(3.14) &gt f(π).</p>
 <p style="text-indent:80px;"><tt>ln(π)/π &lt ln(3.14)/3.14</tt></p>
 <p style="text-indent:80px;"><tt>3.14*ln(π) &lt π*ln(3.14)</tt></p>
@@ -31,6 +31,7 @@
 // TODO: allow user more control over the display of the curve
 
 let svg1 = document.getElementById("svg1");
+let svg2 = document.getElementById("svg2");
 
 function paintLine(svg,p1,p2) {
 	let line = document.createElementNS("http://www.w3.org/2000/svg", "line");
@@ -80,11 +81,37 @@ function paintCurveF(svg) {
 	paintText(svg,82,20,"(0,-∞)");
 	paintText(svg,200,20,"(1,0)");
 	paintText(svg,404,20,"(e,1/e)");
-	paintText(svg,454,20,"(pi,ln(pi)/pi)");
+	paintText(svg,454,20,"(π,ln(π)/π)");
 	paintText(svg,82,185,"f(x)=ln(x)/x");
 }
-
 paintCurveF(svg1);
+
+function paintCurveFPrime(svg) {
+	let polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+	polygon.setAttribute("style", "fill:none;stroke:black;stroke-width:1");
+	svg.appendChild(polygon);
+	paintLine(svg,[80,10],[80,190]);
+	paintLine(svg,[80,190],[790,190]);
+	for(let k=1; k<750; k++) {
+		let x = k*6.0/710;
+		let y = (1.0-Math.log(x))/(x*x);
+		let p = k+80;
+		let q = y*150.0+10;
+		appendPoint(svg,p,200-q,polygon);
+	}
+	appendPoint(svg,1000,100,polygon);
+	appendPoint(svg,1000,1000,polygon);
+	paintLine(svg,[198,10],[198,190]);
+	paintLine(svg,[402,10],[402,190]);
+	paintLine(svg,[452,10],[452,190]);
+	paintText(svg,82,20,"(0,∞)");
+	paintText(svg,200,20,"(1,1)");
+	paintText(svg,404,20,"(e,0)");
+	paintText(svg,454,20,"(π,(1-ln(π))/π^2)");
+	paintText(svg,82,185,"f(x)=(1-ln(x))/x^2");
+}
+paintCurveFPrime(svg2);
+
 
 </script>
 </html>
