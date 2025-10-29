@@ -9,29 +9,32 @@
 <p style="text-indent:80px;"><tt>4) The empty coloring and complete coloring are excluded.</tt></p>
 <p style="text-indent:40px;">These guidelines will be modified slightly here. Instead of looking only at connected cubes, we will look at cubes with various numbers of connected colored components, and will not worry much about points 3 and 4. </p>
 <p style="text-indent:40px;">First there will be an automated enumeration of all the cubes, and then a theoretical discussion.</p>
+<h1>Rotationally distinct cubes with 0 edges</h1>
+<svg id="svg0" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
+<h1>Rotationally distinct cubes with 1 edge</h1>
+<svg id="svg1" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
+<h1>Rotationally distinct cubes with 2 edges</h1>
+<svg id="svg2" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
+<h1>Rotationally distinct cubes with 3 edges</h1>
+<svg id="svg3" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
+<h1>Rotationally distinct cubes with 4 edges</h1>
+<svg id="svg4" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
+<h1>Rotationally distinct cubes with 5 edges</h1>
+<svg id="svg5" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
 <h1>Rotationally distinct cubes with 6 edges</h1>
-<svg id="svg6" height="600" width="800" xmlns="http://www.w3.org/2000/svg">
-<!-- 
-  <polygon id="e1" points="350,223 450,223 450,203 350,203" style="fill:black;stroke:black;stroke-width:0" />
-  <polygon id="e2" points="438,213 462,213 512,300 488,300" style="fill:black;stroke:black;stroke-width:0" />
-  <polygon id="e3" points="438,387 462,387 512,300 488,300" style="fill:black;stroke:black;stroke-width:0" />
-  <polygon id="e4" points="350,397 450,397 450,377 350,377" style="fill:black;stroke:black;stroke-width:0" />
-  <polygon id="e5" points="338,387 362,387 312,300 288,300" style="fill:black;stroke:black;stroke-width:0" />
-  <polygon id="e6" points="362,213 312,300 288,300 338,213" style="fill:black;stroke:black;stroke-width:0" />
-  <polygon id="e7" points="438,213 462,213 412,300 388,300" style="fill:black;stroke:black;stroke-width:0" />
-  <polygon id="e8" points="400,310 500,310 500,290 400,290" style="fill:black;stroke:black;stroke-width:0" />
-  <polygon id="e9" points="438,387 462,387 412,300 388,300" style="fill:black;stroke:black;stroke-width:0" />
-  <polygon id="e10" points="338,387 362,387 412,300 388,300" style="fill:black;stroke:black;stroke-width:0" />
-  <polygon id="e11" points="300,310 400,310 400,290 300,290" style="fill:black;stroke:black;stroke-width:0" />
-  <polygon id="e12" points="338,213 362,213 412,300 388,300" style="fill:black;stroke:black;stroke-width:0" />
-  <circle r="20" cx="300" cy="300" fill="black" />
-  <circle r="20" cx="400" cy="300" fill="black" />
-  <circle r="20" cx="500" cy="300" fill="black" />
-  <circle r="20" cx="350" cy="213" fill="black" />
-  <circle r="20" cx="450" cy="213" fill="black" />
-  <circle r="20" cx="350" cy="387" fill="black" />
-  <circle r="20" cx="450" cy="387" fill="black" />
--->
+<svg id="svg6" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
+<h1>Rotationally distinct cubes with 7 edges</h1>
+<svg id="svg7" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
+<h1>Rotationally distinct cubes with 8 edges</h1>
+<svg id="svg8" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
+<h1>Rotationally distinct cubes with 9 edges</h1>
+<svg id="svg9" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
+<h1>Rotationally distinct cubes with 10 edges</h1>
+<svg id="svg10" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
+<h1>Rotationally distinct cubes with 11 edges</h1>
+<svg id="svg11" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
+<h1>Rotationally distinct cubes with 12 edges</h1>
+<svg id="svg12" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
 </svg>
 
 </body>
@@ -501,25 +504,6 @@ stratifyDistinctCubes();
 
 console.log(stratifiedCubes);
 
-function paintAllDistinctStratifiedCubes(svg,numberOfEdges) {
-	var r = -1;
-	var c = -2;
-	for(var numberOfConnectedComponents=0; numberOfConnectedComponents<5; numberOfConnectedComponents++) {
-		c += 2;
-		r = -1;
-		var cubes = stratifiedCubes[numberOfConnectedComponents][numberOfEdges];
-		for(var k=0; k<cubes.length; k++) {
-			r++;
-			if(r==15) {
-				r = 0;
-				c++;
-			}
-			paintCube(svg,cubes[k],r*40+20,c*40+20,10);
-		}
-	}
-}
-
-paintAllDistinctStratifiedCubes(svg6,6);
 
 function paintLine(svg,p1,p2) {
 	let line = document.createElementNS("http://www.w3.org/2000/svg", "line");
@@ -531,15 +515,6 @@ function paintLine(svg,p1,p2) {
 	line.setAttribute("y2",p2[1]);
 }
 
-function paintFrame(svg,width,height) {
-	paintLine(svg,[0,0],[width,0]);
-	paintLine(svg,[width,0],[width,height]);
-	paintLine(svg,[width,height],[0,height]);
-	paintLine(svg,[0,height],[0,0]);
-}
-
-paintFrame(svg6,800,600);
-
 function paintText(svg,x,y,textContent) {
 	let text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
 	text.setAttribute('x',x);
@@ -550,14 +525,56 @@ function paintText(svg,x,y,textContent) {
 	svg.appendChild(text); 
 }
 
-function paintLabels(svg) {
-	paintText(svg,10,25,"0 Components");
-	paintText(svg,10,65,"1 Component");
-	paintText(svg,10,185,"2 Components");
-	paintText(svg,10,305,"3 Components");
+function paintFrame(svg,width,height) {
+	paintLine(svg,[0,0],[width,0]);
+	paintLine(svg,[width,0],[width,height]);
+	paintLine(svg,[width,height],[0,height]);
+	paintLine(svg,[0,height],[0,0]);
 }
 
-paintLabels(svg6);
+// TODO: convert all instances of "var" to "let"
+
+function paintAllDistinctStratifiedCubes(svg,numberOfEdges) {
+	// TODO: swap r and c for readability?
+	var r = -1;
+	var c = -2;
+	for(var numberOfConnectedComponents=0; numberOfConnectedComponents<5; numberOfConnectedComponents++) {
+		var cubes = stratifiedCubes[numberOfConnectedComponents][numberOfEdges];
+		if(cubes.length>0) {
+			c += 2;
+			r = -1;
+			let componentsText = numberOfConnectedComponents==1?" Component":" Components";
+			paintText(svg,10,c*40+30,numberOfConnectedComponents+componentsText);
+			for(var k=0; k<cubes.length; k++) {
+				r++;
+				if(r==15) {
+					r = 0;
+					c++;
+				}
+				paintCube(svg,cubes[k],r*40+20,(c+1)*40+20,10);
+			}
+		}
+	}
+	let h = (c+2)*40+10;
+	svg.setAttribute('width','800');
+	svg.setAttribute('height',h);
+	paintFrame(svg,800,h);
+}
+
+paintAllDistinctStratifiedCubes(svg0,0);
+paintAllDistinctStratifiedCubes(svg1,1);
+paintAllDistinctStratifiedCubes(svg2,2);
+paintAllDistinctStratifiedCubes(svg3,3);
+paintAllDistinctStratifiedCubes(svg4,4);
+paintAllDistinctStratifiedCubes(svg5,5);
+paintAllDistinctStratifiedCubes(svg6,6);
+paintAllDistinctStratifiedCubes(svg7,7);
+paintAllDistinctStratifiedCubes(svg8,8);
+paintAllDistinctStratifiedCubes(svg9,9);
+paintAllDistinctStratifiedCubes(svg10,10);
+paintAllDistinctStratifiedCubes(svg11,11);
+paintAllDistinctStratifiedCubes(svg12,12);
+
 
 // TODO: color code the corners by how many edges they are adjacent to
 // TODO: color code the edges by whether they are connected to leaves or between branch points
