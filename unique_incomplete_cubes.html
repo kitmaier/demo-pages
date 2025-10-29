@@ -10,7 +10,7 @@
 <p style="text-indent:40px;">These guidelines will be modified slightly here. Instead of looking only at connected cubes, we will look at cubes with various numbers of connected colored components, and will not worry much about points 3 and 4. </p>
 <p style="text-indent:40px;">First there will be an automated enumeration of all the cubes, and then a theoretical discussion.</p>
 <h1>Rotationally distinct cubes with 6 edges</h1>
-<svg id="svg" height="600" width="800" xmlns="http://www.w3.org/2000/svg">
+<svg id="svg6" height="600" width="800" xmlns="http://www.w3.org/2000/svg">
 <!-- 
   <polygon id="e1" points="350,223 450,223 450,203 350,203" style="fill:black;stroke:black;stroke-width:0" />
   <polygon id="e2" points="438,213 462,213 512,300 488,300" style="fill:black;stroke:black;stroke-width:0" />
@@ -343,7 +343,7 @@ iterateOverCubes();
 
 //displayCube(distinctCubes[175]);
 
-var svg = document.getElementById("svg");
+var svg6 = document.getElementById("svg6");
 
 function cubePointToScreenPointAsHexagon(x,y,z,xmax) {
 	// 0,0,0 on the cube maps to 0,0 on the screen
@@ -366,7 +366,7 @@ function cubePointToScreenPointAsSquare(x,y,z,xmax) {
 	return screenPoint;
 }
 
-function paintCorner(x,y,z,offsetX,offsetY,size) {
+function paintCorner(svg,x,y,z,offsetX,offsetY,size) {
 	//var screenPoint = cubePointToScreenPointAsHexagon(x,y,z,size);
 	var screenPoint = cubePointToScreenPointAsSquare(x,y,z,size);
 	var circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
@@ -378,7 +378,7 @@ function paintCorner(x,y,z,offsetX,offsetY,size) {
 	circle.setAttribute("fill","black");
 }
 
-function paintEdge(edge, offsetX, offsetY, size) {
+function paintEdge(svg, edge, offsetX, offsetY, size) {
 	var x1 = edge[0]==0?-1:edge[0];
 	var y1 = edge[1]==0?-1:edge[1];
 	var z1 = edge[2]==0?-1:edge[2];
@@ -402,29 +402,29 @@ function paintEdge(edge, offsetX, offsetY, size) {
 	polygon.points.appendItem(point2);
 }
 
-function paintCube(cube, offsetX, offsetY, size) {
+function paintCube(svg, cube, offsetX, offsetY, size) {
 	var indices = cubeToIndices(cube);
 	for(var k=0; k<12; k++) {
 		var bit = indices[k];
 		if(bit) {
 			var edge = cubeEdgeCoordinates2[k][1];
-			paintEdge(edge,offsetX,offsetY,size);
+			paintEdge(svg,edge,offsetX,offsetY,size);
 		}
 	}
 	for(var x=-1; x<=1; x+=2) {
 		for(var y=-1; y<=1; y+=2) {
 			for(var z=-1; z<=1; z+=2) {
-				paintCorner(x,y,z,offsetX,offsetY,size);
+				paintCorner(svg,x,y,z,offsetX,offsetY,size);
 			}
 		}
 	}
 }
 
-function paintAllDistinctCubes() {
+function paintAllDistinctCubes(svg) {
 	for(var c=0; c<15; c++) {
 		for(var r=0; r<15; r++) {
 			if(c*15+r>=distinctCubes.length) break;
-			paintCube(distinctCubes[c*15+r],r*40+20,c*40+20,10);
+			paintCube(svg,distinctCubes[c*15+r],r*40+20,c*40+20,10);
 		}
 	}
 }
@@ -501,7 +501,7 @@ stratifyDistinctCubes();
 
 console.log(stratifiedCubes);
 
-function paintAllDistinctStratifiedCubes(numberOfEdges) {
+function paintAllDistinctStratifiedCubes(svg,numberOfEdges) {
 	var r = -1;
 	var c = -2;
 	for(var numberOfConnectedComponents=0; numberOfConnectedComponents<5; numberOfConnectedComponents++) {
@@ -514,12 +514,12 @@ function paintAllDistinctStratifiedCubes(numberOfEdges) {
 				r = 0;
 				c++;
 			}
-			paintCube(cubes[k],r*40+20,c*40+20,10);
+			paintCube(svg,cubes[k],r*40+20,c*40+20,10);
 		}
 	}
 }
 
-paintAllDistinctStratifiedCubes(6);
+paintAllDistinctStratifiedCubes(svg6,6);
 
 function paintLine(svg,p1,p2) {
 	let line = document.createElementNS("http://www.w3.org/2000/svg", "line");
@@ -538,7 +538,7 @@ function paintFrame(svg,width,height) {
 	paintLine(svg,[0,height],[0,0]);
 }
 
-paintFrame(svg,800,600);
+paintFrame(svg6,800,600);
 
 function paintText(svg,x,y,textContent) {
 	let text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
@@ -557,7 +557,7 @@ function paintLabels(svg) {
 	paintText(svg,10,305,"3 Components");
 }
 
-paintLabels(svg);
+paintLabels(svg6);
 
 // TODO: color code the corners by how many edges they are adjacent to
 // TODO: color code the edges by whether they are connected to leaves or between branch points
