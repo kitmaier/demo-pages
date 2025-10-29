@@ -1,7 +1,15 @@
 <html>
 <body>
-
-
+<h1>How many incomplete cubes are there?</h1>
+<p style="text-indent:40px;">This investigation was inspired by a <a href="https://www.youtube.com/watch?v=_BrFKp-U8GI">3Blue1Brown guest video</a> written by Paul Dancstep.</p>
+<p style="text-indent:40px;">The question presented in the video is, how many distinct subsets of the set of edges of a cube are there, or how many colorings of the edges of a cube are there, given the following constraints:</p>
+<p style="text-indent:80px;"><tt>1) The colored edges must be connected.</tt></p>
+<p style="text-indent:80px;"><tt>2) Rotationally equivalent colorings are excluded.</tt></p>
+<p style="text-indent:80px;"><tt>3) Colorings that fit within a plane or on one side of the cube are excluded.</tt></p>
+<p style="text-indent:80px;"><tt>4) The empty coloring and complete coloring are excluded.</tt></p>
+<p style="text-indent:40px;">These guidelines will be modified slightly here. Instead of looking only at connected cubes, we will look at cubes with various numbers of connected colored components, and will not worry much about points 3 and 4. </p>
+<p style="text-indent:40px;">First there will be an automated enumeration of all the cubes, and then a theoretical discussion.</p>
+<h1>Rotationally distinct cubes with 6 edges</h1>
 <svg id="svg" height="600" width="800" xmlns="http://www.w3.org/2000/svg">
 <!-- 
   <polygon id="e1" points="350,223 450,223 450,203 350,203" style="fill:black;stroke:black;stroke-width:0" />
@@ -513,6 +521,43 @@ function paintAllDistinctStratifiedCubes(numberOfEdges) {
 
 paintAllDistinctStratifiedCubes(6);
 
+function paintLine(svg,p1,p2) {
+	let line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+	line.setAttribute("style", "stroke:black;stroke-width:1");
+	svg.appendChild(line);
+	line.setAttribute("x1",p1[0]);
+	line.setAttribute("y1",p1[1]);
+	line.setAttribute("x2",p2[0]);
+	line.setAttribute("y2",p2[1]);
+}
+
+function paintFrame(svg,width,height) {
+	paintLine(svg,[0,0],[width,0]);
+	paintLine(svg,[width,0],[width,height]);
+	paintLine(svg,[width,height],[0,height]);
+	paintLine(svg,[0,height],[0,0]);
+}
+
+paintFrame(svg,800,600);
+
+function paintText(svg,x,y,textContent) {
+	let text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+	text.setAttribute('x',x);
+	text.setAttribute('y',y);
+	text.setAttribute('fill','#000');
+	text.setAttribute("style","font-size:20px;");
+	text.textContent = textContent;
+	svg.appendChild(text); 
+}
+
+function paintLabels(svg) {
+	paintText(svg,10,25,"0 Components");
+	paintText(svg,10,65,"1 Component");
+	paintText(svg,10,185,"2 Components");
+	paintText(svg,10,305,"3 Components");
+}
+
+paintLabels(svg);
 
 // TODO: color code the corners by how many edges they are adjacent to
 // TODO: color code the edges by whether they are connected to leaves or between branch points
