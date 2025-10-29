@@ -242,7 +242,7 @@ neighborIndices =
   [6,7,9,10]]
 
 function cubeEdgeToIndex(edge) {
-	var newEdge = cubeEdgeIndices[edge[0]+1][edge[1]+1][edge[2]+1];
+	let newEdge = cubeEdgeIndices[edge[0]+1][edge[1]+1][edge[2]+1];
 	return newEdge
 }
 
@@ -251,10 +251,10 @@ function cubeIndexToEdge(index) {
 }
 
 function applyRotationToEdge(matrix,edge) {
-	var newEdge = [0,0,0];
-	for(var r=0; r<3; r++) {
-		var tmp = 0;
-		for(var c=0; c<3; c++) {
+	let newEdge = [0,0,0];
+	for(let r=0; r<3; r++) {
+		let tmp = 0;
+		for(let c=0; c<3; c++) {
 			tmp += matrix[r][c]*edge[c];
 		}
 		newEdge[r] = tmp;
@@ -263,16 +263,16 @@ function applyRotationToEdge(matrix,edge) {
 }
 
 function applyRotationToIndex(matrix,index) {
-	var edge = cubeIndexToEdge(index);
-	var newEdge = applyRotationToEdge(matrix,edge);
-	var newIndex = cubeEdgeToIndex(newEdge);
+	let edge = cubeIndexToEdge(index);
+	let newEdge = applyRotationToEdge(matrix,edge);
+	let newIndex = cubeEdgeToIndex(newEdge);
 	return newIndex;
 }
 
 function cubeToIndices(cube) {
-	var indices = [0,0,0,0,0,0,0,0,0,0,0,0];
-	for(var k=0; k<12; k++) {
-		var bit = (cube>>k)&1;
+	let indices = [0,0,0,0,0,0,0,0,0,0,0,0];
+	for(let k=0; k<12; k++) {
+		let bit = (cube>>k)&1;
 		if(bit==1) {
 			indices[k] = 1;
 		}
@@ -281,32 +281,32 @@ function cubeToIndices(cube) {
 }
 
 function indicesToCube(indices) {
-	var cube = 0;
-	for(var k=0; k<12; k++) {
-		var bit = indices[k];
+	let cube = 0;
+	for(let k=0; k<12; k++) {
+		let bit = indices[k];
 		cube = cube|(bit<<k);
 	}
 	return cube;
 }
 
 function rotateCube(matrix,cube) {
-	var indices = cubeToIndices(cube);
-	var newIndices = [0,0,0,0,0,0,0,0,0,0,0,0];
-	for(var k=0; k<12; k++) {
-		var bit = indices[k];
+	let indices = cubeToIndices(cube);
+	let newIndices = [0,0,0,0,0,0,0,0,0,0,0,0];
+	for(let k=0; k<12; k++) {
+		let bit = indices[k];
 		if(bit) {
-			var newIndex = applyRotationToIndex(matrix,k);
+			let newIndex = applyRotationToIndex(matrix,k);
 			newIndices[newIndex] = 1;
 		}
 	}
-	var newCube = indicesToCube(newIndices);
+	let newCube = indicesToCube(newIndices);
 	return newCube;
 }
 
 function displayCube(bits) {
-	for(var k=0; k<12; k++) {
-		var edgeId = cubeEdgeCoordinates2[k][0];
-		var bit = (bits>>k)&1;
+	for(let k=0; k<12; k++) {
+		let edgeId = cubeEdgeCoordinates2[k][0];
+		let bit = (bits>>k)&1;
 		if(bit==1) {
 			document.getElementById("e"+edgeId).style.opacity = "1";
 		} else {
@@ -322,14 +322,14 @@ function displayRandomCube() {
 //displayRandomCube();
 //displayCube(rotateCube(rotations[23],14));
 
-var distinctCubes = [];
+let distinctCubes = [];
 
 function iterateOverCubes() {
-	for(var bits=0; bits<4096; bits++) {
-		var duplicate = 0;
-		for(var rotationIndex=0; rotationIndex<24; rotationIndex++) {
+	for(let bits=0; bits<4096; bits++) {
+		let duplicate = 0;
+		for(let rotationIndex=0; rotationIndex<24; rotationIndex++) {
 			rotation = rotations[rotationIndex];
-			var newBits = rotateCube(rotation,bits);
+			let newBits = rotateCube(rotation,bits);
 			if(distinctCubes.includes(newBits)) {
 				duplicate = 1;
 				continue;
@@ -346,14 +346,12 @@ iterateOverCubes();
 
 //displayCube(distinctCubes[175]);
 
-var svg6 = document.getElementById("svg6");
-
 function cubePointToScreenPointAsHexagon(x,y,z,xmax) {
 	// 0,0,0 on the cube maps to 0,0 on the screen
 	// -1,1,1 and 1,-1,-1 on the cube map to 0,0 on the screen
 	// screen points will be within ([-xmax,xmax],[-xmax,xmax]) bounding box
-	var r3 = 1.732;
-	var screenPoint = [0,0];
+	let r3 = 1.732;
+	let screenPoint = [0,0];
 	screenPoint[0] = Math.round((0.5*x+0.25*y+0.25*z)*xmax);
 	screenPoint[1] = Math.round((0.0*x+0.25*r3*y-0.25*r3*z)*xmax);
 	return screenPoint;
@@ -363,16 +361,16 @@ function cubePointToScreenPointAsSquare(x,y,z,xmax) {
 	// 0,0,0 on the cube maps to 0,0 on the screen
 	// 0,0,1 and 0,0,-1 on the cube map to 0,0 on the screen
 	// screen points will be within ([-xmax,xmax],[-xmax,xmax]) bounding box
-	var screenPoint = [0,0];
+	let screenPoint = [0,0];
 	screenPoint[0] = Math.round(x*(0.66+0.33*z)*xmax);
 	screenPoint[1] = Math.round(y*(0.66+0.33*z)*xmax);
 	return screenPoint;
 }
 
 function paintCorner(svg,x,y,z,offsetX,offsetY,size) {
-	//var screenPoint = cubePointToScreenPointAsHexagon(x,y,z,size);
-	var screenPoint = cubePointToScreenPointAsSquare(x,y,z,size);
-	var circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+	//let screenPoint = cubePointToScreenPointAsHexagon(x,y,z,size);
+	let screenPoint = cubePointToScreenPointAsSquare(x,y,z,size);
+	let circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
 	svg.appendChild(circle);
 	//circle.setAttribute("r","2");
 	circle.setAttribute("r","1");
@@ -382,41 +380,41 @@ function paintCorner(svg,x,y,z,offsetX,offsetY,size) {
 }
 
 function paintEdge(svg, edge, offsetX, offsetY, size) {
-	var x1 = edge[0]==0?-1:edge[0];
-	var y1 = edge[1]==0?-1:edge[1];
-	var z1 = edge[2]==0?-1:edge[2];
-	var x2 = edge[0]==0?1:edge[0];
-	var y2 = edge[1]==0?1:edge[1];
-	var z2 = edge[2]==0?1:edge[2];
-	//var screenPoint1 = cubePointToScreenPointAsHexagon(x1,y1,z1,size);
-	//var screenPoint2 = cubePointToScreenPointAsHexagon(x2,y2,z2,size);
-	var screenPoint1 = cubePointToScreenPointAsSquare(x1,y1,z1,size);
-	var screenPoint2 = cubePointToScreenPointAsSquare(x2,y2,z2,size);
-	var polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+	let x1 = edge[0]==0?-1:edge[0];
+	let y1 = edge[1]==0?-1:edge[1];
+	let z1 = edge[2]==0?-1:edge[2];
+	let x2 = edge[0]==0?1:edge[0];
+	let y2 = edge[1]==0?1:edge[1];
+	let z2 = edge[2]==0?1:edge[2];
+	//let screenPoint1 = cubePointToScreenPointAsHexagon(x1,y1,z1,size);
+	//let screenPoint2 = cubePointToScreenPointAsHexagon(x2,y2,z2,size);
+	let screenPoint1 = cubePointToScreenPointAsSquare(x1,y1,z1,size);
+	let screenPoint2 = cubePointToScreenPointAsSquare(x2,y2,z2,size);
+	let polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
 	svg.appendChild(polygon);
 	polygon.setAttribute("style", "fill:black;stroke:black;stroke-width:1");
-	var point1 = svg.createSVGPoint();
+	let point1 = svg.createSVGPoint();
 	point1.x = screenPoint1[0]+offsetX;
 	point1.y = screenPoint1[1]+offsetY;
 	polygon.points.appendItem(point1);
-	var point2 = svg.createSVGPoint();
+	let point2 = svg.createSVGPoint();
 	point2.x = screenPoint2[0]+offsetX;
 	point2.y = screenPoint2[1]+offsetY;
 	polygon.points.appendItem(point2);
 }
 
 function paintCube(svg, cube, offsetX, offsetY, size) {
-	var indices = cubeToIndices(cube);
-	for(var k=0; k<12; k++) {
-		var bit = indices[k];
+	let indices = cubeToIndices(cube);
+	for(let k=0; k<12; k++) {
+		let bit = indices[k];
 		if(bit) {
-			var edge = cubeEdgeCoordinates2[k][1];
+			let edge = cubeEdgeCoordinates2[k][1];
 			paintEdge(svg,edge,offsetX,offsetY,size);
 		}
 	}
-	for(var x=-1; x<=1; x+=2) {
-		for(var y=-1; y<=1; y+=2) {
-			for(var z=-1; z<=1; z+=2) {
+	for(let x=-1; x<=1; x+=2) {
+		for(let y=-1; y<=1; y+=2) {
+			for(let z=-1; z<=1; z+=2) {
 				paintCorner(svg,x,y,z,offsetX,offsetY,size);
 			}
 		}
@@ -424,8 +422,8 @@ function paintCube(svg, cube, offsetX, offsetY, size) {
 }
 
 function paintAllDistinctCubes(svg) {
-	for(var c=0; c<15; c++) {
-		for(var r=0; r<15; r++) {
+	for(let c=0; c<15; c++) {
+		for(let r=0; r<15; r++) {
 			if(c*15+r>=distinctCubes.length) break;
 			paintCube(svg,distinctCubes[c*15+r],r*40+20,c*40+20,10);
 		}
@@ -435,9 +433,9 @@ function paintAllDistinctCubes(svg) {
 //paintAllDistinctCubes()
 
 function countNumberOfEdges(bits) {
-	var indices = cubeToIndices(bits);
-	var numberOfEdges = 0;
-	for(var k=0; k<12; k++) {
+	let indices = cubeToIndices(bits);
+	let numberOfEdges = 0;
+	for(let k=0; k<12; k++) {
 		if(indices[k]==1) {
 			numberOfEdges++;
 		}
@@ -446,12 +444,12 @@ function countNumberOfEdges(bits) {
 }
 
 function countNumberOfConnectedComponents(bits) {
-	var indices = cubeToIndices(bits);
-	var visited = [0,0,0,0,0,0,0,0,0,0,0,0];
-	var numberOfConnectedComponents = 0;
+	let indices = cubeToIndices(bits);
+	let visited = [0,0,0,0,0,0,0,0,0,0,0,0];
+	let numberOfConnectedComponents = 0;
 	while(true) {
-		var finished = 1;
-		for(var k=0; k<12; k++) {
+		let finished = 1;
+		for(let k=0; k<12; k++) {
 			if(indices[k]==1&&visited[k]==0) {
 				finished = 0;
 				numberOfConnectedComponents++;
@@ -461,15 +459,15 @@ function countNumberOfConnectedComponents(bits) {
 		}
 		if(finished==1) break;
 		while(true) {
-			var componentFinished = 1;
-			for(var k=0; k<12; k++) {
+			let componentFinished = 1;
+			for(let k=0; k<12; k++) {
 				if(indices[k]==0) continue;
 				if(visited[k]==1) {
 					visited[k] = 2;
 					componentFinished = 0;
-					var neighbors = neighborIndices[k];
-					for(var n=0; n<neighbors.length; n++) {
-						var neighbor = neighbors[n];
+					let neighbors = neighborIndices[k];
+					for(let n=0; n<neighbors.length; n++) {
+						let neighbor = neighbors[n];
 						if(indices[neighbor]==0) continue;
 						if(visited[neighbor]==0) {
 							visited[neighbor] = 1;
@@ -484,7 +482,7 @@ function countNumberOfConnectedComponents(bits) {
 }
 
 // stratified by number of connected components and then number of edges
-var stratifiedCubes = 
+let stratifiedCubes = 
  [[[],[],[],[],[],[],[],[],[],[],[],[],[]],
   [[],[],[],[],[],[],[],[],[],[],[],[],[]],
   [[],[],[],[],[],[],[],[],[],[],[],[],[]],
@@ -492,10 +490,10 @@ var stratifiedCubes =
   [[],[],[],[],[],[],[],[],[],[],[],[],[]]]
 
 function stratifyDistinctCubes() {
-	for(var k=0; k<distinctCubes.length; k++) {
-		var bits = distinctCubes[k];
-		var numberOfEdges = countNumberOfEdges(bits);
-		var numberOfConnectedComponents = countNumberOfConnectedComponents(bits);
+	for(let k=0; k<distinctCubes.length; k++) {
+		let bits = distinctCubes[k];
+		let numberOfEdges = countNumberOfEdges(bits);
+		let numberOfConnectedComponents = countNumberOfConnectedComponents(bits);
 		stratifiedCubes[numberOfConnectedComponents][numberOfEdges].push(bits);
 	}
 }
@@ -532,20 +530,18 @@ function paintFrame(svg,width,height) {
 	paintLine(svg,[0,height],[0,0]);
 }
 
-// TODO: convert all instances of "var" to "let"
-
 function paintAllDistinctStratifiedCubes(svg,numberOfEdges) {
 	// TODO: swap r and c for readability?
-	var r = -1;
-	var c = -2;
-	for(var numberOfConnectedComponents=0; numberOfConnectedComponents<5; numberOfConnectedComponents++) {
-		var cubes = stratifiedCubes[numberOfConnectedComponents][numberOfEdges];
+	let r = -1;
+	let c = -2;
+	for(let numberOfConnectedComponents=0; numberOfConnectedComponents<5; numberOfConnectedComponents++) {
+		let cubes = stratifiedCubes[numberOfConnectedComponents][numberOfEdges];
 		if(cubes.length>0) {
 			c += 2;
 			r = -1;
 			let componentsText = numberOfConnectedComponents==1?" Component":" Components";
 			paintText(svg,10,c*40+30,numberOfConnectedComponents+componentsText);
-			for(var k=0; k<cubes.length; k++) {
+			for(let k=0; k<cubes.length; k++) {
 				r++;
 				if(r==15) {
 					r = 0;
