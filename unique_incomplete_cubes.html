@@ -9,31 +9,31 @@
 <p style="text-indent:80px;"><tt>4) The empty coloring and complete coloring are excluded.</tt></p>
 <p style="text-indent:40px;">These guidelines will be modified slightly here. Instead of looking only at connected cubes, we will look at cubes with various numbers of connected colored components, and will not worry much about points 3 and 4. </p>
 <p style="text-indent:40px;">First there will be an automated enumeration of all the cubes, and then a theoretical discussion.</p>
-<h1>Rotationally distinct cubes with 0 edges</h1>
+<h1 id="svgh0">Rotationally distinct cubes with 0 edges</h1>
 <svg id="svg0" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
-<h1>Rotationally distinct cubes with 1 edge</h1>
+<h1 id="svgh1">Rotationally distinct cubes with 1 edge</h1>
 <svg id="svg1" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
-<h1>Rotationally distinct cubes with 2 edges</h1>
+<h1 id="svgh2">Rotationally distinct cubes with 2 edges</h1>
 <svg id="svg2" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
-<h1>Rotationally distinct cubes with 3 edges</h1>
+<h1 id="svgh3">Rotationally distinct cubes with 3 edges</h1>
 <svg id="svg3" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
-<h1>Rotationally distinct cubes with 4 edges</h1>
+<h1 id="svgh4">Rotationally distinct cubes with 4 edges</h1>
 <svg id="svg4" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
-<h1>Rotationally distinct cubes with 5 edges</h1>
+<h1 id="svgh5">Rotationally distinct cubes with 5 edges</h1>
 <svg id="svg5" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
-<h1>Rotationally distinct cubes with 6 edges</h1>
+<h1 id="svgh6">Rotationally distinct cubes with 6 edges</h1>
 <svg id="svg6" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
-<h1>Rotationally distinct cubes with 7 edges</h1>
+<h1 id="svgh7">Rotationally distinct cubes with 7 edges</h1>
 <svg id="svg7" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
-<h1>Rotationally distinct cubes with 8 edges</h1>
+<h1 id="svgh8">Rotationally distinct cubes with 8 edges</h1>
 <svg id="svg8" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
-<h1>Rotationally distinct cubes with 9 edges</h1>
+<h1 id="svgh9">Rotationally distinct cubes with 9 edges</h1>
 <svg id="svg9" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
-<h1>Rotationally distinct cubes with 10 edges</h1>
+<h1 id="svgh10">Rotationally distinct cubes with 10 edges</h1>
 <svg id="svg10" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
-<h1>Rotationally distinct cubes with 11 edges</h1>
+<h1 id="svgh11">Rotationally distinct cubes with 11 edges</h1>
 <svg id="svg11" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
-<h1>Rotationally distinct cubes with 12 edges</h1>
+<h1 id="svgh12">Rotationally distinct cubes with 12 edges</h1>
 <svg id="svg12" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
 </svg>
 
@@ -530,17 +530,18 @@ function paintFrame(svg,width,height) {
 	paintLine(svg,[0,height],[0,0]);
 }
 
-function paintAllDistinctStratifiedCubes(svg,numberOfEdges) {
+function paintAllDistinctStratifiedCubes(svg,svgh,numberOfEdges) {
 	// TODO: swap r and c for readability?
 	let r = -1;
 	let c = -2;
+	let numberOfCubes = 0;
 	for(let numberOfConnectedComponents=0; numberOfConnectedComponents<5; numberOfConnectedComponents++) {
 		let cubes = stratifiedCubes[numberOfConnectedComponents][numberOfEdges];
 		if(cubes.length>0) {
 			c += 2;
 			r = -1;
-			let componentsText = numberOfConnectedComponents==1?" Component":" Components";
-			paintText(svg,10,c*40+30,numberOfConnectedComponents+componentsText);
+			let componentsText = numberOfConnectedComponents==1?" Connected component":" Connected components";
+			paintText(svg,10,c*40+30,numberOfConnectedComponents+componentsText+" ("+cubes.length+" cube"+(cubes.length==1?"":"s")+")");
 			for(let k=0; k<cubes.length; k++) {
 				r++;
 				if(r==15) {
@@ -548,6 +549,7 @@ function paintAllDistinctStratifiedCubes(svg,numberOfEdges) {
 					c++;
 				}
 				paintCube(svg,cubes[k],r*40+20,(c+1)*40+20,10);
+				numberOfCubes++;
 			}
 		}
 	}
@@ -555,21 +557,23 @@ function paintAllDistinctStratifiedCubes(svg,numberOfEdges) {
 	svg.setAttribute('width','800');
 	svg.setAttribute('height',h);
 	paintFrame(svg,800,h);
+	svgh.innerText = "Rotationally distinct cubes with "+numberOfEdges+" edge"+(numberOfEdges==1?"":"s")+" ("+numberOfCubes+" cube"+(numberOfCubes==1?"":"s")+")";
 }
 
-paintAllDistinctStratifiedCubes(svg0,0);
-paintAllDistinctStratifiedCubes(svg1,1);
-paintAllDistinctStratifiedCubes(svg2,2);
-paintAllDistinctStratifiedCubes(svg3,3);
-paintAllDistinctStratifiedCubes(svg4,4);
-paintAllDistinctStratifiedCubes(svg5,5);
-paintAllDistinctStratifiedCubes(svg6,6);
-paintAllDistinctStratifiedCubes(svg7,7);
-paintAllDistinctStratifiedCubes(svg8,8);
-paintAllDistinctStratifiedCubes(svg9,9);
-paintAllDistinctStratifiedCubes(svg10,10);
-paintAllDistinctStratifiedCubes(svg11,11);
-paintAllDistinctStratifiedCubes(svg12,12);
+// TODO: this is working even though svg0 etc are not declared variables, how standard is that across browsers?
+paintAllDistinctStratifiedCubes(svg0,svgh0,0);
+paintAllDistinctStratifiedCubes(svg1,svgh1,1);
+paintAllDistinctStratifiedCubes(svg2,svgh2,2);
+paintAllDistinctStratifiedCubes(svg3,svgh3,3);
+paintAllDistinctStratifiedCubes(svg4,svgh4,4);
+paintAllDistinctStratifiedCubes(svg5,svgh5,5);
+paintAllDistinctStratifiedCubes(svg6,svgh6,6);
+paintAllDistinctStratifiedCubes(svg7,svgh7,7);
+paintAllDistinctStratifiedCubes(svg8,svgh8,8);
+paintAllDistinctStratifiedCubes(svg9,svgh9,9);
+paintAllDistinctStratifiedCubes(svg10,svgh10,10);
+paintAllDistinctStratifiedCubes(svg11,svgh11,11);
+paintAllDistinctStratifiedCubes(svg12,svgh12,12);
 
 
 // TODO: color code the corners by how many edges they are adjacent to
