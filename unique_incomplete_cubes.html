@@ -3,7 +3,10 @@
 <style>
 table, th, tr, td {
   border: 1px solid;
-  font-family: Arial;
+  font-family: monospace;
+}
+th {
+  font-weight: bold;
 }
 </style>
 </head>
@@ -69,144 +72,171 @@ table, th, tr, td {
 <!-- TODO: generate a grouping of cube diagrams showing n-fold rotation around each face/edge/corner, and align the rotational matrices with that array -->
 <table id="configsTable" style="width:600px;margin-left:80px;text-align:center;">
 	<tr>
-		<td>
+		<th>
 			[ 1, 0, 0]<br/>
 			[ 0, 1, 0]<br/>
 			[ 0, 0, 1]
-		</td>
-		<td>
+		</th>
+		<th>
 			[ 1, 0, 0]<br/>
 			[ 0, 0,-1]<br/>
 			[ 0, 1, 0]
-		</td>
-		<td>
+		</th>
+		<th>
 			[ 1, 0, 0]<br/>
 			[ 0,-1, 0]<br/>
 			[ 0, 0,-1]
-		</td>
-		<td>
+		</th>
+		<th>
 			[ 1, 0, 0]<br/>
 			[ 0, 0, 1]<br/>
 			[ 0,-1, 0]
-		</td>
-		<td>
+		</th>
+		<th>
 			[ 0, 0,-1]<br/>
 			[ 0, 1, 0]<br/>
 			[ 1, 0, 0]
-		</td>
-		<td>
+		</th>
+		<th>
 			[-1, 0, 0]<br/>
 			[ 0, 1, 0]<br/>
 			[ 0, 0,-1]
-		</td>
+		</th>
 	</tr>
 	<tr>
-		<td>
+		<th>
 			[ 0, 0, 1]<br/>
 			[ 0, 1, 0]<br/>
 			[-1, 0, 0]
-		</td>
-		<td>
+		</th>
+		<th>
 			[ 0,-1, 0]<br/>
 			[ 1, 0, 0]<br/>
 			[ 0, 0, 1]
-		</td>
-		<td>
+		</th>
+		<th>
 			[-1, 0, 0]<br/>
 			[ 0,-1, 0]<br/>
 			[ 0, 0, 1]
-		</td>
-		<td>
+		</th>
+		<th>
 			[ 0, 1, 0]<br/>
 			[-1, 0, 0]<br/>
 			[ 0, 0, 1]
-		</td>
-		<td>
+		</th>
+		<th>
 			[-1, 0, 0]<br/>
 			[ 0, 0, 1]<br/>
 			[ 0, 1, 0]
-		</td>
-		<td>
+		</th>
+		<th>
 			[-1, 0, 0]<br/>
 			[ 0, 0,-1]<br/>
 			[ 0,-1, 0]
-		</td>
+		</th>
 	</tr>
 	<tr>
-		<td>
+		<th>
 			[ 0, 0, 1]<br/>
 			[ 0,-1, 0]<br/>
 			[ 1, 0, 0]
-		</td>
-		<td>
+		</th>
+		<th>
 			[ 0, 0,-1]<br/>
 			[ 0,-1, 0]<br/>
 			[-1, 0, 0]
-		</td>
-		<td>
+		</th>
+		<th>
 			[ 0, 1, 0]<br/>
 			[ 1, 0, 0]<br/>
 			[ 0, 0,-1]
-		</td>
-		<td>
+		</th>
+		<th>
 			[ 0,-1, 0]<br/>
 			[-1, 0, 0]<br/>
 			[ 0, 0,-1]
-		</td>
-		<td>
+		</th>
+		<th>
 			[ 0, 0, 1]<br/>
 			[ 1, 0, 0]<br/>
 			[ 0, 1, 0]
-		</td>
-		<td>
+		</th>
+		<th>
 			[ 0, 1, 0]<br/>
 			[ 0, 0, 1]<br/>
 			[ 1, 0, 0]
-		</td>
+		</th>
 	</tr>
 	<tr>
-		<td>
+		<th>
 			[ 0, 0,-1]<br/>
 			[-1, 0, 0]<br/>
 			[ 0, 1, 0]
-		</td>
-		<td>
+		</th>
+		<th>
 			[ 0,-1, 0]<br/>
 			[ 0, 0, 1]<br/>
 			[-1, 0, 0]
-		</td>
-		<td>
+		</th>
+		<th>
 			[ 0, 0, 1]<br/>
 			[-1, 0, 0]<br/>
 			[ 0,-1, 0]
-		</td>
-		<td>
+		</th>
+		<th>
 			[ 0,-1, 0]<br/>
 			[ 0, 0,-1]<br/>
 			[ 1, 0, 0]
-		</td>
-		<td>
+		</th>
+		<th>
 			[ 0, 0,-1]<br/>
 			[ 1, 0, 0]<br/>
 			[ 0,-1, 0]
-		</td>
-		<td>
+		</th>
+		<th>
 			[ 0, 1, 0]<br/>
 			[ 0, 0,-1]<br/>
 			[-1, 0, 0]
-		</td>
+		</th>
 	</tr>
 </table>
+<p style="text-indent:40px;">So for instance, to rotate around one corner of the cube, we could multiply that rotation matrix by the list of colume vectors representing the corners of the cube:</p>
 
+<table id="configsTable" style="width:500px;margin-left:80px;text-align:center;">
+	<tr>
+		<th>
+			[ 0, 0,-1] [ 1, 1, 1, 1,-1,-1,-1,-1] [-1, 1,-1, 1,-1, 1,-1, 1]<br/>
+			[ 1, 0, 0]*[ 1, 1,-1,-1, 1, 1,-1,-1]=[ 1, 1, 1, 1,-1,-1,-1,-1]<br/>
+			[ 0,-1, 0] [ 1,-1, 1,-1, 1,-1, 1,-1] [-1,-1, 1, 1,-1,-1, 1, 1]
+		</th>
+	</tr>
+</table>
 <!-- TODO: list of rotation matrices along with interactive tool to apply them to a cube -->
 <p style="text-indent:40px;"></p>
 <h1>Connected colorings (in progress)</h1>
 <p style="text-indent:40px;">In general, it is to be expected that finding the number of connected colorings of a graph (a collection of nodes connected by edges) will be computationally expensive, approaching the cost of simply checking every possible coloring. </p>
-<!-- TODO: link to NP-hardness article -->
+<p style="text-indent:40px;">The <a href="https://cstheory.stackexchange.com/questions/3465/complexity-of-counting-all-connected-subgraphs">connected subgraph counting problem</a> is in <a href="https://en.wikipedia.org/wiki/%E2%99%AFP">the complexity class #P</a> which is related to and harder than <a href="https://en.wikipedia.org/wiki/NP_(complexity)">the complexity class NP</a>.</p>
 <p style="text-indent:40px;">The square edge graph has properties that make it much more efficient to work with. It is small, symmetric, and sparse. The following analysis will rely on these special properties.</p>
-<p style="text-indent:40px;"></p>
-<p style="text-indent:80px;"><tt></tt></p>
-<p style="text-indent:40px;"></p>
+<p style="text-indent:40px;">We can begin by splitting the cube up into three sections, the bottom face, top face, and connecting vertical bridges, and splitting up the analysis by how many of these bridge edges are colored.</p>
+<p style="text-indent:40px;">There will be no consideration of rotational equivalence in this section, so two colorings of the cube that are rotationally equivalent will be considered distinct for the purpose of counting. However, rotational symmetry will be used extensively to speed up the counting process.</p>
+<h2>0 bridges</h2>
+<p style="text-indent:40px;">Suppose that none of the bridges are colored in. In that case, the top and bottom faces are independent of each other and cannot be connected. </p>
+<p style="text-indent:40px;">The edges of a square can be colored 1 way with no edges, 2 ways with 2 disconnected edges, and 13 ways with connected edges.</p>
+<p style="text-indent:40px;">We can combine these numbers by adding the number of connected components, and multiplying the number of independent colorings on the top and bottom faces.</p>
+<table id="configsTable" style="width:600px;margin-left:80px;text-align:center;">
+	<tr><th>        </th><th>0 CC:  1</th><th>1 CC:  13</th><th>2 CC:  2</th></tr>
+	<tr><th>0 CC:  1</th><td>0 CC:  1</td><td>1 CC:  13</td><td>2 CC:  2</td></tr>
+	<tr><th>1 CC: 13</th><td>1 CC: 13</td><td>2 CC: 169</td><td>3 CC: 26</td></tr>
+	<tr><th>2 CC:  2</th><td>2 CC:  2</td><td>3 CC:  26</td><td>4 CC:  4</td></tr>
+</table>
+<p style="text-indent:40px;">In total this makes for:</p>
+<p style="text-indent:80px;"><tt>0 CC: 1</tt></p>
+<p style="text-indent:80px;"><tt>1 CC: 26</tt></p>
+<p style="text-indent:80px;"><tt>2 CC: 173</tt></p>
+<p style="text-indent:80px;"><tt>3 CC: 52</tt></p>
+<p style="text-indent:80px;"><tt>4 CC: 4</tt></p>
+<!-- TODO: add a section enumerating the connected colorings of a square -->
+<!-- 0-bridge case: there is 1 empty coloring for a face, 2 disconnected, and 13 connected, for a total of 16. (1E+13C+2D)(1E+13C+2D) = 1EE+13EC+2ED+13CE+169CC+26CD+2DE+26DC+4DD = 1EE+13(EC+CE)+(2(ED+DE)+26(CD+DC)+169CC+4DD) where the first group is empty, the second group is connected, and the third is disconnected -->
 <p style="text-indent:80px;"><tt></tt></p>
 <p style="text-indent:40px;"></p>
 <p style="text-indent:80px;"><tt></tt></p>
