@@ -1,4 +1,12 @@
 <html>
+<head>
+<style>
+table, th, tr, td {
+  border: 1px solid;
+  font-family: Arial;
+}
+</style>
+</head>
 <body>
 <h1>How many incomplete cubes are there?</h1>
 <p style="text-indent:40px;">This investigation was inspired by a <a href="https://www.youtube.com/watch?v=_BrFKp-U8GI">3Blue1Brown guest video</a> written by Paul Dancstep.</p>
@@ -53,6 +61,145 @@
 <p style="text-indent:40px;">If the cube does have symmetries, then the number of distinct rotated versions of the cube is a divisor of 24. </p>
 <p style="text-indent:40px;">It turns out that the number of rotationally distinct cubes can be calculated by starting with the number of colorings of the cube, adding in the number of symmetric colorings to make up for undercounting, and then dividing by 24 to account for rotations. </p>
 <!-- TODO: give the example of a square -->
+<h1>Cube Rotation Group Representation (in progress)</h1>
+<p style="text-indent:40px;">The group of rotations of a cube can be represented compactly as a set of 24 rotation matrices, which is how the automated enumeration of the cubes was implemented.</p>
+<p style="text-indent:40px;">If the corners of each cube are aligned to the points (+/-1,+/-1,+/-1), then the matrices representing the rotational symmetries of the cube all have terms that are 1, 0, and -1. </p>
+<p style="text-indent:40px;">This group is also the group of <a href="https://en.wikipedia.org/wiki/Octahedral_symmetry">rotational symmetries of the octahedron</a>. </p>
+<!-- TODO: generate two-dimensional array of cube diagrams showing a square with an attached edge rotating around to each face of the cube, and align the rotational matrices with that array -->
+<!-- TODO: generate a grouping of cube diagrams showing n-fold rotation around each face/edge/corner, and align the rotational matrices with that array -->
+<table id="configsTable" style="width:600px;margin-left:80px;text-align:center;">
+	<tr>
+		<td>
+			[ 1, 0, 0]<br/>
+			[ 0, 1, 0]<br/>
+			[ 0, 0, 1]
+		</td>
+		<td>
+			[ 1, 0, 0]<br/>
+			[ 0, 0,-1]<br/>
+			[ 0, 1, 0]
+		</td>
+		<td>
+			[ 1, 0, 0]<br/>
+			[ 0,-1, 0]<br/>
+			[ 0, 0,-1]
+		</td>
+		<td>
+			[ 1, 0, 0]<br/>
+			[ 0, 0, 1]<br/>
+			[ 0,-1, 0]
+		</td>
+		<td>
+			[ 0, 0,-1]<br/>
+			[ 0, 1, 0]<br/>
+			[ 1, 0, 0]
+		</td>
+		<td>
+			[-1, 0, 0]<br/>
+			[ 0, 1, 0]<br/>
+			[ 0, 0,-1]
+		</td>
+	</tr>
+	<tr>
+		<td>
+			[ 0, 0, 1]<br/>
+			[ 0, 1, 0]<br/>
+			[-1, 0, 0]
+		</td>
+		<td>
+			[ 0,-1, 0]<br/>
+			[ 1, 0, 0]<br/>
+			[ 0, 0, 1]
+		</td>
+		<td>
+			[-1, 0, 0]<br/>
+			[ 0,-1, 0]<br/>
+			[ 0, 0, 1]
+		</td>
+		<td>
+			[ 0, 1, 0]<br/>
+			[-1, 0, 0]<br/>
+			[ 0, 0, 1]
+		</td>
+		<td>
+			[-1, 0, 0]<br/>
+			[ 0, 0, 1]<br/>
+			[ 0, 1, 0]
+		</td>
+		<td>
+			[-1, 0, 0]<br/>
+			[ 0, 0,-1]<br/>
+			[ 0,-1, 0]
+		</td>
+	</tr>
+	<tr>
+		<td>
+			[ 0, 0, 1]<br/>
+			[ 0,-1, 0]<br/>
+			[ 1, 0, 0]
+		</td>
+		<td>
+			[ 0, 0,-1]<br/>
+			[ 0,-1, 0]<br/>
+			[-1, 0, 0]
+		</td>
+		<td>
+			[ 0, 1, 0]<br/>
+			[ 1, 0, 0]<br/>
+			[ 0, 0,-1]
+		</td>
+		<td>
+			[ 0,-1, 0]<br/>
+			[-1, 0, 0]<br/>
+			[ 0, 0,-1]
+		</td>
+		<td>
+			[ 0, 0, 1]<br/>
+			[ 1, 0, 0]<br/>
+			[ 0, 1, 0]
+		</td>
+		<td>
+			[ 0, 1, 0]<br/>
+			[ 0, 0, 1]<br/>
+			[ 1, 0, 0]
+		</td>
+	</tr>
+	<tr>
+		<td>
+			[ 0, 0,-1]<br/>
+			[-1, 0, 0]<br/>
+			[ 0, 1, 0]
+		</td>
+		<td>
+			[ 0,-1, 0]<br/>
+			[ 0, 0, 1]<br/>
+			[-1, 0, 0]
+		</td>
+		<td>
+			[ 0, 0, 1]<br/>
+			[-1, 0, 0]<br/>
+			[ 0,-1, 0]
+		</td>
+		<td>
+			[ 0,-1, 0]<br/>
+			[ 0, 0,-1]<br/>
+			[ 1, 0, 0]
+		</td>
+		<td>
+			[ 0, 0,-1]<br/>
+			[ 1, 0, 0]<br/>
+			[ 0,-1, 0]
+		</td>
+		<td>
+			[ 0, 1, 0]<br/>
+			[ 0, 0,-1]<br/>
+			[-1, 0, 0]
+		</td>
+	</tr>
+</table>
+
+<!-- TODO: list of rotation matrices along with interactive tool to apply them to a cube -->
+<p style="text-indent:40px;"></p>
 <h1>Connected colorings (in progress)</h1>
 <p style="text-indent:40px;">In general, it is to be expected that finding the number of connected colorings of a graph (a collection of nodes connected by edges) will be computationally expensive, approaching the cost of simply checking every possible coloring. </p>
 <!-- TODO: link to NP-hardness article -->
