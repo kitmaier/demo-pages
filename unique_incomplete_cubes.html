@@ -9,6 +9,13 @@
 <p style="text-indent:80px;"><tt>4) The empty coloring and complete coloring are excluded.</tt></p>
 <p style="text-indent:40px;">These guidelines will be modified slightly here. Instead of looking only at connected cubes, we will look at cubes with various numbers of connected colored components, and will not worry much about points 3 and 4. </p>
 <p style="text-indent:40px;">First there will be an automated enumeration of all the cubes, and then a theoretical discussion.</p>
+<p style="text-indent:40px;">In total there are:</p>
+<p style="text-indent:80px;"><tt>1 cube with 0 components</tt></p>
+<p style="text-indent:80px;"><tt>127 cubes with 1 component</tt></p>
+<p style="text-indent:80px;"><tt>72 cubes with 2 components</tt></p>
+<p style="text-indent:80px;"><tt>16 cubes with 3 components</tt></p>
+<p style="text-indent:80px;"><tt>2 cubes with 4 components</tt></p>
+<p style="text-indent:80px;"><tt>218 cubes overall</tt></p>
 <h1 id="svgh0">Rotationally distinct cubes with 0 edges</h1>
 <svg id="svg0" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
 <h1 id="svgh1">Rotationally distinct cubes with 1 edge</h1>
@@ -36,16 +43,20 @@
 <h1 id="svgh12">Rotationally distinct cubes with 12 edges</h1>
 <svg id="svg12" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
 </svg>
-<h1>How many incomplete cubes are there?</h1>
-<p style="text-indent:40px;">In total there are:</p>
-<p style="text-indent:80px;"><tt>1 cube with 0 components</tt></p>
-<p style="text-indent:80px;"><tt>127 cubes with 1 component</tt></p>
-<p style="text-indent:80px;"><tt>72 cubes with 2 components</tt></p>
-<p style="text-indent:80px;"><tt>16 cubes with 3 components</tt></p>
-<p style="text-indent:80px;"><tt>2 cubes with 4 components</tt></p>
-<p style="text-indent:80px;"><tt>218 cubes overall</tt></p>
-<p style="text-indent:40px;"></p>
-<p style="text-indent:80px;"><tt></tt></p>
+<h1>How could this be calculated without a computer? (in progress)</h1>
+<p style="text-indent:40px;">There is a detailed discussion in the video linked above of how to use group theory to calculate the number of rotationally distinct cubes.</p>
+<p style="text-indent:40px;">However, this does not take into account the number of connected components.</p>
+<p style="text-indent:40px;">Below both will be explained in more detail.</p>
+<h1>Rotational groups (in progress)</h1>
+<p style="text-indent:40px;">If a coloring of a cube has no symmetries, then there are 24 different rotated versions of that cube. </p>
+<!-- TODO: insert some diagrams here -->
+<p style="text-indent:40px;">If the cube does have symmetries, then the number of distinct rotated versions of the cube is a divisor of 24. </p>
+<p style="text-indent:40px;">It turns out that the number of rotationally distinct cubes can be calculated by starting with the number of colorings of the cube, adding in the number of symmetric colorings to make up for undercounting, and then dividing by 24 to account for rotations. </p>
+<!-- TODO: give the example of a square -->
+<h1>Connected colorings (in progress)</h1>
+<p style="text-indent:40px;">In general, it is to be expected that finding the number of connected colorings of a graph (a collection of nodes connected by edges) will be computationally expensive, approaching the cost of simply checking every possible coloring. </p>
+<!-- TODO: link to NP-hardness article -->
+<p style="text-indent:40px;">The square edge graph has properties that make it much more efficient to work with. It is small, symmetric, and sparse. The following analysis will rely on these special properties.</p>
 <p style="text-indent:40px;"></p>
 <p style="text-indent:80px;"><tt></tt></p>
 <p style="text-indent:40px;"></p>
