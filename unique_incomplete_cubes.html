@@ -257,8 +257,7 @@ th {
 <h2>Cube with 2 adjacent bridges</h2>
 <p style="text-indent:40px;">Suppose that two of the bridges are colored in, and they are on the same side. There are four ways to do this, and the number of colorings in each case will be the same, so we can multiply any number we get in this section by 4 at the end. </p>
 <p style="text-indent:40px;">Because there are two edges already colored in, there will be at least one connected component, and whether there are two or more will depend on how these are connected.</p>
-<p style="text-indent:40px;">The independent cases to be distinguished on each face are whether these two bridges get connected, and whether or not the</p>
-<p style="text-indent:40px;">The independent cases to be distinguished are how many connected components there are on a face that do not touch the bridge.</p>
+<p style="text-indent:40px;">The independent cases to be distinguished on each face are whether these two bridges get connected, and whether there are any other components totally disconnected from the bridges.</p>
 <svg id="svg_2_adj_bridge" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
 <p style="text-indent:40px;">We can combine these numbers by adding the number of connected components, minus one if the bridges are connected on both faces or two if they are not, and multiplying the number of independent colorings on the top and bottom faces.</p>
 <table id="configsTable" style="width:600px;margin-left:80px;text-align:center;">
@@ -307,6 +306,30 @@ th {
 <p style="text-indent:80px;"><tt>2 CC: 61</tt></p>
 <p style="text-indent:80px;"><tt>3 CC: 9</tt></p>
 <h2>Cube with 4 bridges</h2>
+<p style="text-indent:40px;">Suppose that all four of the bridges are colored in. Every edge on the top and bottom faces touches two of the already colored bridges, so there cannot be more than 4 connected components and will usually be less.</p>
+<p style="text-indent:40px;">There are three ways for any two adjacent bridges to be connected by an edge - on the top face, on the bottom face, or on both faces. In the remaining case there is no connecting edge on either face and the bridges are not connected.</p>
+<p style="text-indent:40px;">If we imagine the entire cube flattened to a single square face, such that the colored edges on the top and bottom face are merged together, and each bridge edge is compressed to a dot, then the number of connected components is 4 if there are no edges, and is reduced by one for each edge added until there is only one component left. </p>
+<p style="text-indent:40px;">The number of ways for a cube to be colored, such that it collapses to a particular square, is multiplied by 3 for each edge in the square. </p>
+<p style="text-indent:40px;">To calculate the number of colorings, there are 5 cases:</p>
+<p style="text-indent:80px;"><tt>0 edges (4 components): there is 1 way for this to happen.</tt></p>
+<p style="text-indent:80px;"><tt>1 edge (3 components): 4 squares, each unflattens to 3 cubes, 4*3 = 12.</tt></p>
+<p style="text-indent:80px;"><tt>2 edges (2 components): 6 squares, each unflattens to 3*3 = 9 cubes, 6*9 = 54.</tt></p>
+<p style="text-indent:80px;"><tt>3 edges (1 component): 4 squares, each unflattens to 3*3*3 = 27 cubes, 4*27 = 108.</tt></p>
+<p style="text-indent:80px;"><tt>4 edges (1 component): 1 square, which unflattens to 3*3*3*3 = 81 cubes.</tt></p>
+<p style="text-indent:40px;">For the whole cube with four colored bridges there are this many colorings of each type:</p>
+<p style="text-indent:80px;"><tt>1 CC: 189</tt></p>
+<p style="text-indent:80px;"><tt>2 CC: 54</tt></p>
+<p style="text-indent:80px;"><tt>3 CC: 12</tt></p>
+<p style="text-indent:80px;"><tt>4 CC: 1</tt></p>
+<h2>Cube with any number of bridges</h2>
+<p style="text-indent:40px;">By adding up the number of colorings with a given number of connected components across all the prior cases, and multiplying each one by the appropriate symmetry number, we can get the overall totals:</p>
+<p style="text-indent:80px;"><tt>0 CC: 1</tt></p>
+<p style="text-indent:80px;"><tt>1 CC: 26+4*121+4*160+2*175+4*186+189 = 2433</tt></p>
+<p style="text-indent:80px;"><tt>2 CC: 173+4*110+4*80+2*81+4*61+54 = 1393</tt></p>
+<p style="text-indent:80px;"><tt>3 CC: 52+4*25+4*15+4*9+12 = 260</tt></p>
+<p style="text-indent:80px;"><tt>4 CC: 4+4*1+1 = 9</tt></p>
+<p style="text-indent:40px;">As a checksum, we can verify that this adds up to 4096, which is the total number of colorings of the edges of the cube. The prior calculations can all also be verified as adding up to powers of 2.</p>
+
 
 
 <p style="text-indent:40px;"></p>
