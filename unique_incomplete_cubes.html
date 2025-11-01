@@ -274,11 +274,23 @@ th {
 <p style="text-indent:80px;"><tt>3 CC: 15</tt></p>
 <p style="text-indent:80px;"><tt>4 CC: 1</tt></p>
 <h2>Cube with 2 antipodal bridges</h2>
+<p style="text-indent:40px;">Suppose that two of the bridges are colored in, and they are on opposite ends of the cube. There are two ways to do this, and the number of colorings in each case will be the same, so we can multiply any number we get in this section by 2 at the end. </p>
+<p style="text-indent:40px;">In this case, every edge on the top and bottom faces touches one of the already colored bridges, so there cannot be more than 2 connected components.</p>
+<p style="text-indent:40px;">Whether there are 2 or 1 connected components is determined by whether these two bridges are connected in any way at all. </p>
+<svg id="svg_2_anti_bridge" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
+<p style="text-indent:40px;">We can combine these numbers by taking the lesser of the number of connected components, and multiplying the number of independent colorings on the top and bottom faces.</p>
+<table id="configsTable" style="width:600px;margin-left:80px;text-align:center;">
+	<tr><th>       </th><th>1 CC:  7</th><th>2 CC:  9</th></tr>
+	<tr><th>1 CC: 7</th><td>1 CC: 49</td><td>1 CC: 63</td></tr>
+	<tr><th>2 CC: 9</th><td>1 CC: 63</td><td>2 CC: 81</td></tr>
+</table>
+<p style="text-indent:40px;">For the whole cube with two antipodal colored bridges there are this many colorings of each type:</p>
+<p style="text-indent:80px;"><tt>1 CC: 175</tt></p>
+<p style="text-indent:80px;"><tt>2 CC: 81</tt></p>
 <h2>Cube with 3 bridges</h2>
 <h2>Cube with 4 bridges</h2>
 
 
-<p style="text-indent:80px;"><tt></tt></p>
 <p style="text-indent:40px;"></p>
 <p style="text-indent:80px;"><tt></tt></p>
 
@@ -919,6 +931,32 @@ function paintTwoAdjBridgeCubes(svg) {
 }
 // TODO: indent to match other content
 paintTwoAdjBridgeCubes(svg_2_adj_bridge);
+
+function paintTwoAntiBridgeCubes(svg) {
+	paintText(svg,10,30,"1 Connected component (7 squares)");
+	paintCube(svg,indicesToCube([1,0,1,0,0,0,0,1,0,0,0,1]),30,60,10);
+	paintCube(svg,indicesToCube([1,0,0,0,0,1,0,0,0,0,1,1]),70,60,10);
+	paintCube(svg,indicesToCube([1,0,0,0,0,1,0,1,0,0,1,1]),110,60,10);
+	paintCube(svg,indicesToCube([1,0,1,0,0,1,0,1,0,0,0,1]),150,60,10);
+	paintCube(svg,indicesToCube([1,0,1,0,0,1,0,0,0,0,1,1]),190,60,10);
+	paintCube(svg,indicesToCube([1,0,1,0,0,0,0,1,0,0,1,1]),230,60,10);
+	paintCube(svg,indicesToCube([1,0,1,0,0,1,0,1,0,0,1,1]),270,60,10);
+	paintText(svg,10,110,"2 Connected components (9 squares)");
+	paintCube(svg,indicesToCube([1,0,0,0,0,0,0,0,0,0,0,1]),30,140,10);
+	paintCube(svg,indicesToCube([1,0,0,0,0,0,0,0,0,0,1,1]),70,140,10);
+	paintCube(svg,indicesToCube([1,0,1,0,0,0,0,0,0,0,0,1]),110,140,10);
+	paintCube(svg,indicesToCube([1,0,0,0,0,0,0,1,0,0,0,1]),150,140,10);
+	paintCube(svg,indicesToCube([1,0,0,0,0,1,0,0,0,0,0,1]),190,140,10);
+	paintCube(svg,indicesToCube([1,0,0,0,0,0,0,1,0,0,1,1]),230,140,10);
+	paintCube(svg,indicesToCube([1,0,1,0,0,0,0,0,0,0,1,1]),270,140,10);
+	paintCube(svg,indicesToCube([1,0,1,0,0,1,0,0,0,0,0,1]),310,140,10);
+	paintCube(svg,indicesToCube([1,0,0,0,0,1,0,1,0,0,0,1]),350,140,10);
+	svg.setAttribute('width','800');
+	svg.setAttribute('height','170');
+	paintFrame(svg,800,170);
+}
+// TODO: indent to match other content
+paintTwoAntiBridgeCubes(svg_2_anti_bridge);
 
 // TODO: color code the corners by how many edges they are adjacent to
 // TODO: color code the edges by whether they are connected to leaves or between branch points
