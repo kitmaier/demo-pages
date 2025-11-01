@@ -288,7 +288,24 @@ th {
 <p style="text-indent:80px;"><tt>1 CC: 175</tt></p>
 <p style="text-indent:80px;"><tt>2 CC: 81</tt></p>
 <h2>Cube with 3 bridges</h2>
-
+<p style="text-indent:40px;">Suppose that three of the bridges are colored in. There are four ways to do this, and the number of colorings in each case will be the same, so we can multiply any number we get in this section by 4 at the end. </p>
+<p style="text-indent:40px;">In this case, every edge on the top and bottom faces touches one of the already colored bridges, so there cannot be more than 3 connected components.</p>
+<p style="text-indent:40px;">Whether there are 3, 2, or 1 connected components is determined by whether these three briges are connected to each other, either directly or indirectly. </p>
+<p style="text-indent:40px;">The interesting cases are whether all bridges are connected, or all disconnected, or which pair of bridges is connected. </p>
+<svg id="svg_3_bridge" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
+<p style="text-indent:40px;">The number of connected components is a bit more complicated to calculate this time. If two bridges are connected on either face, then they are connected in the full cube, and if two different pairs of bridges are connected, then they are all connected. </p>
+<table id="configsTable" style="width:600px;margin-left:80px;text-align:center;">
+	<tr><th>         </th><th>1 CC:  6</th><th>2 CC T:  3</th><th>2 CC R:  3</th><th>2 CC D: 1</th><th>3 CC  :  3</th></tr>
+	<tr><th>1 CC  : 6</th><td>1 CC: 36</td><td>1 CC  : 18</td><td>1 CC  : 18</td><td>1 CC  : 6</td><td>1 CC  : 18</td></tr>
+	<tr><th>2 CC T: 3</th><td>1 CC: 18</td><td>2 CC T:  9</td><td>1 CC  :  9</td><td>1 CC  : 3</td><td>2 CC T:  9</td></tr>
+	<tr><th>2 CC R: 3</th><td>1 CC: 18</td><td>1 CC  :  9</td><td>2 CC R:  9</td><td>1 CC  : 3</td><td>2 CC R:  9</td></tr>
+	<tr><th>2 CC D: 1</th><td>1 CC:  6</td><td>1 CC  :  3</td><td>1 CC  :  3</td><td>2 CC D: 1</td><td>2 CC D:  3</td></tr>
+	<tr><th>3 CC  : 3</th><td>1 CC: 18</td><td>2 CC T:  9</td><td>2 CC R:  9</td><td>2 CC D: 3</td><td>3 CC  :  9</td></tr>
+</table>
+<p style="text-indent:40px;">For the whole cube with three colored bridges there are this many colorings of each type:</p>
+<p style="text-indent:80px;"><tt>1 CC: 186</tt></p>
+<p style="text-indent:80px;"><tt>2 CC: 61</tt></p>
+<p style="text-indent:80px;"><tt>3 CC: 9</tt></p>
 <h2>Cube with 4 bridges</h2>
 
 
@@ -976,6 +993,36 @@ function paintTwoAntiBridgeCubes(svg) {
 }
 // TODO: indent to match other content
 paintTwoAntiBridgeCubes(svg_2_anti_bridge);
+
+function paintThreeBridgeCubes(svg) {
+	paintText(svg,10,30,"1 Connected component (6 squares)");
+	paintCube(svg,indicesToCube([1,0,0,0,0,1,0,0,1,0,1,1]),30,60,10);
+	paintCube(svg,indicesToCube([1,0,0,0,0,1,0,1,1,0,1,1]),70,60,10);
+	paintCube(svg,indicesToCube([1,0,1,0,0,1,0,1,1,0,0,1]),110,60,10);
+	paintCube(svg,indicesToCube([1,0,1,0,0,1,0,0,1,0,1,1]),150,60,10);
+	paintCube(svg,indicesToCube([1,0,1,0,0,0,0,1,1,0,1,1]),190,60,10);
+	paintCube(svg,indicesToCube([1,0,1,0,0,1,0,1,1,0,1,1]),230,60,10);
+	paintText(svg,10,110,"2 Connected components + Top connected (3 squares)");
+	paintCube(svg,indicesToCube([1,0,0,0,0,1,0,0,1,0,0,1]),30,140,10);
+	paintCube(svg,indicesToCube([1,0,1,0,0,1,0,0,1,0,0,1]),70,140,10);
+	paintCube(svg,indicesToCube([1,0,0,0,0,1,0,1,1,0,0,1]),110,140,10);
+	paintText(svg,10,190,"2 Connected components + Right connected (3 squares)");
+	paintCube(svg,indicesToCube([1,0,0,0,0,0,0,0,1,0,1,1]),30,220,10);
+	paintCube(svg,indicesToCube([1,0,0,0,0,0,0,1,1,0,1,1]),70,220,10);
+	paintCube(svg,indicesToCube([1,0,1,0,0,0,0,0,1,0,1,1]),110,220,10);
+	paintText(svg,10,270,"2 Connected components + Diagonal connected (1 square)");
+	paintCube(svg,indicesToCube([1,0,1,0,0,0,0,1,1,0,0,1]),30,300,10);
+	paintText(svg,10,350,"3 Connected components (3 squares)");
+	paintCube(svg,indicesToCube([1,0,0,0,0,0,0,0,1,0,0,1]),30,380,10);
+	paintCube(svg,indicesToCube([1,0,1,0,0,0,0,0,1,0,0,1]),70,380,10);
+	paintCube(svg,indicesToCube([1,0,0,0,0,0,0,1,1,0,0,1]),110,380,10);
+
+	svg.setAttribute('width','800');
+	svg.setAttribute('height','410');
+	paintFrame(svg,800,410);
+}
+// TODO: indent to match other content
+paintThreeBridgeCubes(svg_3_bridge);
 
 // TODO: color code the corners by how many edges they are adjacent to
 // TODO: color code the edges by whether they are connected to leaves or between branch points
