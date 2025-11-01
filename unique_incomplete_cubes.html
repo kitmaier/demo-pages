@@ -238,14 +238,12 @@ th {
 <p style="text-indent:80px;"><tt>2 CC: 173</tt></p>
 <p style="text-indent:80px;"><tt>3 CC: 52</tt></p>
 <p style="text-indent:80px;"><tt>4 CC: 4</tt></p>
-
 <h2>Cube with 1 bridge</h2>
 <p style="text-indent:40px;">Suppose that one of the bridges is colored in. There are four ways to do this, and the number of colorings in each case will be the same, so we can multiply any number we get in this section by 4 at the end. </p>
 <p style="text-indent:40px;">Because there is one edge that is already colored, there will be at least one connected component, and whether or not there is more than one will depend on whether other edges are connected to this one.</p>
 <p style="text-indent:40px;">Because three of the bridges are not colored in, the top and bottom faces are almost independent of one another.</p>
 <p style="text-indent:40px;">The independent cases to be distinguished are how many connected components there are on a face that do not touch the bridge.</p>
 <svg id="svg_1_bridge" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
-
 <p style="text-indent:40px;">We can combine these numbers by adding the number of connected components, minus one for the duplicated bridge component, and multiplying the number of independent colorings on the top and bottom faces.</p>
 <table id="configsTable" style="width:600px;margin-left:80px;text-align:center;">
 	<tr><th>        </th><th>1 CC: 11</th><th>2 CC:  5</th></tr>
@@ -256,6 +254,28 @@ th {
 <p style="text-indent:80px;"><tt>1 CC: 121</tt></p>
 <p style="text-indent:80px;"><tt>2 CC: 110</tt></p>
 <p style="text-indent:80px;"><tt>3 CC: 25</tt></p>
+<h2>Cube with 2 adjacent bridges</h2>
+<p style="text-indent:40px;">Suppose that two of the bridges are colored in, and they are on the same side. There are four ways to do this, and the number of colorings in each case will be the same, so we can multiply any number we get in this section by 4 at the end. </p>
+<p style="text-indent:40px;">Because there are two edges already colored in, there will be at least one connected component, and whether there are two or more will depend on how these are connected.</p>
+<p style="text-indent:40px;">The independent cases to be distinguished on each face are whether these two bridges get connected, and whether or not the</p>
+<p style="text-indent:40px;">The independent cases to be distinguished are how many connected components there are on a face that do not touch the bridge.</p>
+<svg id="svg_2_adj_bridge" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
+<p style="text-indent:40px;">We can combine these numbers by adding the number of connected components, minus one if the bridges are connected on both faces or two if they are not, and multiplying the number of independent colorings on the top and bottom faces.</p>
+<table id="configsTable" style="width:600px;margin-left:80px;text-align:center;">
+	<tr><th>          </th><th>BD 2 CC:  6</th><th>BD 3 CC: 1</th><th>BC 1 CC:  8</th><th>BC 2 CC: 1</th></tr>
+	<tr><th>BD 2 CC: 6</th><td>   2 CC: 36</td><td>   3 CC: 6</td><td>   1 CC: 48</td><td>   2 CC: 6</td></tr>
+	<tr><th>BD 3 CC: 1</th><td>   3 CC:  6</td><td>   4 CC: 1</td><td>   2 CC:  8</td><td>   3 CC: 1</td></tr>
+	<tr><th>BC 1 CC: 8</th><td>   1 CC: 48</td><td>   2 CC: 8</td><td>   1 CC: 64</td><td>   2 CC: 8</td></tr>
+	<tr><th>BC 2 CC: 1</th><td>   2 CC:  6</td><td>   3 CC: 1</td><td>   2 CC:  8</td><td>   3 CC: 1</td></tr>
+</table>
+<p style="text-indent:40px;">For the whole cube with two adjacent colored bridges there are this many colorings of each type:</p>
+<p style="text-indent:80px;"><tt>1 CC: 160</tt></p>
+<p style="text-indent:80px;"><tt>2 CC: 80</tt></p>
+<p style="text-indent:80px;"><tt>3 CC: 15</tt></p>
+<p style="text-indent:80px;"><tt>4 CC: 1</tt></p>
+<h2>Cube with 2 antipodal bridges</h2>
+<h2>Cube with 3 bridges</h2>
+<h2>Cube with 4 bridges</h2>
 
 
 <p style="text-indent:80px;"><tt></tt></p>
@@ -871,6 +891,34 @@ function paintOneBridgeCubes(svg) {
 }
 // TODO: indent to match other content
 paintOneBridgeCubes(svg_1_bridge);
+
+function paintTwoAdjBridgeCubes(svg) {
+	paintText(svg,10,30,"Bridges disconnected + 2 Connected components (6 squares)");
+	paintCube(svg,indicesToCube([1,0,0,0,0,0,0,0,1,0,0,0]),30,60,10);
+	paintCube(svg,indicesToCube([1,0,0,0,0,0,0,0,1,0,1,0]),70,60,10);
+	paintCube(svg,indicesToCube([1,0,0,0,0,0,0,1,1,0,1,0]),110,60,10);
+	paintCube(svg,indicesToCube([1,0,1,0,0,0,0,0,1,0,1,0]),150,60,10);
+	paintCube(svg,indicesToCube([1,0,1,0,0,0,0,0,1,0,0,0]),190,60,10);
+	paintCube(svg,indicesToCube([1,0,1,0,0,0,0,1,1,0,0,0]),230,60,10);
+	paintText(svg,10,110,"Bridges disconnected + 3 Connected components (1 square)");
+	paintCube(svg,indicesToCube([1,0,0,0,0,0,0,1,1,0,0,0]),30,140,10);
+	paintText(svg,10,190,"Bridges connected + 1 Connected component (8 squares)");
+	paintCube(svg,indicesToCube([1,0,0,0,0,1,0,0,1,0,0,0]),30,220,10);
+	paintCube(svg,indicesToCube([1,0,0,0,0,1,0,0,1,0,1,0]),70,220,10);
+	paintCube(svg,indicesToCube([1,0,1,0,0,1,0,0,1,0,0,0]),110,220,10);
+	paintCube(svg,indicesToCube([1,0,0,0,0,1,0,1,1,0,1,0]),150,220,10);
+	paintCube(svg,indicesToCube([1,0,1,0,0,1,0,1,1,0,0,0]),190,220,10);
+	paintCube(svg,indicesToCube([1,0,1,0,0,1,0,0,1,0,1,0]),230,220,10);
+	paintCube(svg,indicesToCube([1,0,1,0,0,0,0,1,1,0,1,0]),270,220,10);
+	paintCube(svg,indicesToCube([1,0,1,0,0,1,0,1,1,0,1,0]),310,220,10);
+	paintText(svg,10,270,"Bridges connected + 2 Connected components (1 square)");
+	paintCube(svg,indicesToCube([1,0,0,0,0,1,0,1,1,0,0,0]),30,300,10);
+	svg.setAttribute('width','800');
+	svg.setAttribute('height','330');
+	paintFrame(svg,800,330);
+}
+// TODO: indent to match other content
+paintTwoAdjBridgeCubes(svg_2_adj_bridge);
 
 // TODO: color code the corners by how many edges they are adjacent to
 // TODO: color code the edges by whether they are connected to leaves or between branch points
