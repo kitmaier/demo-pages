@@ -288,6 +288,7 @@ th {
 <p style="text-indent:80px;"><tt>1 CC: 175</tt></p>
 <p style="text-indent:80px;"><tt>2 CC: 81</tt></p>
 <h2>Cube with 3 bridges</h2>
+
 <h2>Cube with 4 bridges</h2>
 
 
@@ -297,6 +298,24 @@ th {
 </body>
 <script>
 
+/*
+Topic: Number of colorings of the edges of a cube that are connected vs disconnected
+High level: This can be resolved by splitting the cube up into three sections (face, 4 bridge edges, face) and treating them symmetrically by cases. This also combines well with working out the number of rotationally distinct families of colorings. 
+Details:
+ - 0-bridge case: there is 1 empty coloring for a face, 2 disconnected, and 13 connected, for a total of 16. (1E+13C+2D)(1E+13C+2D) = 1EE+13EC+2ED+13CE+169CC+26CD+2DE+26DC+4DD = 1EE+13(EC+CE)+(2(ED+DE)+26(CD+DC)+169CC+4DD) where the first group is empty, the second group is connected, and the third is disconnected
+ - 1-bridge case: this can happen four equivalent ways. 
+ - 2-bridge adjacent case: this can happen four equivalent ways. there are (1C+1D)(1C+1D) = 1CC+1(CD+DC)+1DD = 3C+1D ways for the two bridges to be directly connected, and (1C+6D+1F) ways to be indirectly connected on a single face where F indicates a single edge floating by itself, for a total of (1C+1D)(1C+6D+1F) = 1CC+6CD+1CF+1DC+6DD+1DF = 8C+6D+2F for each face and (8C+6D+2F)(8C+6D+2F) = 64CC+36DD+4FF+48(DC+CD)+16(CF+FC)+12(DF+FD) = 160C+96D overall
+ - 2-bridge opposite case: this can happen two equivalent ways. going around the cube in one direction, there are two edges on each face, which can be disconnected in 3x3=9 ways, with 16-9=7 ways to be connected, giving (1C+3D)(1C+3D) = 1CC+3(CD+DC)+9DD = 7C+9D. as these are independent, there are (7C+9D)(7C+9D) = 49CC+63(CD+DC)+81DD cases where at least 1 C means overall connected, and 2 D's means overall disconnected
+ - 3-bridge case: this can happen four equivalent ways. for the two pairs of bridges which are adjacent, they are either connected (3 ways) or not connected (1 way) by the edges directly between them, independently. For the pair of bridges which are not adjacent and the remaining 4 edges, there is one way to connect them together on each face and 3 ways to be disconnected, giving (1C+3D)(1C+3D) = 1CC+3(CD+DC)+9DD = 7C+9D because they are connected if they are connected on at least one face. Combining these independent cases gives (3C+1D)(3C+1D)(7C+9D) = 63CCC+81CCD+21CDC+27CDD+21DCC+27DCD+7DDC+9DDD, where instances with at least 2 C's are overall connected and instances with at least 2 D's are overall disconnected
+ - 4-bridge case: any two adjacent bridges are either connected (3 ways) or not connected (1 way) by the edges directly between them, independently. flattening the entire cube into one face, there are 5 cases
+   - 0 edges: there is 1 way for this to happen, and it is disconnected
+   - 1 edge: there are 4 ways for this to happen, each of which unflatten to 3 cases, for a total of 12, which are all disconnected
+   - 2 edge: there are 6 ways for this to happen, each of which unflattens to 9 cases, for a total of 54, which are all disconnected
+   - 3 edge: there are 4 ways for this to happen, each of which unflatten to 27 cases, for a total of 108, which are all connected
+   - 4 edge: there is 1 way for this to happen, which unflattens to 81 cases, which are all connected
+ - Total: (1E+26C+229D)+4*()+4*()+2*(175C+81D)+4*(186C+70D)+(189C+67D) = 
+// TODO: finish 1-bridge case and totals, review and consider ways to make the argument simpler/cleaner, extend to the case of 2/3/4 connected components, integrate with rotational symmetries to get complete solution
+*/
 
 // TODO: list out rotation matrices (done)
 // TODO: create cube data structure
