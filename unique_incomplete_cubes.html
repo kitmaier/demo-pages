@@ -222,6 +222,7 @@ th {
 <h2>0 bridges</h2>
 <p style="text-indent:40px;">Suppose that none of the bridges are colored in. In that case, the top and bottom faces are independent of each other and cannot be connected. </p>
 <p style="text-indent:40px;">The edges of a square can be colored 1 way with no edges, 2 ways with 2 disconnected edges, and 13 ways with connected edges.</p>
+<svg id="svg_square" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
 <p style="text-indent:40px;">We can combine these numbers by adding the number of connected components, and multiplying the number of independent colorings on the top and bottom faces.</p>
 <table id="configsTable" style="width:600px;margin-left:80px;text-align:center;">
 	<tr><th>        </th><th>0 CC:  1</th><th>1 CC:  13</th><th>2 CC:  2</th></tr>
@@ -229,7 +230,7 @@ th {
 	<tr><th>1 CC: 13</th><td>1 CC: 13</td><td>2 CC: 169</td><td>3 CC: 26</td></tr>
 	<tr><th>2 CC:  2</th><td>2 CC:  2</td><td>3 CC:  26</td><td>4 CC:  4</td></tr>
 </table>
-<p style="text-indent:40px;">In total this makes for:</p>
+<p style="text-indent:40px;">For the whole cube with no bridges there are this many colorings of each type:</p>
 <p style="text-indent:80px;"><tt>0 CC: 1</tt></p>
 <p style="text-indent:80px;"><tt>1 CC: 26</tt></p>
 <p style="text-indent:80px;"><tt>2 CC: 173</tt></p>
@@ -607,6 +608,25 @@ function paintEdge(svg, edge, offsetX, offsetY, size) {
 	polygon.points.appendItem(point2);
 }
 
+function paintSquare(svg, left, top, right, bottom, offsetX, offsetY, size) {
+	if(left) {
+		paintEdge(svg,[-1,0,1],offsetX,offsetY,size);
+	}
+	if(right) {
+		paintEdge(svg,[1,0,1],offsetX,offsetY,size);
+	}
+	if(top) {
+		paintEdge(svg,[0,-1,1],offsetX,offsetY,size);
+	}
+	if(bottom) {
+		paintEdge(svg,[0,1,1],offsetX,offsetY,size);
+	}
+	for(let x=-1; x<=1; x+=2) {
+		for(let y=-1; y<=1; y+=2) {
+			paintCorner(svg,x,y,1,offsetX,offsetY,size);
+		}
+	}
+}
 function paintCube(svg, cube, offsetX, offsetY, size) {
 	let indices = cubeToIndices(cube);
 	for(let k=0; k<12; k++) {
@@ -779,6 +799,55 @@ paintAllDistinctStratifiedCubes(svg10,svgh10,10);
 paintAllDistinctStratifiedCubes(svg11,svgh11,11);
 paintAllDistinctStratifiedCubes(svg12,svgh12,12);
 
+function paintAllDistinctStratifiedSquares(svg) {
+/*	let r = -1;
+	let c = -2;
+	let numberOfCubes = 0;
+	for(let numberOfConnectedComponents=0; numberOfConnectedComponents<5; numberOfConnectedComponents++) {
+		let cubes = stratifiedCubes[numberOfConnectedComponents][numberOfEdges];
+		if(cubes.length>0) {
+			c += 2;
+			r = -1;
+			let componentsText = numberOfConnectedComponents==1?" Connected component":" Connected components";
+			paintText(svg,10,c*40+30,numberOfConnectedComponents+componentsText+" ("+cubes.length+" cube"+(cubes.length==1?"":"s")+")");
+			for(let k=0; k<cubes.length; k++) {
+				r++;
+				if(r==15) {
+					r = 0;
+					c++;
+				}
+				paintCube(svg,cubes[k],r*40+20,(c+1)*40+20,10);
+				numberOfCubes++;
+			}
+		}
+	}
+	let h = (c+2)*40+10;*/
+	paintText(svg,10,30,"0 Connected components (1 square)");
+	paintSquare(svg,false,false,false,false,30,60,10);
+	paintText(svg,10,110,"1 Connected components (13 squares)");
+	paintSquare(svg,true,false,false,false,30,140,10);
+	paintSquare(svg,false,true,false,false,70,140,10);
+	paintSquare(svg,false,false,true,false,110,140,10);
+	paintSquare(svg,false,false,false,true,150,140,10);
+	paintSquare(svg,true,true,false,false,190,140,10);
+	paintSquare(svg,false,true,true,false,230,140,10);
+	paintSquare(svg,false,false,true,true,270,140,10);
+	paintSquare(svg,true,false,false,true,310,140,10);
+	paintSquare(svg,true,true,true,false,350,140,10);
+	paintSquare(svg,false,true,true,true,390,140,10);
+	paintSquare(svg,true,false,true,true,430,140,10);
+	paintSquare(svg,true,true,false,true,470,140,10);
+	paintSquare(svg,true,true,true,true,510,140,10);
+	paintText(svg,10,190,"2 Connected components (2 squares)");
+	paintSquare(svg,true,false,true,false,30,220,10);
+	paintSquare(svg,false,true,false,true,70,220,10);
+	svg.setAttribute('width','800');
+	svg.setAttribute('height','280');
+	paintFrame(svg,800,280);
+}
+
+// TODO: indent to match other content
+paintAllDistinctStratifiedSquares(svg_square);
 
 // TODO: color code the corners by how many edges they are adjacent to
 // TODO: color code the edges by whether they are connected to leaves or between branch points
