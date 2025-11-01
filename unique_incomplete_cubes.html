@@ -800,28 +800,6 @@ paintAllDistinctStratifiedCubes(svg11,svgh11,11);
 paintAllDistinctStratifiedCubes(svg12,svgh12,12);
 
 function paintAllDistinctStratifiedSquares(svg) {
-/*	let r = -1;
-	let c = -2;
-	let numberOfCubes = 0;
-	for(let numberOfConnectedComponents=0; numberOfConnectedComponents<5; numberOfConnectedComponents++) {
-		let cubes = stratifiedCubes[numberOfConnectedComponents][numberOfEdges];
-		if(cubes.length>0) {
-			c += 2;
-			r = -1;
-			let componentsText = numberOfConnectedComponents==1?" Connected component":" Connected components";
-			paintText(svg,10,c*40+30,numberOfConnectedComponents+componentsText+" ("+cubes.length+" cube"+(cubes.length==1?"":"s")+")");
-			for(let k=0; k<cubes.length; k++) {
-				r++;
-				if(r==15) {
-					r = 0;
-					c++;
-				}
-				paintCube(svg,cubes[k],r*40+20,(c+1)*40+20,10);
-				numberOfCubes++;
-			}
-		}
-	}
-	let h = (c+2)*40+10;*/
 	paintText(svg,10,30,"0 Connected components (1 square)");
 	paintSquare(svg,false,false,false,false,30,60,10);
 	paintText(svg,10,110,"1 Connected components (13 squares)");
