@@ -1310,40 +1310,20 @@ function paintRotateEdge180Cubes(svg) {
 	x += 80;
 	paintText(svg,10,x,"1 connected component (12 cubes)");
 	PRChelper(svg,x+30,[
-		PRE180helper(0,0,0,0,0,0,1),
-		PRE180helper(0,0,0,0,0,1,0),
-		PRE180helper(0,0,0,0,0,1,1),
-		PRE180helper(0,0,0,0,1,0,0),
-		PRE180helper(0,0,0,0,1,0,1),
-		PRE180helper(0,0,0,0,1,1,0),
-		PRE180helper(0,0,0,0,1,1,1),
-		PRE180helper(0,0,0,1,0,0,0),
-		PRE180helper(0,0,0,1,0,0,1),
-		PRE180helper(0,0,0,1,0,1,0),
-		PRE180helper(0,0,0,1,0,1,1),
-		PRE180helper(0,0,0,1,1,0,0),
-		PRE180helper(0,0,0,1,1,0,1),
-		PRE180helper(0,0,0,1,1,1,0),
-		PRE180helper(0,0,0,1,1,1,1),
-		PRE180helper(0,0,1,0,0,0,0),
-		PRE180helper(0,0,1,0,0,0,1),
-		PRE180helper(0,0,1,0,0,1,0),
-		PRE180helper(0,0,1,0,0,1,1),
-		PRE180helper(0,0,1,0,1,0,0),
-		PRE180helper(0,0,1,0,1,0,1),
-		PRE180helper(0,0,1,0,1,1,0),
-		PRE180helper(0,0,1,0,1,1,1),
-		PRE180helper(0,0,1,1,0,0,0),
-		PRE180helper(0,0,1,1,0,0,1),
-		PRE180helper(0,0,1,1,0,1,0),
-		PRE180helper(0,0,1,1,0,1,1),
-		PRE180helper(0,0,1,1,1,0,0),
-		PRE180helper(0,0,1,1,1,0,1),
-		PRE180helper(0,0,1,1,1,1,0),
-		PRE180helper(0,0,1,1,1,1,1),
-		PRE180helper(0,1,0,0,0,0,0),
-		PRE180helper(0,1,0,0,0,0,1),
-		PRE180helper(0,1,0,0,0,1,0),
+		//PRE180helper(0,0,0,0,0,0,1),
+		//PRE180helper(0,0,0,0,0,1,1),
+		//PRE180helper(0,0,0,0,1,0,1),
+		//PRE180helper(0,0,0,0,1,1,1),
+		//PRE180helper(0,0,0,1,0,1,1),
+		//PRE180helper(0,0,0,1,1,0,1),
+		//PRE180helper(0,0,0,1,1,1,0),
+		//PRE180helper(0,0,0,1,1,1,1),
+		//PRE180helper(0,0,1,0,0,1,1),
+		//PRE180helper(0,0,1,0,1,1,1),
+		//PRE180helper(0,0,1,1,0,1,1),
+		//PRE180helper(0,0,1,1,1,0,1),
+		//PRE180helper(0,0,1,1,1,1,0),
+		//PRE180helper(0,0,1,1,1,1,1),
 		PRE180helper(0,1,0,0,0,1,1),
 		PRE180helper(0,1,0,0,1,0,0),
 		PRE180helper(0,1,0,0,1,0,1),
@@ -1441,14 +1421,34 @@ function paintRotateEdge180Cubes(svg) {
 	x += 80;
 	paintText(svg,10,x,"2 connected components (12 cubes)");
 	PRChelper(svg,x+30,[
+		PRE180helper(0,0,0,0,0,1,0),
+		PRE180helper(0,0,0,0,1,0,0),
+		PRE180helper(0,0,0,0,1,1,0),
+		PRE180helper(0,0,0,1,0,0,0),
+		PRE180helper(0,0,0,1,0,1,0),
+		PRE180helper(0,0,0,1,1,0,0),
+		PRE180helper(0,0,1,0,0,0,0),
+		PRE180helper(0,0,1,0,0,1,0),
+		PRE180helper(0,0,1,0,1,1,0),
+		PRE180helper(0,0,1,1,0,0,0),
+		PRE180helper(0,0,1,1,0,1,0),
+		PRE180helper(0,0,1,1,1,0,0),
+		PRE180helper(0,1,0,0,0,0,0),
 	]);
 	x += 80;
 	paintText(svg,10,x,"3 connected components (1 cube)");
 	PRChelper(svg,x+30,[
+		PRE180helper(0,0,0,1,0,0,1),
+		PRE180helper(0,0,1,0,0,0,1),
+		PRE180helper(0,0,1,0,1,0,1),
+		PRE180helper(0,0,1,1,0,0,1),
+		PRE180helper(0,1,0,0,0,0,1),
 	]);
 	x += 80;
 	paintText(svg,10,x,"4 connected components (2 cubes)");
 	PRChelper(svg,x+30,[
+		PRE180helper(0,0,1,0,1,0,0),
+		PRE180helper(0,1,0,0,0,1,0),
 	]);
 	svg.setAttribute('width','800');
 	svg.setAttribute('height','490');
