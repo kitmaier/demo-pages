@@ -329,10 +329,14 @@ th {
 <p style="text-indent:40px;">As a checksum, we can verify that this adds up to 4096, which is the total number of colorings of the edges of the cube. The prior calculations can all also be verified as adding up to powers of 2.</p>
 <h1>Rotationally connected components (in progress)</h1>
 <p style="text-indent:40px;">There are substantially fewer ways to color a cube that are rotationally symmetric.</p>
-<p style="text-indent:40px;">If the coloring is to be symmetric with respect to a 90° rotation around a face of the cube, there are only 2^3 = 8 possible colorings. There are 6 faces and 2 directions to rotate in, so there are 12 instances of this type of rotation.</p>
+<p style="text-indent:40px;">If the coloring is to be symmetric with respect to a 90° rotation around a face of the cube, there are only 2^3 = 8 possible colorings. There are 3 pairs of opposite faces and 2 directions to rotate in, so there are 6 instances of this type of rotation.</p>
 <svg id="svg_rot_face_90" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
-<p style="text-indent:40px;">If the coloring is to be symmetric with respect to a 180° rotation around a face of the cube, there are 2^6 = 64 possible colorings. There are 6 faces and the direction of rotation does not matter, so there are 6 instances of this type of rotation.</p>
+<p style="text-indent:40px;">If the coloring is to be symmetric with respect to a 180° rotation around a face of the cube, there are 2^6 = 64 possible colorings. There are 3 pairs of opposite faces and the direction of rotation does not matter, so there are 3 instances of this type of rotation.</p>
 <svg id="svg_rot_face_180" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
+<p style="text-indent:40px;">If the coloring is to be symmetric with respect to a 120° rotation around a corner of the cube, there are 2^4 = 16 possible colorings. There are 4 pairs of opposite corners and 2 directions to rotate in, so there are 8 instances of this type of rotation.</p>
+<svg id="svg_rot_corner_120" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
+<p style="text-indent:40px;">If the coloring is to be symmetric with respect to a 180° rotation around an edge of the cube, there are 2^7 = 128 possible colorings. There are 6 pairs of opposite edges and the direction of rotation does not matter, so there are 6 instances of this type of rotation.</p>
+<svg id="svg_rot_edge_180" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
 
 
 
@@ -1070,7 +1074,7 @@ function paintRotateFace90Cubes(svg) {
 }
 paintRotateFace90Cubes(svg_rot_face_90);
 
-function PRF180helper1(a,b,c,d,e,f) {
+function PRF180helper(a,b,c,d,e,f) {
 	let indices = [0,0,0,0,0,0,0,0,0,0,0,0];
 	if(a==1) {
 		indices[5] = 1;
@@ -1099,7 +1103,7 @@ function PRF180helper1(a,b,c,d,e,f) {
 	return indices;
 }
 
-function PRF180helper2(svg,y,index_lists) {
+function PRChelper(svg,y,index_lists) {
 	for(let k=0; k<index_lists.length; k++) {
 		let indices = index_lists[k];
 		let x = 30+40*k;
@@ -1108,102 +1112,349 @@ function PRF180helper2(svg,y,index_lists) {
 }
 
 function paintRotateFace180Cubes(svg) {
-	// TODO: update this with all 64 cases, consider how to automate it
 	let x = 30;
 	paintText(svg,10,x,"0 connected components (1 cube)");
-	PRF180helper2(svg,x+30,[
-		PRF180helper1(0,0,0,0,0,0)
+	PRChelper(svg,x+30,[
+		PRF180helper(0,0,0,0,0,0)
 	]);
 	x += 80;
 	paintText(svg,10,x,"1 connected component (25 cubes)");
-	PRF180helper2(svg,x+30,[
-		PRF180helper1(0,0,0,0,1,1),
-		PRF180helper1(0,0,0,1,1,1),
-		PRF180helper1(0,0,1,0,1,1),
-		PRF180helper1(0,0,1,1,1,1),
-		PRF180helper1(0,1,0,1,1,1),
-		PRF180helper1(0,1,1,0,1,1),
-		PRF180helper1(0,1,1,1,1,0),
-		PRF180helper1(0,1,1,1,1,1),
-		PRF180helper1(1,0,0,1,1,1),
-		PRF180helper1(1,0,1,0,1,1),
-		PRF180helper1(1,0,1,1,0,1),
-		PRF180helper1(1,0,1,1,1,1),
-		PRF180helper1(1,1,0,0,0,0),
-		PRF180helper1(1,1,0,1,0,0),
-		PRF180helper1(1,1,0,1,0,1),
+	PRChelper(svg,x+30,[
+		PRF180helper(0,0,0,0,1,1),
+		PRF180helper(0,0,0,1,1,1),
+		PRF180helper(0,0,1,0,1,1),
+		PRF180helper(0,0,1,1,1,1),
+		PRF180helper(0,1,0,1,1,1),
+		PRF180helper(0,1,1,0,1,1),
+		PRF180helper(0,1,1,1,1,0),
+		PRF180helper(0,1,1,1,1,1),
+		PRF180helper(1,0,0,1,1,1),
+		PRF180helper(1,0,1,0,1,1),
+		PRF180helper(1,0,1,1,0,1),
+		PRF180helper(1,0,1,1,1,1),
+		PRF180helper(1,1,0,0,0,0),
+		PRF180helper(1,1,0,1,0,0),
+		PRF180helper(1,1,0,1,0,1),
 	]);
 	x += 40;
-	PRF180helper2(svg,x+30,[
-		PRF180helper1(1,1,0,1,1,0),
-		PRF180helper1(1,1,0,1,1,1),
-		PRF180helper1(1,1,1,0,0,0),
-		PRF180helper1(1,1,1,0,0,1),
-		PRF180helper1(1,1,1,0,1,0),
-		PRF180helper1(1,1,1,0,1,1),
-		PRF180helper1(1,1,1,1,0,0),
-		PRF180helper1(1,1,1,1,0,1),
-		PRF180helper1(1,1,1,1,1,0),
-		PRF180helper1(1,1,1,1,1,1),
+	PRChelper(svg,x+30,[
+		PRF180helper(1,1,0,1,1,0),
+		PRF180helper(1,1,0,1,1,1),
+		PRF180helper(1,1,1,0,0,0),
+		PRF180helper(1,1,1,0,0,1),
+		PRF180helper(1,1,1,0,1,0),
+		PRF180helper(1,1,1,0,1,1),
+		PRF180helper(1,1,1,1,0,0),
+		PRF180helper(1,1,1,1,0,1),
+		PRF180helper(1,1,1,1,1,0),
+		PRF180helper(1,1,1,1,1,1),
 	]);
 	x += 80;
 	paintText(svg,10,x,"2 connected components (29 cubes)");
-	PRF180helper2(svg,x+30,[
-		PRF180helper1(0,0,0,0,0,1),
-		PRF180helper1(0,0,0,0,1,0),
-		PRF180helper1(0,0,0,1,0,0),
-		PRF180helper1(0,0,0,1,0,1),
-		PRF180helper1(0,0,0,1,1,0),
-		PRF180helper1(0,0,1,0,0,0),
-		PRF180helper1(0,0,1,0,0,1),
-		PRF180helper1(0,0,1,0,1,0),
-		PRF180helper1(0,0,1,1,0,1),
-		PRF180helper1(0,0,1,1,1,0),
-		PRF180helper1(0,1,0,0,0,0),
-		PRF180helper1(0,1,0,1,0,0),
-		PRF180helper1(0,1,0,1,0,1),
-		PRF180helper1(0,1,0,1,1,0),
-		PRF180helper1(0,1,1,0,0,0),
+	PRChelper(svg,x+30,[
+		PRF180helper(0,0,0,0,0,1),
+		PRF180helper(0,0,0,0,1,0),
+		PRF180helper(0,0,0,1,0,0),
+		PRF180helper(0,0,0,1,0,1),
+		PRF180helper(0,0,0,1,1,0),
+		PRF180helper(0,0,1,0,0,0),
+		PRF180helper(0,0,1,0,0,1),
+		PRF180helper(0,0,1,0,1,0),
+		PRF180helper(0,0,1,1,0,1),
+		PRF180helper(0,0,1,1,1,0),
+		PRF180helper(0,1,0,0,0,0),
+		PRF180helper(0,1,0,1,0,0),
+		PRF180helper(0,1,0,1,0,1),
+		PRF180helper(0,1,0,1,1,0),
+		PRF180helper(0,1,1,0,0,0),
 	]);
 	x += 40;
-	PRF180helper2(svg,x+30,[
-		PRF180helper1(0,1,1,0,0,1),
-		PRF180helper1(0,1,1,0,1,0),
-		PRF180helper1(0,1,1,1,0,0),
-		PRF180helper1(0,1,1,1,0,1),
-		PRF180helper1(1,0,0,0,0,0),
-		PRF180helper1(1,0,0,1,0,0),
-		PRF180helper1(1,0,0,1,0,1),
-		PRF180helper1(1,0,0,1,1,0),
-		PRF180helper1(1,0,1,0,0,0),
-		PRF180helper1(1,0,1,0,0,1),
-		PRF180helper1(1,0,1,0,1,0),
-		PRF180helper1(1,0,1,1,0,0),
-		PRF180helper1(1,0,1,1,1,0),
-		PRF180helper1(1,1,0,0,1,1),
+	PRChelper(svg,x+30,[
+		PRF180helper(0,1,1,0,0,1),
+		PRF180helper(0,1,1,0,1,0),
+		PRF180helper(0,1,1,1,0,0),
+		PRF180helper(0,1,1,1,0,1),
+		PRF180helper(1,0,0,0,0,0),
+		PRF180helper(1,0,0,1,0,0),
+		PRF180helper(1,0,0,1,0,1),
+		PRF180helper(1,0,0,1,1,0),
+		PRF180helper(1,0,1,0,0,0),
+		PRF180helper(1,0,1,0,0,1),
+		PRF180helper(1,0,1,0,1,0),
+		PRF180helper(1,0,1,1,0,0),
+		PRF180helper(1,0,1,1,1,0),
+		PRF180helper(1,1,0,0,1,1),
 	]);
 	x += 80;
 	paintText(svg,10,x,"3 connected components (4 cubes)");
-	PRF180helper2(svg,x+30,[
-		PRF180helper1(1,0,0,0,1,1),
-		PRF180helper1(1,1,0,0,0,1),
-		PRF180helper1(1,1,0,0,1,0),
-		PRF180helper1(0,1,0,0,1,1),
+	PRChelper(svg,x+30,[
+		PRF180helper(1,0,0,0,1,1),
+		PRF180helper(1,1,0,0,0,1),
+		PRF180helper(1,1,0,0,1,0),
+		PRF180helper(0,1,0,0,1,1),
 	]);
 	x += 80;
 	paintText(svg,10,x,"4 connected components (5 cubes)");
-	PRF180helper2(svg,x+30,[
-		PRF180helper1(0,0,1,1,0,0),
-		PRF180helper1(0,1,0,0,0,1),
-		PRF180helper1(0,1,0,0,1,0),
-		PRF180helper1(1,0,0,0,0,1),
-		PRF180helper1(1,0,0,0,1,0),
+	PRChelper(svg,x+30,[
+		PRF180helper(0,0,1,1,0,0),
+		PRF180helper(0,1,0,0,0,1),
+		PRF180helper(0,1,0,0,1,0),
+		PRF180helper(1,0,0,0,0,1),
+		PRF180helper(1,0,0,0,1,0),
 	]);
 	svg.setAttribute('width','800');
 	svg.setAttribute('height','490');
 	paintFrame(svg,800,490);
 }
 paintRotateFace180Cubes(svg_rot_face_180);
+
+function PRC120helper(a,b,c,d) {
+	let indices = [0,0,0,0,0,0,0,0,0,0,0,0];
+	if(a==1) {
+		indices[0] = 1;
+		indices[2] = 1;
+		indices[5] = 1;
+	}
+	if(b==1) {
+		indices[1] = 1;
+		indices[7] = 1;
+		indices[8] = 1;
+	}
+	if(c==1) {
+		indices[3] = 1;
+		indices[4] = 1;
+		indices[10] = 1;
+	}
+	if(d==1) {
+		indices[6] = 1;
+		indices[9] = 1;
+		indices[11] = 1;
+	}
+	return indices;
+}
+function paintRotateCorner120Cubes(svg) {
+	let x = 30;
+	paintText(svg,10,x,"0 connected components (1 cube)");
+	PRChelper(svg,x+30,[
+		PRC120helper(0,0,0,0),
+	]);
+	x += 80;
+	paintText(svg,10,x,"1 connected component (12 cubes)");
+	PRChelper(svg,x+30,[
+		PRC120helper(0,0,0,1),
+		PRC120helper(0,0,1,1),
+		PRC120helper(0,1,0,1),
+		PRC120helper(0,1,1,0),
+		PRC120helper(0,1,1,1),
+		PRC120helper(1,0,0,0),
+		PRC120helper(1,0,1,0),
+		PRC120helper(1,0,1,1),
+		PRC120helper(1,1,0,0),
+		PRC120helper(1,1,0,1),
+		PRC120helper(1,1,1,0),
+		PRC120helper(1,1,1,1),
+	]);
+	x += 80;
+	paintText(svg,10,x,"2 connected components (1 cube)");
+	PRChelper(svg,x+30,[
+		PRC120helper(1,0,0,1),
+	]);
+	x += 80;
+	paintText(svg,10,x,"3 connected components (2 cubes)");
+	PRChelper(svg,x+30,[
+		PRC120helper(0,0,1,0),
+		PRC120helper(0,1,0,0),
+	]);
+	svg.setAttribute('width','800');
+	svg.setAttribute('height','330');
+	paintFrame(svg,800,330);
+}
+paintRotateCorner120Cubes(svg_rot_corner_120);
+
+function PRE180helper(a,b,c,d,e,f,g) {
+	let indices = [0,0,0,0,0,0,0,0,0,0,0,0];
+	if(a==1) {
+		indices[5] = 1;
+	}
+	if(b==1) {
+		indices[0] = 1;
+		indices[10] = 1;
+	}
+	if(c==1) {
+		indices[2] = 1;
+		indices[8] = 1;
+	}
+	if(d==1) {
+		indices[4] = 1;
+		indices[7] = 1;
+	}
+	if(e==1) {
+		indices[1] = 1;
+		indices[11] = 1;
+	}
+	if(f==1) {
+		indices[3] = 1;
+		indices[9] = 1;
+	}
+	if(g==1) {
+		indices[6] = 1;
+	}
+	return indices;
+}
+function paintRotateEdge180Cubes(svg) {
+	let x = 30;
+	paintText(svg,10,x,"0 connected components (1 cube)");
+	PRChelper(svg,x+30,[
+		PRE180helper(0,0,0,0,0,0,0),
+	]);
+	x += 80;
+	paintText(svg,10,x,"1 connected component (12 cubes)");
+	PRChelper(svg,x+30,[
+		PRE180helper(0,0,0,0,0,0,1),
+		PRE180helper(0,0,0,0,0,1,0),
+		PRE180helper(0,0,0,0,0,1,1),
+		PRE180helper(0,0,0,0,1,0,0),
+		PRE180helper(0,0,0,0,1,0,1),
+		PRE180helper(0,0,0,0,1,1,0),
+		PRE180helper(0,0,0,0,1,1,1),
+		PRE180helper(0,0,0,1,0,0,0),
+		PRE180helper(0,0,0,1,0,0,1),
+		PRE180helper(0,0,0,1,0,1,0),
+		PRE180helper(0,0,0,1,0,1,1),
+		PRE180helper(0,0,0,1,1,0,0),
+		PRE180helper(0,0,0,1,1,0,1),
+		PRE180helper(0,0,0,1,1,1,0),
+		PRE180helper(0,0,0,1,1,1,1),
+		PRE180helper(0,0,1,0,0,0,0),
+		PRE180helper(0,0,1,0,0,0,1),
+		PRE180helper(0,0,1,0,0,1,0),
+		PRE180helper(0,0,1,0,0,1,1),
+		PRE180helper(0,0,1,0,1,0,0),
+		PRE180helper(0,0,1,0,1,0,1),
+		PRE180helper(0,0,1,0,1,1,0),
+		PRE180helper(0,0,1,0,1,1,1),
+		PRE180helper(0,0,1,1,0,0,0),
+		PRE180helper(0,0,1,1,0,0,1),
+		PRE180helper(0,0,1,1,0,1,0),
+		PRE180helper(0,0,1,1,0,1,1),
+		PRE180helper(0,0,1,1,1,0,0),
+		PRE180helper(0,0,1,1,1,0,1),
+		PRE180helper(0,0,1,1,1,1,0),
+		PRE180helper(0,0,1,1,1,1,1),
+		PRE180helper(0,1,0,0,0,0,0),
+		PRE180helper(0,1,0,0,0,0,1),
+		PRE180helper(0,1,0,0,0,1,0),
+		PRE180helper(0,1,0,0,0,1,1),
+		PRE180helper(0,1,0,0,1,0,0),
+		PRE180helper(0,1,0,0,1,0,1),
+		PRE180helper(0,1,0,0,1,1,0),
+		PRE180helper(0,1,0,0,1,1,1),
+		PRE180helper(0,1,0,1,0,0,0),
+		PRE180helper(0,1,0,1,0,0,1),
+		PRE180helper(0,1,0,1,0,1,0),
+		PRE180helper(0,1,0,1,0,1,1),
+		PRE180helper(0,1,0,1,1,0,0),
+		PRE180helper(0,1,0,1,1,0,1),
+		PRE180helper(0,1,0,1,1,1,0),
+		PRE180helper(0,1,0,1,1,1,1),
+		PRE180helper(0,1,1,0,0,0,0),
+		PRE180helper(0,1,1,0,0,0,1),
+		PRE180helper(0,1,1,0,0,1,0),
+		PRE180helper(0,1,1,0,0,1,1),
+		PRE180helper(0,1,1,0,1,0,0),
+		PRE180helper(0,1,1,0,1,0,1),
+		PRE180helper(0,1,1,0,1,1,0),
+		PRE180helper(0,1,1,0,1,1,1),
+		PRE180helper(0,1,1,1,0,0,0),
+		PRE180helper(0,1,1,1,0,0,1),
+		PRE180helper(0,1,1,1,0,1,0),
+		PRE180helper(0,1,1,1,0,1,1),
+		PRE180helper(0,1,1,1,1,0,0),
+		PRE180helper(0,1,1,1,1,0,1),
+		PRE180helper(0,1,1,1,1,1,0),
+		PRE180helper(0,1,1,1,1,1,1),
+		PRE180helper(1,0,0,0,0,0,0),
+		PRE180helper(1,0,0,0,0,0,1),
+		PRE180helper(1,0,0,0,0,1,0),
+		PRE180helper(1,0,0,0,0,1,1),
+		PRE180helper(1,0,0,0,1,0,0),
+		PRE180helper(1,0,0,0,1,0,1),
+		PRE180helper(1,0,0,0,1,1,0),
+		PRE180helper(1,0,0,0,1,1,1),
+		PRE180helper(1,0,0,1,0,0,0),
+		PRE180helper(1,0,0,1,0,0,1),
+		PRE180helper(1,0,0,1,0,1,0),
+		PRE180helper(1,0,0,1,0,1,1),
+		PRE180helper(1,0,0,1,1,0,0),
+		PRE180helper(1,0,0,1,1,0,1),
+		PRE180helper(1,0,0,1,1,1,0),
+		PRE180helper(1,0,0,1,1,1,1),
+		PRE180helper(1,0,1,0,0,0,0),
+		PRE180helper(1,0,1,0,0,0,1),
+		PRE180helper(1,0,1,0,0,1,0),
+		PRE180helper(1,0,1,0,0,1,1),
+		PRE180helper(1,0,1,0,1,0,0),
+		PRE180helper(1,0,1,0,1,0,1),
+		PRE180helper(1,0,1,0,1,1,0),
+		PRE180helper(1,0,1,0,1,1,1),
+		PRE180helper(1,0,1,1,0,0,0),
+		PRE180helper(1,0,1,1,0,0,1),
+		PRE180helper(1,0,1,1,0,1,0),
+		PRE180helper(1,0,1,1,0,1,1),
+		PRE180helper(1,0,1,1,1,0,0),
+		PRE180helper(1,0,1,1,1,0,1),
+		PRE180helper(1,0,1,1,1,1,0),
+		PRE180helper(1,0,1,1,1,1,1),
+		PRE180helper(1,1,0,0,0,0,0),
+		PRE180helper(1,1,0,0,0,0,1),
+		PRE180helper(1,1,0,0,0,1,0),
+		PRE180helper(1,1,0,0,0,1,1),
+		PRE180helper(1,1,0,0,1,0,0),
+		PRE180helper(1,1,0,0,1,0,1),
+		PRE180helper(1,1,0,0,1,1,0),
+		PRE180helper(1,1,0,0,1,1,1),
+		PRE180helper(1,1,0,1,0,0,0),
+		PRE180helper(1,1,0,1,0,0,1),
+		PRE180helper(1,1,0,1,0,1,0),
+		PRE180helper(1,1,0,1,0,1,1),
+		PRE180helper(1,1,0,1,1,0,0),
+		PRE180helper(1,1,0,1,1,0,1),
+		PRE180helper(1,1,0,1,1,1,0),
+		PRE180helper(1,1,0,1,1,1,1),
+		PRE180helper(1,1,1,0,0,0,0),
+		PRE180helper(1,1,1,0,0,0,1),
+		PRE180helper(1,1,1,0,0,1,0),
+		PRE180helper(1,1,1,0,0,1,1),
+		PRE180helper(1,1,1,0,1,0,0),
+		PRE180helper(1,1,1,0,1,0,1),
+		PRE180helper(1,1,1,0,1,1,0),
+		PRE180helper(1,1,1,0,1,1,1),
+		PRE180helper(1,1,1,1,0,0,0),
+		PRE180helper(1,1,1,1,0,0,1),
+		PRE180helper(1,1,1,1,0,1,0),
+		PRE180helper(1,1,1,1,0,1,1),
+		PRE180helper(1,1,1,1,1,0,0),
+		PRE180helper(1,1,1,1,1,0,1),
+		PRE180helper(1,1,1,1,1,1,0),
+		PRE180helper(1,1,1,1,1,1,1),
+	]);
+	x += 80;
+	paintText(svg,10,x,"2 connected components (12 cubes)");
+	PRChelper(svg,x+30,[
+	]);
+	x += 80;
+	paintText(svg,10,x,"3 connected components (1 cube)");
+	PRChelper(svg,x+30,[
+	]);
+	x += 80;
+	paintText(svg,10,x,"4 connected components (2 cubes)");
+	PRChelper(svg,x+30,[
+	]);
+	svg.setAttribute('width','800');
+	svg.setAttribute('height','490');
+	paintFrame(svg,800,490);
+}
+paintRotateEdge180Cubes(svg_rot_edge_180);
 
 
 // TODO: color code the corners by how many edges they are adjacent to
