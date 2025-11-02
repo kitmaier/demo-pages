@@ -54,17 +54,17 @@ th {
 <h1 id="svgh12">Rotationally distinct cubes with 12 edges</h1>
 <svg id="svg12" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
 </svg>
-<h1>How could this be calculated without a computer? (in progress)</h1>
+<h1>How could this be calculated without a computer?</h1>
 <p style="text-indent:40px;">There is a detailed discussion in the video linked above of how to use group theory to calculate the number of rotationally distinct cubes.</p>
 <p style="text-indent:40px;">However, this does not take into account the number of connected components.</p>
 <p style="text-indent:40px;">Below both will be explained in more detail.</p>
-<h1>Rotational groups (in progress)</h1>
+<h1>Rotational groups</h1>
 <p style="text-indent:40px;">If a coloring of a cube has no symmetries, then there are 24 different rotated versions of that cube. </p>
 <!-- TODO: insert some diagrams here -->
 <p style="text-indent:40px;">If the cube does have symmetries, then the number of distinct rotated versions of the cube is a divisor of 24. </p>
 <p style="text-indent:40px;">It turns out that the number of rotationally distinct cubes can be calculated by starting with the number of colorings of the cube, adding in the number of symmetric colorings to make up for undercounting, and then dividing by 24 to account for rotations. </p>
 <!-- TODO: give the example of a square -->
-<h1>Cube Rotation Group Representation (in progress)</h1>
+<h1>Cube Rotation Group Representation</h1>
 <p style="text-indent:40px;">The group of rotations of a cube can be represented compactly as a set of 24 rotation matrices, which is how the automated enumeration of the cubes was implemented.</p>
 <p style="text-indent:40px;">If the corners of each cube are aligned to the points (+/-1,+/-1,+/-1), then the matrices representing the rotational symmetries of the cube all have terms that are 1, 0, and -1. </p>
 <p style="text-indent:40px;">This group is also the group of <a href="https://en.wikipedia.org/wiki/Octahedral_symmetry">rotational symmetries of the octahedron</a>. </p>
@@ -213,7 +213,7 @@ th {
 </table>
 <!-- TODO: list of rotation matrices along with interactive tool to apply them to a cube -->
 <p style="text-indent:40px;"></p>
-<h1>Connected colorings (in progress)</h1>
+<h1>Connected colorings</h1>
 <p style="text-indent:40px;">In general, it is to be expected that finding the number of connected colorings of a graph (a collection of nodes connected by edges) will be computationally expensive, approaching the cost of simply checking every possible coloring. </p>
 <p style="text-indent:40px;">The <a href="https://cstheory.stackexchange.com/questions/3465/complexity-of-counting-all-connected-subgraphs">connected subgraph counting problem</a> is in <a href="https://en.wikipedia.org/wiki/%E2%99%AFP">the complexity class #P</a> which is related to and harder than <a href="https://en.wikipedia.org/wiki/NP_(complexity)">the complexity class NP</a>.</p>
 <p style="text-indent:40px;">The square edge graph has properties that make it much more efficient to work with. It is small, symmetric, and sparse. The following analysis will rely on these special properties.</p>
@@ -327,8 +327,8 @@ th {
 <p style="text-indent:80px;"><tt>3 CC: 52+4*25+4*15+4*9+12 = 260</tt></p>
 <p style="text-indent:80px;"><tt>4 CC: 4+4*1+1 = 9</tt></p>
 <p style="text-indent:40px;">As a checksum, we can verify that this adds up to 4096, which is the total number of colorings of the edges of the cube. The prior calculations can all also be verified as adding up to powers of 2.</p>
-<h1>Rotationally connected components (in progress)</h1>
-<p style="text-indent:40px;">There are substantially fewer ways to color a cube that are rotationally symmetric.</p>
+<h1>Rotationally symmetric connected components</h1>
+<p style="text-indent:40px;">There are 2^12 = 4096 ways to color the edges of a cube without respect to symmetry. There are substantially fewer ways to color a cube that are rotationally symmetric.</p>
 <p style="text-indent:40px;">If the coloring is to be symmetric with respect to a 90° rotation around a face of the cube, there are only 2^3 = 8 possible colorings. There are 3 pairs of opposite faces and 2 directions to rotate in, so there are 6 instances of this type of rotation.</p>
 <svg id="svg_rot_face_90" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
 <p style="text-indent:40px;">If the coloring is to be symmetric with respect to a 180° rotation around a face of the cube, there are 2^6 = 64 possible colorings. There are 3 pairs of opposite faces and the direction of rotation does not matter, so there are 3 instances of this type of rotation.</p>
@@ -337,12 +337,34 @@ th {
 <svg id="svg_rot_corner_120" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
 <p style="text-indent:40px;">If the coloring is to be symmetric with respect to a 180° rotation around an edge of the cube, there are 2^7 = 128 possible colorings. There are 6 pairs of opposite edges and the direction of rotation does not matter, so there are 6 instances of this type of rotation.</p>
 <svg id="svg_rot_edge_180" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
-
-
-
-<p style="text-indent:40px;"></p>
-<p style="text-indent:80px;"><tt></tt></p>
-
+<h1>Adding up all rotations</h1>
+<p style="text-indent:40px;">Now we have a count for all the ways to color a cube with each number of connected components, and with each type of symmetry.</p>
+<table id="configsTable" style="width:600px;margin-left:80px;text-align:center;">
+	<tr><th>     </th><th>Identity</th><th>Face 90°</th><th>Face 180°</th><th>Corner 120°</th><th>Edge 180°</th></tr>
+	<tr><th>0  CC</th><td>       1</td><td>       1</td><td>        1</td><td>          1</td><td>        1</td></tr>
+	<tr><th>1  CC</th><td>    2433</td><td>       5</td><td>       25</td><td>         12</td><td>       69</td></tr>
+	<tr><th>2  CC</th><td>    1393</td><td>       1</td><td>       29</td><td>          1</td><td>       39</td></tr>
+	<tr><th>3  CC</th><td>     260</td><td>       0</td><td>        4</td><td>          2</td><td>       16</td></tr>
+	<tr><th>4  CC</th><td>       9</td><td>       1</td><td>        5</td><td>          0</td><td>        3</td></tr>
+	<tr><th>Total</th><td>    4096</td><td>       8</td><td>       64</td><td>         16</td><td>      128</td></tr>
+</table>
+<p style="text-indent:40px;">Finally, we can add them up and then divide by 24 to get the number of rotationally distinct colorings of each type.</p>
+<table id="configsTable" style="width:600px;margin-left:80px;text-align:center;">
+	<tr><th>    </th><th>Id (x1)</th><th>F90 (x6)</th><th>F180 (x3)</th><th>C120 (x8)</th><th>E180 (x6)</th><th>Total</th></tr>
+	<tr><th>0 CC</th><td>      1</td><td>       6</td><td>        3</td><td>        8</td><td>        6</td><td>   24</td></tr>
+	<tr><th>1 CC</th><td>   2433</td><td>      30</td><td>       75</td><td>       96</td><td>      414</td><td> 3048</td></tr>
+	<tr><th>2 CC</th><td>   1393</td><td>       6</td><td>       87</td><td>        8</td><td>      234</td><td> 1728</td></tr>
+	<tr><th>3 CC</th><td>    260</td><td>       0</td><td>       12</td><td>       16</td><td>       96</td><td>  384</td></tr>
+	<tr><th>4 CC</th><td>      9</td><td>       6</td><td>       15</td><td>        0</td><td>       18</td><td>   48</td></tr>
+</table>
+<p style="text-indent:40px;">After dividing the totals by 24, there are:</p>
+<p style="text-indent:80px;"><tt>1 cube with 0 components</tt></p>
+<p style="text-indent:80px;"><tt>127 cubes with 1 component</tt></p>
+<p style="text-indent:80px;"><tt>72 cubes with 2 components</tt></p>
+<p style="text-indent:80px;"><tt>16 cubes with 3 components</tt></p>
+<p style="text-indent:80px;"><tt>2 cubes with 4 components</tt></p>
+<p style="text-indent:80px;"><tt>218 cubes overall</tt></p>
+<p style="text-indent:40px;">The same values that were determined by the automated search.</p>
 </body>
 <script>
 
@@ -1308,77 +1330,51 @@ function paintRotateEdge180Cubes(svg) {
 		PRE180helper(0,0,0,0,0,0,0),
 	]);
 	x += 80;
-	paintText(svg,10,x,"1 connected component (12 cubes)");
+	paintText(svg,10,x,"1 connected component (69 cubes)");
 	PRChelper(svg,x+30,[
-		//PRE180helper(0,0,0,0,0,0,1),
-		//PRE180helper(0,0,0,0,0,1,1),
-		//PRE180helper(0,0,0,0,1,0,1),
-		//PRE180helper(0,0,0,0,1,1,1),
-		//PRE180helper(0,0,0,1,0,1,1),
-		//PRE180helper(0,0,0,1,1,0,1),
-		//PRE180helper(0,0,0,1,1,1,0),
-		//PRE180helper(0,0,0,1,1,1,1),
-		//PRE180helper(0,0,1,0,0,1,1),
-		//PRE180helper(0,0,1,0,1,1,1),
-		//PRE180helper(0,0,1,1,0,1,1),
-		//PRE180helper(0,0,1,1,1,0,1),
-		//PRE180helper(0,0,1,1,1,1,0),
-		//PRE180helper(0,0,1,1,1,1,1),
-		PRE180helper(0,1,0,0,0,1,1),
-		PRE180helper(0,1,0,0,1,0,0),
+		PRE180helper(0,0,0,0,0,0,1),
+		PRE180helper(0,0,0,0,0,1,1),
+		PRE180helper(0,0,0,0,1,0,1),
+		PRE180helper(0,0,0,0,1,1,1),
+		PRE180helper(0,0,0,1,0,1,1),
+		PRE180helper(0,0,0,1,1,0,1),
+		PRE180helper(0,0,0,1,1,1,0),
+		PRE180helper(0,0,0,1,1,1,1),
+		PRE180helper(0,0,1,0,0,1,1),
+		PRE180helper(0,0,1,0,1,1,1),
+		PRE180helper(0,0,1,1,0,1,1),
+		PRE180helper(0,0,1,1,1,0,1),
+		PRE180helper(0,0,1,1,1,1,0),
+		PRE180helper(0,0,1,1,1,1,1),
 		PRE180helper(0,1,0,0,1,0,1),
-		PRE180helper(0,1,0,0,1,1,0),
+	]);
+	x += 40;
+	PRChelper(svg,x+30,[
 		PRE180helper(0,1,0,0,1,1,1),
-		PRE180helper(0,1,0,1,0,0,0),
-		PRE180helper(0,1,0,1,0,0,1),
-		PRE180helper(0,1,0,1,0,1,0),
 		PRE180helper(0,1,0,1,0,1,1),
-		PRE180helper(0,1,0,1,1,0,0),
 		PRE180helper(0,1,0,1,1,0,1),
 		PRE180helper(0,1,0,1,1,1,0),
 		PRE180helper(0,1,0,1,1,1,1),
-		PRE180helper(0,1,1,0,0,0,0),
-		PRE180helper(0,1,1,0,0,0,1),
-		PRE180helper(0,1,1,0,0,1,0),
 		PRE180helper(0,1,1,0,0,1,1),
-		PRE180helper(0,1,1,0,1,0,0),
 		PRE180helper(0,1,1,0,1,0,1),
-		PRE180helper(0,1,1,0,1,1,0),
 		PRE180helper(0,1,1,0,1,1,1),
 		PRE180helper(0,1,1,1,0,0,0),
-		PRE180helper(0,1,1,1,0,0,1),
 		PRE180helper(0,1,1,1,0,1,0),
 		PRE180helper(0,1,1,1,0,1,1),
 		PRE180helper(0,1,1,1,1,0,0),
 		PRE180helper(0,1,1,1,1,0,1),
 		PRE180helper(0,1,1,1,1,1,0),
 		PRE180helper(0,1,1,1,1,1,1),
+	]);
+	x += 40;
+	PRChelper(svg,x+30,[
 		PRE180helper(1,0,0,0,0,0,0),
-		PRE180helper(1,0,0,0,0,0,1),
-		PRE180helper(1,0,0,0,0,1,0),
-		PRE180helper(1,0,0,0,0,1,1),
-		PRE180helper(1,0,0,0,1,0,0),
-		PRE180helper(1,0,0,0,1,0,1),
-		PRE180helper(1,0,0,0,1,1,0),
-		PRE180helper(1,0,0,0,1,1,1),
-		PRE180helper(1,0,0,1,0,0,0),
-		PRE180helper(1,0,0,1,0,0,1),
-		PRE180helper(1,0,0,1,0,1,0),
-		PRE180helper(1,0,0,1,0,1,1),
-		PRE180helper(1,0,0,1,1,0,0),
-		PRE180helper(1,0,0,1,1,0,1),
-		PRE180helper(1,0,0,1,1,1,0),
-		PRE180helper(1,0,0,1,1,1,1),
 		PRE180helper(1,0,1,0,0,0,0),
-		PRE180helper(1,0,1,0,0,0,1),
 		PRE180helper(1,0,1,0,0,1,0),
 		PRE180helper(1,0,1,0,0,1,1),
-		PRE180helper(1,0,1,0,1,0,0),
-		PRE180helper(1,0,1,0,1,0,1),
 		PRE180helper(1,0,1,0,1,1,0),
 		PRE180helper(1,0,1,0,1,1,1),
 		PRE180helper(1,0,1,1,0,0,0),
-		PRE180helper(1,0,1,1,0,0,1),
 		PRE180helper(1,0,1,1,0,1,0),
 		PRE180helper(1,0,1,1,0,1,1),
 		PRE180helper(1,0,1,1,1,0,0),
@@ -1386,15 +1382,14 @@ function paintRotateEdge180Cubes(svg) {
 		PRE180helper(1,0,1,1,1,1,0),
 		PRE180helper(1,0,1,1,1,1,1),
 		PRE180helper(1,1,0,0,0,0,0),
-		PRE180helper(1,1,0,0,0,0,1),
-		PRE180helper(1,1,0,0,0,1,0),
-		PRE180helper(1,1,0,0,0,1,1),
 		PRE180helper(1,1,0,0,1,0,0),
+	]);
+	x += 40;
+	PRChelper(svg,x+30,[
 		PRE180helper(1,1,0,0,1,0,1),
 		PRE180helper(1,1,0,0,1,1,0),
 		PRE180helper(1,1,0,0,1,1,1),
 		PRE180helper(1,1,0,1,0,0,0),
-		PRE180helper(1,1,0,1,0,0,1),
 		PRE180helper(1,1,0,1,0,1,0),
 		PRE180helper(1,1,0,1,0,1,1),
 		PRE180helper(1,1,0,1,1,0,0),
@@ -1402,15 +1397,16 @@ function paintRotateEdge180Cubes(svg) {
 		PRE180helper(1,1,0,1,1,1,0),
 		PRE180helper(1,1,0,1,1,1,1),
 		PRE180helper(1,1,1,0,0,0,0),
-		PRE180helper(1,1,1,0,0,0,1),
 		PRE180helper(1,1,1,0,0,1,0),
 		PRE180helper(1,1,1,0,0,1,1),
 		PRE180helper(1,1,1,0,1,0,0),
 		PRE180helper(1,1,1,0,1,0,1),
+	]);
+	x += 40;
+	PRChelper(svg,x+30,[
 		PRE180helper(1,1,1,0,1,1,0),
 		PRE180helper(1,1,1,0,1,1,1),
 		PRE180helper(1,1,1,1,0,0,0),
-		PRE180helper(1,1,1,1,0,0,1),
 		PRE180helper(1,1,1,1,0,1,0),
 		PRE180helper(1,1,1,1,0,1,1),
 		PRE180helper(1,1,1,1,1,0,0),
@@ -1419,7 +1415,7 @@ function paintRotateEdge180Cubes(svg) {
 		PRE180helper(1,1,1,1,1,1,1),
 	]);
 	x += 80;
-	paintText(svg,10,x,"2 connected components (12 cubes)");
+	paintText(svg,10,x,"2 connected components (39 cubes)");
 	PRChelper(svg,x+30,[
 		PRE180helper(0,0,0,0,0,1,0),
 		PRE180helper(0,0,0,0,1,0,0),
@@ -1434,25 +1430,72 @@ function paintRotateEdge180Cubes(svg) {
 		PRE180helper(0,0,1,1,0,1,0),
 		PRE180helper(0,0,1,1,1,0,0),
 		PRE180helper(0,1,0,0,0,0,0),
+		PRE180helper(0,1,0,0,1,0,0),
+		PRE180helper(0,1,0,0,1,1,0),
+	]);
+	x += 40;
+	PRChelper(svg,x+30,[
+		PRE180helper(0,1,0,1,0,0,0),
+		PRE180helper(0,1,0,1,0,1,0),
+		PRE180helper(0,1,0,1,1,0,0),
+		PRE180helper(0,1,1,0,0,0,0),
+		PRE180helper(0,1,1,0,0,1,0),
+		PRE180helper(0,1,1,0,1,0,0),
+		PRE180helper(0,1,1,0,1,1,0),
+		PRE180helper(0,1,1,1,0,0,1),
+		PRE180helper(1,0,0,0,0,0,1),
+		PRE180helper(1,0,0,0,0,1,1),
+		PRE180helper(1,0,0,0,1,0,1),
+		PRE180helper(1,0,0,0,1,1,1),
+		PRE180helper(1,0,0,1,0,1,1),
+		PRE180helper(1,0,0,1,1,0,1),
+		PRE180helper(1,0,0,1,1,1,0),
+	]);
+	x += 40;
+	PRChelper(svg,x+30,[
+		PRE180helper(1,0,0,1,1,1,1),
+		PRE180helper(1,0,1,0,0,0,1),
+		PRE180helper(1,0,1,0,1,0,1),
+		PRE180helper(1,0,1,1,0,0,1),
+		PRE180helper(1,1,0,0,0,0,1),
+		PRE180helper(1,1,0,0,0,1,1),
+		PRE180helper(1,1,0,1,0,0,1),
+		PRE180helper(1,1,1,0,0,0,1),
+		PRE180helper(1,1,1,1,0,0,1),
 	]);
 	x += 80;
-	paintText(svg,10,x,"3 connected components (1 cube)");
+	paintText(svg,10,x,"3 connected components (16 cubes)");
 	PRChelper(svg,x+30,[
 		PRE180helper(0,0,0,1,0,0,1),
 		PRE180helper(0,0,1,0,0,0,1),
 		PRE180helper(0,0,1,0,1,0,1),
 		PRE180helper(0,0,1,1,0,0,1),
 		PRE180helper(0,1,0,0,0,0,1),
+		PRE180helper(0,1,0,0,0,1,1),
+		PRE180helper(0,1,0,1,0,0,1),
+		PRE180helper(0,1,1,0,0,0,1),
+		PRE180helper(1,0,0,0,0,1,0),
+		PRE180helper(1,0,0,0,1,0,0),
+		PRE180helper(1,0,0,0,1,1,0),
+		PRE180helper(1,0,0,1,0,0,0),
+		PRE180helper(1,0,0,1,0,1,0),
+		PRE180helper(1,0,0,1,1,0,0),
+		PRE180helper(1,0,1,0,1,0,0),
+	]);
+	x += 40;
+	PRChelper(svg,x+30,[
+		PRE180helper(1,1,0,0,0,1,0),
 	]);
 	x += 80;
-	paintText(svg,10,x,"4 connected components (2 cubes)");
+	paintText(svg,10,x,"4 connected components (3 cubes)");
 	PRChelper(svg,x+30,[
 		PRE180helper(0,0,1,0,1,0,0),
 		PRE180helper(0,1,0,0,0,1,0),
+		PRE180helper(1,0,0,1,0,0,1),
 	]);
 	svg.setAttribute('width','800');
-	svg.setAttribute('height','490');
-	paintFrame(svg,800,490);
+	svg.setAttribute('height',x+60);
+	paintFrame(svg,800,x+60);
 }
 paintRotateEdge180Cubes(svg_rot_edge_180);
 
