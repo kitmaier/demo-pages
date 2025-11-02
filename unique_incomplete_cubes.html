@@ -327,6 +327,12 @@ th {
 <p style="text-indent:80px;"><tt>3 CC: 52+4*25+4*15+4*9+12 = 260</tt></p>
 <p style="text-indent:80px;"><tt>4 CC: 4+4*1+1 = 9</tt></p>
 <p style="text-indent:40px;">As a checksum, we can verify that this adds up to 4096, which is the total number of colorings of the edges of the cube. The prior calculations can all also be verified as adding up to powers of 2.</p>
+<h1>Rotationally connected components (in progress)</h1>
+<p style="text-indent:40px;">There are substantially fewer ways to color a cube that are rotationally symmetric.</p>
+<p style="text-indent:40px;">If the coloring is to be symmetric with respect to a 90° rotation around a face of the cube, there are only 2^3 = 8 possible colorings. There are 6 faces and 2 directions to rotate in, so there are 12 instances of this type of rotation.</p>
+<svg id="svg_rot_face_90" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
+<p style="text-indent:40px;">If the coloring is to be symmetric with respect to a 180° rotation around a face of the cube, there are 2^6 = 64 possible colorings. There are 6 faces and the direction of rotation does not matter, so there are 6 instances of this type of rotation.</p>
+<svg id="svg_rot_face_180" height="0" width="0" xmlns="http://www.w3.org/2000/svg">
 
 
 
@@ -1044,6 +1050,161 @@ function paintThreeBridgeCubes(svg) {
 }
 // TODO: indent to match other content
 paintThreeBridgeCubes(svg_3_bridge);
+
+function paintRotateFace90Cubes(svg) {
+	paintText(svg,10,30,"0 connected components (1 cube)");
+	paintCube(svg,indicesToCube([0,0,0,0,0,0,0,0,0,0,0,0]),30,60,10);
+	paintText(svg,10,110,"1 connected component (5 cubes)");
+	paintCube(svg,indicesToCube([0,1,0,0,1,0,1,0,0,1,0,0]),30,140,10);
+	paintCube(svg,indicesToCube([1,1,0,1,1,0,1,0,1,1,0,1]),70,140,10);
+	paintCube(svg,indicesToCube([0,0,1,0,0,1,0,1,0,0,1,0]),110,140,10);
+	paintCube(svg,indicesToCube([1,0,1,1,0,1,0,1,1,0,1,1]),150,140,10);
+	paintCube(svg,indicesToCube([1,1,1,1,1,1,1,1,1,1,1,1]),190,140,10);
+	paintText(svg,10,190,"2 connected components (1 cube)");
+	paintCube(svg,indicesToCube([0,1,1,0,1,1,1,1,0,1,1,0]),30,220,10);
+	paintText(svg,10,270,"4 connected components (1 cube)");
+	paintCube(svg,indicesToCube([1,0,0,1,0,0,0,0,1,0,0,1]),30,300,10);
+	svg.setAttribute('width','800');
+	svg.setAttribute('height','330');
+	paintFrame(svg,800,330);
+}
+paintRotateFace90Cubes(svg_rot_face_90);
+
+function PRF180helper1(a,b,c,d,e,f) {
+	let indices = [0,0,0,0,0,0,0,0,0,0,0,0];
+	if(a==1) {
+		indices[5] = 1;
+		indices[7] = 1;
+	}
+	if(b==1) {
+		indices[2] = 1;
+		indices[10] = 1;
+	}
+	if(c==1) {
+		indices[0] = 1;
+		indices[11] = 1;
+	}
+	if(d==1) {
+		indices[3] = 1;
+		indices[8] = 1;
+	}
+	if(e==1) {
+		indices[4] = 1;
+		indices[6] = 1;
+	}
+	if(f==1) {
+		indices[1] = 1;
+		indices[9] = 1;
+	}
+	return indices;
+}
+
+function PRF180helper2(svg,y,index_lists) {
+	for(let k=0; k<index_lists.length; k++) {
+		let indices = index_lists[k];
+		let x = 30+40*k;
+		paintCube(svg,indicesToCube(indices),x,y,10);
+	}
+}
+
+function paintRotateFace180Cubes(svg) {
+	// TODO: update this with all 64 cases, consider how to automate it
+	let x = 30;
+	paintText(svg,10,x,"0 connected components (1 cube)");
+	PRF180helper2(svg,x+30,[
+		PRF180helper1(0,0,0,0,0,0)
+	]);
+	x += 80;
+	paintText(svg,10,x,"1 connected component (25 cubes)");
+	PRF180helper2(svg,x+30,[
+		PRF180helper1(0,0,0,0,1,1),
+		PRF180helper1(0,0,0,1,1,1),
+		PRF180helper1(0,0,1,0,1,1),
+		PRF180helper1(0,0,1,1,1,1),
+		PRF180helper1(0,1,0,1,1,1),
+		PRF180helper1(0,1,1,0,1,1),
+		PRF180helper1(0,1,1,1,1,0),
+		PRF180helper1(0,1,1,1,1,1),
+		PRF180helper1(1,0,0,1,1,1),
+		PRF180helper1(1,0,1,0,1,1),
+		PRF180helper1(1,0,1,1,0,1),
+		PRF180helper1(1,0,1,1,1,1),
+		PRF180helper1(1,1,0,0,0,0),
+		PRF180helper1(1,1,0,1,0,0),
+		PRF180helper1(1,1,0,1,0,1),
+	]);
+	x += 40;
+	PRF180helper2(svg,x+30,[
+		PRF180helper1(1,1,0,1,1,0),
+		PRF180helper1(1,1,0,1,1,1),
+		PRF180helper1(1,1,1,0,0,0),
+		PRF180helper1(1,1,1,0,0,1),
+		PRF180helper1(1,1,1,0,1,0),
+		PRF180helper1(1,1,1,0,1,1),
+		PRF180helper1(1,1,1,1,0,0),
+		PRF180helper1(1,1,1,1,0,1),
+		PRF180helper1(1,1,1,1,1,0),
+		PRF180helper1(1,1,1,1,1,1),
+	]);
+	x += 80;
+	paintText(svg,10,x,"2 connected components (29 cubes)");
+	PRF180helper2(svg,x+30,[
+		PRF180helper1(0,0,0,0,0,1),
+		PRF180helper1(0,0,0,0,1,0),
+		PRF180helper1(0,0,0,1,0,0),
+		PRF180helper1(0,0,0,1,0,1),
+		PRF180helper1(0,0,0,1,1,0),
+		PRF180helper1(0,0,1,0,0,0),
+		PRF180helper1(0,0,1,0,0,1),
+		PRF180helper1(0,0,1,0,1,0),
+		PRF180helper1(0,0,1,1,0,1),
+		PRF180helper1(0,0,1,1,1,0),
+		PRF180helper1(0,1,0,0,0,0),
+		PRF180helper1(0,1,0,1,0,0),
+		PRF180helper1(0,1,0,1,0,1),
+		PRF180helper1(0,1,0,1,1,0),
+		PRF180helper1(0,1,1,0,0,0),
+	]);
+	x += 40;
+	PRF180helper2(svg,x+30,[
+		PRF180helper1(0,1,1,0,0,1),
+		PRF180helper1(0,1,1,0,1,0),
+		PRF180helper1(0,1,1,1,0,0),
+		PRF180helper1(0,1,1,1,0,1),
+		PRF180helper1(1,0,0,0,0,0),
+		PRF180helper1(1,0,0,1,0,0),
+		PRF180helper1(1,0,0,1,0,1),
+		PRF180helper1(1,0,0,1,1,0),
+		PRF180helper1(1,0,1,0,0,0),
+		PRF180helper1(1,0,1,0,0,1),
+		PRF180helper1(1,0,1,0,1,0),
+		PRF180helper1(1,0,1,1,0,0),
+		PRF180helper1(1,0,1,1,1,0),
+		PRF180helper1(1,1,0,0,1,1),
+	]);
+	x += 80;
+	paintText(svg,10,x,"3 connected components (4 cubes)");
+	PRF180helper2(svg,x+30,[
+		PRF180helper1(1,0,0,0,1,1),
+		PRF180helper1(1,1,0,0,0,1),
+		PRF180helper1(1,1,0,0,1,0),
+		PRF180helper1(0,1,0,0,1,1),
+	]);
+	x += 80;
+	paintText(svg,10,x,"4 connected components (5 cubes)");
+	PRF180helper2(svg,x+30,[
+		PRF180helper1(0,0,1,1,0,0),
+		PRF180helper1(0,1,0,0,0,1),
+		PRF180helper1(0,1,0,0,1,0),
+		PRF180helper1(1,0,0,0,0,1),
+		PRF180helper1(1,0,0,0,1,0),
+	]);
+	svg.setAttribute('width','800');
+	svg.setAttribute('height','490');
+	paintFrame(svg,800,490);
+}
+paintRotateFace180Cubes(svg_rot_face_180);
+
 
 // TODO: color code the corners by how many edges they are adjacent to
 // TODO: color code the edges by whether they are connected to leaves or between branch points
