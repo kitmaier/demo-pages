@@ -1,0 +1,61 @@
+<html>
+<!--
+Idea for a webpage: implement the "name a bigger number" proof of uncomputability of the busy beaver type number sequences
+	Webpage with live code editor with safety features
+		https://claude.ai/chat/30691e13-37e9-4633-b35b-e026a1a8bb1e
+		https://www.youtube.com/watch?v=Vs4hQsDpxww
+	User can input any code that takes a number input and prints a number output and run it
+		errors if it does not print a valid number or has side effects
+		error for timeout with user-configurable timeout limit
+		error for code too long with user-configurable length limit
+	second panel will have a spoiler program that runs the code of the user's program with its own length as input and then prints a number one higher than the user's program
+		BigInt
+		might be easier if the user's program is required to return a number instead of console output
+	demonstrates that the sequence of numbers / integer valued function "largest number that can be printed by code of a given length from no input data" is uncomputable
+	include some example programs that make a good try at it
+-->
+<body>
+<h1>The Name-A-Bigger-Number Game</h1>
+<p style="text-indent:40px;">What is the biggest number you can name, of the sort that can be counted to? (whole positive numbers, not infinity)</p>
+<p style="text-indent:80px;"><tt>One hundred?</tt></p>
+<p style="text-indent:80px;"><tt>One thousand?</tt></p>
+<p style="text-indent:80px;"><tt>One billion?</tt></p>
+<p style="text-indent:80px;"><tt>One quintillion?</tt></p>
+<p style="text-indent:80px;"><tt><a href="https://en.wikipedia.org/wiki/Googol">One googol</a>?</tt></p>
+<p style="text-indent:80px;"><tt><a href="https://en.wikipedia.org/wiki/The_Sand_Reckoner">Archimedes's number</a>?</tt></p>
+<p style="text-indent:80px;"><tt><a href="https://en.wikipedia.org/wiki/Googolplex">One googolplex</a>?</tt></p>
+<p style="text-indent:80px;"><tt><a href="https://en.wikipedia.org/wiki/Graham%27s_number">Graham's number</a>?</tt></p>
+<!-- TODO: verify that Tree(3) could be calculated by a small computer program -->
+<!--p style="text-indent:80px;"><tt><a href="https://en.wikipedia.org/wiki/Kruskal%27s_tree_theorem">Tree(3)</a>?</tt></p-->
+<p style="text-indent:40px;">If you were playing a game of name-the-biggest-number with an opponent, how would you beat them?</p>
+<p style="text-indent:40px;">There are at least two simple cheat codes. The first is the words, "whatever you said plus one." No matter what your opponent has said, there will always be a next number in sequence, which is larger.</p>
+<p style="text-indent:40px;">The other simple cheat code is the words, "the largest number that could be printed out by a computer program of length up to 1000 characters".</p>
+<!-- why not say 1 million characters instead -->
+<p style="text-indent:40px;">This will absolutely sweep the board with anything anyone else has said that is not based on the largest number a computer program could produce. Of course, the winning response to that is still, that plus one.</p>
+<p style="text-indent:40px;">The reason this is so powerful is that computer programming languages, and other similar logical and mathematical systems, are very good at describing complicated calculations compactly, and those calculations can produce very large numbers with surprisingly little information to start from.</p>
+<p style="text-indent:40px;">For instance, consider the below JavaScript program, which is less than 100 characters long. It would print out the number one googolplex if given unlimited resources for the calculation. In practice, it will run out of time and space, as the number has more digits than there are atoms in the universe and printing it out would take more time than the age of the universe. </p>
+<!-- make this code more readable -->
+<!-- make this interactive so the user can choose the parameters and run it to get the results printed out, use BigInt -->
+<p style="text-indent:80px;"><tt>let a=b=1;</tt></p>
+<p style="text-indent:80px;"><tt>for(let k=0; k&lt100; k++) b = b*10; // calculate 10^100</tt></p>
+<p style="text-indent:80px;"><tt>for(let k=0; k&ltb; k++) a = a*10; // calculate 10^(10^100)</tt></p>
+<p style="text-indent:80px;"><tt>console.log(a);</tt></p>
+<p style="text-indent:40px;">So now the question has become, what is the biggest number that a computer program of a given size could print out? </p>
+<h1>The Largest Printable Number</h1>
+<p style="text-indent:40px;">LPN(N) will represent the largest number printable by a computer program with N characters in an idealized computing environment, where things like time, computer memory, and electricity are not a concern. The details of the computing environment, such as particular programming language, must remain consistent but are not important.</p>
+<p style="text-indent:40px;">LPN(N+1) ≥ LPN(N) because you can always just add a space character somewhere in the program without changing what number it outputs.</p>
+<p style="text-indent:40px;">LPN(N+K) ≥ 10*LPN(N) for some constant K, because you can always multiply the output by 10 or add a zero to the end of it with some small amount of added code.</p>
+<p style="text-indent:40px;">What if there was a computer program that could calculate LPN(N) automatically? That is, a program that could take in a number representing the length of a computer program, and then do some calculations and print out the largest number that a program of that length could print out? </p>
+<p style="text-indent:40px;">As it turns out, this is impossible.</p>
+<p style="text-indent:40px;">Suppose that it were possible, and there were a specific program A that could solve this calculation. </p>
+<p style="text-indent:40px;">Then we can create a second program B, which proves that A is sometimes wrong, contradicting this assumption. </p>
+<p style="text-indent:40px;">Let B contain the same calculation as A, and let it run on the length of the program B to get an estimate of the largest number that B could print out. Then B will add one to that number and print it out, proving A wrong. </p>
+<!-- TODO: implement a simple diagram to show how B would function -->
+<!-- TODO: implement an interactive coding tool to demonstrate how B would function -->
+<!-- show that the Busy Beaver numbers could be calculated from the function LPN(N) -->
+<!-- describe the halting problem and show how the same argument could apply -->
+
+</body>
+<script>
+</script>
+</html>
