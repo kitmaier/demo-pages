@@ -118,17 +118,21 @@ Idea for a webpage: implement the "name a bigger number" proof of uncomputabilit
 		</td>
 	</tr>
 </table>
+<p style="text-indent:40px;">It is also possible to relate LNS(N) and LPN(N) to one another.</p>
+<p style="text-indent:40px;">LPN(N) ≤ LNS(N+K) for some constant K as shown above, because given the code of the program of length N that prints out the largest number, a small amount of added code can run a loop for that many steps. </p>
+<p style="text-indent:40px;">LNS(N) ≤ LPN(N+K) for some constant K as shown above, because given the code of the program of length N that runs for the largest number of steps before stopping, a small amount of added code could increment a counter for each step of the program and then print out the result. This progam will be more complicated, because it needs to take in the code of the prior program  as a text variable and use a general purpose code interpretation program to get the count of computational steps.</p>
+<p style="text-indent:40px;">Because each function could be used as an upper bound for the other, either one being uncomputable means that both are.</p>
 <h1>The Halting Problem</h1>
 <p style="text-indent:40px;">Previously, the focus has been on programs that calculate something and then finish their calculation and stop. Many programs do not stop, but rather keep calculating forever, such as a program that just keeps incrementing the value of a variable forever. </p>
 <p style="text-indent:40px;">What if there was a program A that could take in a number N representing the length of a program, perform some calculations, and then print out how many programs of that length run forever?</p>
 <p style="text-indent:40px;">As it turns out, this is also impossible. We will consider a rather compicated program U to prove this.</p>
 <p style="text-indent:40px;">Let U be a program that iterates over every possible program of length N, and runs each program for K steps, for larger and larger values of K. Any program that fails to run or runs to completion is discarded. U keeps track of the largest number of steps any program has so far run for before finishing. </p>
-<p style="text-indent:40px;">When U gets to the number of incomplete programs that A has predicted, then it stops and prints out the length of the longest running program so far computed, which is a correct value for LNS(N).</p
+<p style="text-indent:40px;">When U gets to the number of incomplete programs that A has predicted, then it stops and prints out the length of the longest running program so far computed, which is a correct value for LNS(N).</p>
 <p style="text-indent:40px;">Since it is impossible that the value that U has computed is correct, it must be that the value computed by A is wrong as well. Either A guessed too high and so U guessed too low, or A guessed too low and U never finished running.</p>
 
 
 <!-- TODO: implement an interactive coding tool to demonstrate how B would function -->
-<!-- describe the halting problem and show how the same argument could apply -->
+<!-- TODO: is there a way to describe the halting problem without either analyzing the code of an input program or iterating over all programs of a given length? -->
 
 </body>
 <script>
