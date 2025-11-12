@@ -52,12 +52,13 @@ Idea for a webpage: implement the "name a bigger number" proof of uncomputabilit
 <p style="text-indent:80px;"><tt>let a=b=1;</tt></p>
 <p style="text-indent:80px;"><tt>for(let k=0; k&lt100; k++) b = b*10; // calculate 10^100</tt></p>
 <p style="text-indent:80px;"><tt>for(let k=0; k&ltb; k++) a = a*10; // calculate 10^(10^100)</tt></p>
-<p style="text-indent:80px;"><tt>console.log(a);</tt></p>
+<p style="text-indent:80px;"><tt>print(a);</tt></p>
 <p style="text-indent:40px;">So now the question has become, what is the biggest number that a computer program of a given size could print out? </p>
 <h1>The Largest Printable Number</h1>
-<p style="text-indent:40px;">LPN(N) will represent the largest number printable by a computer program of length N characters in an idealized computing environment, where things like time, computer memory, and electricity are not a concern. The details of the computing environment, such as particular programming language, must remain consistent but are not important. </p>
+<p style="text-indent:40px;">LPN(N) will represent the largest number printable by a computer program of length N characters in an idealized computing environment, where things like time, computer memory, and electricity are not a concern. The details of the computing environment, such as particular programming language, should remain consistent but are not important. </p>
 <p style="text-indent:40px;">LPN(N+1) ≥ LPN(N) because you can always just add a space character somewhere in the program without changing what number it outputs.</p>
 <p style="text-indent:40px;">LPN(N+K) ≥ 10*LPN(N) for some constant K, because you can always multiply the output by 10 or add a zero to the end of it with some small amount of added code.</p>
+<p style="text-indent:40px;">LPN(85) ≥ 10^(10^100) as just shown.</p>
 <p style="text-indent:40px;">What if there was a computer program that could calculate LPN(N) automatically? That is, a program that could take in a number representing the length of a computer program, and then do some calculations and print out the largest number that a program of that length could print out? </p>
 <p style="text-indent:40px;">As it turns out, this is impossible.</p>
 <p style="text-indent:40px;">Suppose that it were possible, and there were a specific program A that could solve this calculation. </p>
@@ -72,22 +73,28 @@ Idea for a webpage: implement the "name a bigger number" proof of uncomputabilit
 	<tr>
 		<td>
 			// what if LPN(N) = 10^N<br/>
-			let N = 100;<br/>
 			let b = 1;<br/>
 			for(let k=0; k&ltN; k++) b = b*10;<br/>
-			console.log(b);
+			print(b);
 		</td>
 		<td>
-			// then calculate LPN(100)+1<br/>
-			let N = 100;<br/>
+			// then calculate 10^70+1<br/>
+			let N = 70;<br/>
 			let b = 1;<br/>
 			for(let k=0; k&ltN; k++) b = b*10;<br/>
 			b = b+1;<br/>
-			console.log(b);
+			print(b);
 		</td>
 	</tr>
 </table>
-<p style="text-indent:40px;">Notice here that B is not allowed to take any input, and must contain in its own code any numbers or other calculations it wants to operate on. A, on the other hand, is taking input of the length of some other program. </p>
+<p style="text-indent:40px;">Notice here that B is not allowed to take any input, and must contain within its own code any numbers or other calculations it wants to operate on. A, on the other hand, is taking input of the length of some other program. </p>
+<p style="text-indent:40px;">B is a program that is 70 characters long, so according to A, B should not print out any number bigger than 10^70. B does print out the number 10^70+1, proving that A is not the correct calculation for LPN(N).</p>
+<p style="text-indent:40px;">No matter what calculation is performed in A, the same pattern will apply for a new B program to prove that A calculates too low of a number. The function LPN(N) can not be calculated by any program, and in fact it grows much more rapidly as N increases than any function that can be. </p>
+<h1>The Longest Running Program</h1>
+<p style="text-indent:40px;">Let the largest number of steps taken in a calculation by a program of length N be called LNS(N). </p>
+<p style="text-indent:40px;">The number of steps taken by a program A in calculation could be counted by a second program B, which sets a variable equal to 0 at the beginning of its execution and then adds 1 to it on each step of A, and then prints it out at the end. </p>
+
+
 <!-- TODO: implement a simple diagram to show how B would function -->
 <!-- TODO: implement an interactive coding tool to demonstrate how B would function -->
 <!-- show that the Busy Beaver numbers could be calculated from the function LPN(N) -->
