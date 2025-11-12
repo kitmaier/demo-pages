@@ -55,7 +55,7 @@ Idea for a webpage: implement the "name a bigger number" proof of uncomputabilit
 <p style="text-indent:80px;"><tt>print(a);</tt></p>
 <p style="text-indent:40px;">So now the question has become, what is the biggest number that a computer program of a given size could print out? </p>
 <h1>The Largest Printable Number</h1>
-<p style="text-indent:40px;">LPN(N) will represent the largest number printable by a computer program of length N characters in an idealized computing environment, where things like time, computer memory, and electricity are not a concern. The details of the computing environment, such as particular programming language, should remain consistent but are not important. </p>
+<p style="text-indent:40px;">LPN(N) will represent the largest number printable by a computer program of length N characters in an idealized computing environment, where limitations of time, computer memory, and electricity are not a concern. The details of the computing environment, such as particular programming language, should remain consistent but are not important. </p>
 <p style="text-indent:40px;">LPN(N+1) ≥ LPN(N) because you can always just add a space character somewhere in the program without changing what number it outputs.</p>
 <p style="text-indent:40px;">LPN(N+K) ≥ 10*LPN(N) for some constant K, because you can always multiply the output by 10 or add a zero to the end of it with some small amount of added code.</p>
 <p style="text-indent:40px;">LPN(85) ≥ 10^(10^100) as just shown.</p>
@@ -120,7 +120,8 @@ Idea for a webpage: implement the "name a bigger number" proof of uncomputabilit
 </table>
 <p style="text-indent:40px;">It is also possible to relate LNS(N) and LPN(N) to one another.</p>
 <p style="text-indent:40px;">LPN(N) ≤ LNS(N+K) for some constant K as shown above, because given the code of the program of length N that prints out the largest number, a small amount of added code can run a loop for that many steps. </p>
-<p style="text-indent:40px;">LNS(N) ≤ LPN(N+K) for some constant K as shown above, because given the code of the program of length N that runs for the largest number of steps before stopping, a small amount of added code could increment a counter for each step of the program and then print out the result. This progam will be more complicated, because it needs to take in the code of the prior program  as a text variable and use a general purpose code interpretation program to get the count of computational steps.</p>
+<p style="text-indent:40px;">LNS(N) ≤ LPN(N+K) for some constant K as shown above, because given the code of the program of length N that runs for the largest number of steps before stopping, a small amount of added code could increment a counter for each step of the program and then print out the result. This progam will be more complicated, because it needs to take in the code of the prior program as a text variable and use a general purpose code interpretation program to get the count of computational steps. </p>
+<p style="text-indent:40px;">This means that a slightly longer program can run for more steps than any number a shorter program can print out, and can print out a larger number than the number of steps that a shorter program can run. </p>
 <p style="text-indent:40px;">Because each function could be used as an upper bound for the other, either one being uncomputable means that both are.</p>
 <h1>The Halting Problem</h1>
 <p style="text-indent:40px;">Previously, the focus has been on programs that calculate something and then finish their calculation and stop. Many programs do not stop, but rather keep calculating forever, such as a program that just keeps incrementing the value of a variable forever. </p>
@@ -129,8 +130,30 @@ Idea for a webpage: implement the "name a bigger number" proof of uncomputabilit
 <p style="text-indent:40px;">Let U be a program that iterates over every possible program of length N, and runs each program for K steps, for larger and larger values of K. Any program that fails to run or runs to completion is discarded. U keeps track of the largest number of steps any program has so far run for before finishing. </p>
 <p style="text-indent:40px;">When U gets to the number of incomplete programs that A has predicted, then it stops and prints out the length of the longest running program so far computed, which is a correct value for LNS(N).</p>
 <p style="text-indent:40px;">Since it is impossible that the value that U has computed is correct, it must be that the value computed by A is wrong as well. Either A guessed too high and so U guessed too low, or A guessed too low and U never finished running.</p>
-
-
+<p style="text-indent:40px;">This can also be determined more directly. Suppose that there was a program H(P) that takes in the code of a program P and answers whether that program will eventually halt, or will run forever. Suppose also that we have constructed a program U(P) that will run a program P given its code, which is possible in any standard programming environment. Then we will construct a program B() that takes no input and proves that H(B) gives the wrong answer. </p>
+<p style="text-indent:40px;">The example program below is in a summarized form, as the actual program would be fairly long and dependent on the details of the programming language. </p>
+<table id="configsTable" style="width:600px;margin-left:80px;">
+	<tr>
+		<th>Program B</th>
+		<th>Program C</th>
+	</tr>
+	<tr>
+		<td>
+			// variables containing the text of other programs<br/>
+			u = "U"; <br/>
+			h = "H"; <br/>
+			c = "C"; <br/>
+			// pass the above information to U and run program C<br/>
+			p = "u = "+u+"; h = "+h+"; c = "+c+"; "+c;<br/>
+			U(p); 
+		</td>
+		<td>
+			// steps to generate B<br/>
+			// run H(B)<br/>
+			// do the opposite
+		</td>
+	</tr>
+</table>
 <!-- TODO: implement an interactive coding tool to demonstrate how B would function -->
 <!-- TODO: is there a way to describe the halting problem without either analyzing the code of an input program or iterating over all programs of a given length? -->
 
