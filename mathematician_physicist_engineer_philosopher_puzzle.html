@@ -29,9 +29,9 @@ th {
 <p style="text-indent:40px;">We will need to find out the identity of all 4 people. We will not need to know and will not find out which code word means Yes or No, but we will find out which code word means Maybe in all but one case. </p>
 <p style="text-indent:40px;">Without loss of generality, because all the names and codewords start out interchangeable, we may as well assume that the first question is asked of the first person and the first response is Foo. </p>
 <p style="text-indent:40px;">We will start by listing out all of the possible combinations, or parallel worlds, which could be consistent with that first question.</p>
-<p style="text-indent:40px;">Then we will list out all of the answers to the questions. In many cases, these answers are totally determined by the identity of the person the question is asked of. In the other cases, the answers can be freely demanded by phrasing the question appropriately.</p>
-<p style="text-indent:40px;">We will require a notion of trustworthiness, where the most trustworthy are the Mathematician and Physicist, the next most trustworthy is the Philosopher, and the least trustworthy is the Engineer. Choosing between the Mathematician and Physicist will never turn out to be necessary, because the Philosopher and Engineer do not make choices, and because the Mathematician and Physicist will not be asked to judge their own trustworthiness. </p>
-<p style="text-indent:40px;">As the first three questions progress, codewords that have already been used will be chosen to navigate back to the individual who used them, and codewords that have not been used will be chosen to navigate to a new individual for questioning. This phase of questioning is over when three questions are answered or immediately if it navigates back to Alice. At that point all further questions are addressed to the person selected by this phase, as they have been determined to be totally trustworthy. </p>
+<p style="text-indent:40px;">Then we will list out all of the answers to the questions. In many cases, these answers are totally determined by the identity of the person the question is asked of. In the other cases, the answers can be freely chosen by phrasing the question appropriately. The perfect question to get the right response can be complicated, so for now questions will be stated in a simplified form, and then expanded to the full detail later. </p>
+<p style="text-indent:40px;">We will require a notion of trustworthiness, where the most trustworthy are the Mathematician and Physicist, the next most trustworthy is the Philosopher, and the least trustworthy is the Engineer. More explanation for this ordering will come later on. Choosing between the Mathematician and Physicist will never turn out to be necessary, because the Philosopher and Engineer do not make choices, and because the Mathematician and Physicist will not be asked to judge their own trustworthiness. </p>
+<p style="text-indent:40px;">As the first three questions progress, codewords that have already been used will be chosen to navigate back to the individual who used them, and codewords that have not been used will be chosen to navigate to a new individual for questioning. This phase of questioning is over when all three questions are answered or immediately if it navigates back to Alice. At that point all further questions are addressed to the person selected by this phase, as they have been determined to be totally trustworthy. </p>
 <p style="text-indent:80px;"><tt>Q1 to Alice: Which of the other three people is the most trustworthy?</tt></p>
 <p style="text-indent:120px;"><tt>Foo: Bob</tt></p>
 <p style="text-indent:120px;"><tt>Bar: Carol</tt></p>
@@ -67,11 +67,25 @@ th {
 <p style="text-indent:120px;"><tt>The Philosopher can only direct to the Physicist, because otherwise the Mathematician would have already.</tt></p>
 <p style="text-indent:80px;"><tt>Mathematician->Foo->Physicist->Foo->Mathematician</tt></p>
 <p style="text-indent:120px;"><tt>The Physicist can direct back to the trustworthy Mathematician using the same codeword.</tt></p>
-
-
+<p style="text-indent:40px;">Below is how the table looks right now, after just those introductory questions.</p>
+<p/>
+<table id="table1" style="width:800px;">
+	<tr>
+		<th>Alice</th>
+		<th>Bob</th>
+		<th>Carol</th>
+		<th>Dave</th>
+		<th>Maybe</th>
+		<th>Q1</th>
+		<th>Q2</th>
+		<th>Q3</th>
+		<th>Trusted</th>
+	</tr>
+</table>
+<p/>
 
 <p/>
-<table id="configsTable" style="width:800px;">
+<table id="table2" style="width:800px;">
 	<tr>
 		<th>Alice</th>
 		<th>Bob</th>
@@ -90,7 +104,37 @@ th {
 </body>
 <script>
 
-let tableData = [
+let tableData1 = [
+	"EDMPBFBZ4",
+	"EDMPZFZB3",
+	"EDPMBFBZ4",
+	"EDPMZFZB3",
+	"EMDPBFZZ2",
+	"EMDPZFBZ4",
+	"EMPDBFZB3",
+	"EMPDZFBB2",
+	"EPDMBFZZ2",
+	"EPDMZFBZ4",
+	"EPMDBFZB3",
+	"EPMDZFBB2",
+	"DEMPFFBZ4",
+	"DEMPFFZB3",
+	"DEPMFFBZ4",
+	"DEPMFFZB3",
+	"DMEPFFZZ2",
+	"DMPEFFBB2",
+	"DPEMFFZZ2",
+	"DPMEFFBB2",
+	"MDEPZFZF1",
+	"MDPEBFBF1",
+	"MPED-FF-1",
+	"MPDE-FF-1",
+	"PDEMZFZF1",
+	"PDMEBFBF1",
+	"PMED-FF-1",
+	"PMDE-FF-1",
+]
+let tableData2 = [
 	"EDMPBFBZZF",
 	"EDMPZFZBFF",
 	"EDPMBFBZZZ",
@@ -124,8 +168,8 @@ let tableData = [
 	"PMDEZFFBB-",
 ]
 
-function createTable() {
-	configsTable = document.getElementById("configsTable");
+function createTable(tableName,tableData) {
+	configsTable = document.getElementById(tableName);
 	for(let r = 0; r < tableData.length; r++) {
 		let tr = configsTable.insertRow();
 		for(let c = 0; c < tableData[r].length; c++) {
@@ -140,13 +184,18 @@ function createTable() {
 				case 'F': text = 'Foo'; break;
 				case 'B': text = 'Bar'; break;
 				case 'Z': text = 'Baz'; break;
+				case '1': text = 'Alice'; break;
+				case '2': text = 'Bob'; break;
+				case '3': text = 'Carol'; break;
+				case '4': text = 'Dave'; break;
 				case '-': text = ''; break;
 			}
 			td.appendChild(document.createTextNode(text));
 		}
 	}
 }
-createTable();
+createTable('table1',tableData1);
+createTable('table2',tableData2);
 
 </script>
 </html>
