@@ -1,0 +1,115 @@
+<html>
+<head>
+<style>
+table, th, tr, td {
+  border: 1px solid;
+  font-family: monospace;
+}
+th {
+  font-weight: bold;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+<h1>The Puzzle</h1>
+<p style="text-indent:40px;">This page is based on a <a href="https://www.youtube.com/watch?v=uUPr07ThSH0">video</a> about a logic puzzle.</p>
+<p style="text-indent:40px;">There is a solution of this puzzle with at most 5 questions in the worst case.</p>
+<p style="text-indent:40px;">Without loss of generality, because all the names and codewords start out interchangeable, we may as well assume that the first question is asked of the first person and the first response is Foo. </p>
+<p style="text-indent:40px;">We will need to find out the identity of all 4 people and which codeword means Maybe, but we will not need to know and will not find out the meaning of the other two codewords.</p>
+<p style="text-indent:40px;">We will start by listing out all of the possible combinations, or parallel worlds, which could be consistent with that first question.</p>
+<p style="text-indent:40px;">Then we will list out all of the answers to the questions. In many cases, these answers are totally determined by the identity of the person the question is asked of. In the other cases, the answers can be freely demanded by phrasing the question appropriately.</p>
+<p style="text-indent:40px;">We will require a notion of trustworthiness, where the most trustworthy are the Mathematician and Physicist, the next most trustworthy is the Philosopher, and the least trustworthy is the Engineer.</p>
+<p style="text-indent:80px;"><tt>Q1 to Alice: Which of the other three people is the most trustworthy?</tt></p>
+<p style="text-indent:120px;"><tt>Foo: Bob</tt></p>
+<p style="text-indent:120px;"><tt>Bar: Carol</tt></p>
+<p style="text-indent:120px;"><tt>Baz: Dave</tt></p>
+<p style="text-indent:80px;"><tt>Q2 to Bob: Which of the other three people is the most trustworthy?</tt></p>
+<p style="text-indent:120px;"><tt>Foo: Alice</tt></p>
+<p style="text-indent:120px;"><tt>Bar: Carol</tt></p>
+<p style="text-indent:120px;"><tt>Baz: Dave</tt></p>
+<p style="text-indent:80px;"><tt>Q3 if Q2 answer was Bar: Which of the other three people is the most trustworthy?</tt></p>
+<p style="text-indent:120px;"><tt>Foo: Alice</tt></p>
+<p style="text-indent:120px;"><tt>Bar: Bob</tt></p>
+<p style="text-indent:120px;"><tt>Baz: Dave</tt></p>
+<p style="text-indent:80px;"><tt>Q3 if Q2 answer was Baz: Which of the other three people is the most trustworthy?</tt></p>
+<p style="text-indent:120px;"><tt>Foo: Alice</tt></p>
+<p style="text-indent:120px;"><tt>Baz: Bob</tt></p>
+<p style="text-indent:120px;"><tt>Bar: Carol</tt></p>
+<p style="text-indent:80px;"><tt></tt></p>
+<p style="text-indent:80px;"><tt></tt></p>
+<p style="text-indent:80px;"><tt></tt></p>
+
+
+
+<p/>
+<table id="configsTable" style="width:800px;">
+	<tr>
+		<th>Alice</th>
+		<th>Bob</th>
+		<th>Carol</th>
+		<th>Dave</th>
+		<th>Maybe</th>
+		<th>Q1</th>
+		<th>Q2</th>
+		<th>Q3</th>
+		<th>Q4</th>
+		<th>Q5</th>
+	</tr>
+</table>
+<p/>
+
+</body>
+<script>
+
+let tableData = [
+	"EDMPBFBZZF",
+	"EDMPZFZBFF",
+	"EDPMBFBZZZ",
+	"EDPMZFZBFB",
+	"EMDPBFZZZZ",
+	"EMDPZFBZFB",
+	"EMPDBFZBZF",
+	"EMPDZFBBBB",
+	"EPDMBFZZF-",
+	"EPDMZFBZFF",
+	"EPMDBFZBZZ",
+	"EPMDZFBBF-",
+	"DEMPFFBZBZ",
+	"DEMPFFZBBB",
+	"DEPMFFBZBB",
+	"DEPMFFZBBZ",
+	"DMEPFFZZZB",
+	"DMPEFFBBBZ",
+	"DPEMFFZZB-",
+	"DPMEFFBBZ-",
+	"----------",
+	"----------",
+]
+
+function createTable() {
+	configsTable = document.getElementById("configsTable");
+	for(let r = 0; r < tableData.length; r++) {
+		let tr = configsTable.insertRow();
+		for(let c = 0; c < tableData[r].length; c++) {
+			let td = tr.insertCell();
+			let ch = tableData[r].charAt(c);
+			let text = '?';
+			switch (ch) {
+				case 'E': text = 'Engineer'; break;
+				case 'M': text = 'Mathematician'; break;
+				case 'P': text = 'Physicist'; break;
+				case 'D': text = 'Philosopher'; break;
+				case 'F': text = 'Foo'; break;
+				case 'B': text = 'Bar'; break;
+				case 'Z': text = 'Zab'; break;
+				case '-': text = ''; break;
+			}
+			td.appendChild(document.createTextNode(text));
+		}
+	}
+}
+createTable();
+
+</script>
+</html>
