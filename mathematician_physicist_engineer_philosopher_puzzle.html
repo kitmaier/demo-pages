@@ -12,14 +12,15 @@ th {
 </style>
 </head>
 <body>
-<h1>The Puzzle</h1>
+<h1>One Of The Logic Puzzles Of All Time</h1>
 <p style="text-indent:40px;">This page is based on a <a href="https://www.youtube.com/watch?v=uUPr07ThSH0">video</a> about a logic puzzle.</p>
 <p style="text-indent:40px;">There is a solution of this puzzle with at most 5 questions in the worst case.</p>
+<p style="text-indent:40px;">We will need to find out the identity of all 4 people. We will not need to know and will not find out which code word means Yes or No, but we will find out which code word means Maybe in all but one case. </p>
 <p style="text-indent:40px;">Without loss of generality, because all the names and codewords start out interchangeable, we may as well assume that the first question is asked of the first person and the first response is Foo. </p>
-<p style="text-indent:40px;">We will need to find out the identity of all 4 people and which codeword means Maybe, but we will not need to know and will not find out the meaning of the other two codewords.</p>
 <p style="text-indent:40px;">We will start by listing out all of the possible combinations, or parallel worlds, which could be consistent with that first question.</p>
 <p style="text-indent:40px;">Then we will list out all of the answers to the questions. In many cases, these answers are totally determined by the identity of the person the question is asked of. In the other cases, the answers can be freely demanded by phrasing the question appropriately.</p>
-<p style="text-indent:40px;">We will require a notion of trustworthiness, where the most trustworthy are the Mathematician and Physicist, the next most trustworthy is the Philosopher, and the least trustworthy is the Engineer.</p>
+<p style="text-indent:40px;">We will require a notion of trustworthiness, where the most trustworthy are the Mathematician and Physicist, the next most trustworthy is the Philosopher, and the least trustworthy is the Engineer. Choosing between the Mathematician and Physicist will never turn out to be necessary, because the Philosopher and Engineer do not make choices, and because the Mathematician and Physicist will not be asked to judge their own trustworthiness. </p>
+<p style="text-indent:40px;">As the first three questions progress, codewords that have already been used will be chosen to navigate back to the individual who used them, and codewords that have not been used will be chosen to navigate to a new individual for questioning. This phase of questioning is over when three questions are answered or immediately if it navigates back to Alice. At that point all further questions are addressed to the person selected by this phase, as they have been determined to be totally trustworthy. </p>
 <p style="text-indent:80px;"><tt>Q1 to Alice: Which of the other three people is the most trustworthy?</tt></p>
 <p style="text-indent:120px;"><tt>Foo: Bob</tt></p>
 <p style="text-indent:120px;"><tt>Bar: Carol</tt></p>
@@ -28,11 +29,11 @@ th {
 <p style="text-indent:120px;"><tt>Foo: Alice</tt></p>
 <p style="text-indent:120px;"><tt>Bar: Carol</tt></p>
 <p style="text-indent:120px;"><tt>Baz: Dave</tt></p>
-<p style="text-indent:80px;"><tt>Q3 if Q2 answer was Bar: Which of the other three people is the most trustworthy?</tt></p>
+<p style="text-indent:80px;"><tt>Q3 to Carol if Q2 answer was Bar: Which of the other three people is the most trustworthy?</tt></p>
 <p style="text-indent:120px;"><tt>Foo: Alice</tt></p>
 <p style="text-indent:120px;"><tt>Bar: Bob</tt></p>
 <p style="text-indent:120px;"><tt>Baz: Dave</tt></p>
-<p style="text-indent:80px;"><tt>Q3 if Q2 answer was Baz: Which of the other three people is the most trustworthy?</tt></p>
+<p style="text-indent:80px;"><tt>Q3 to Dave if Q2 answer was Baz: Which of the other three people is the most trustworthy?</tt></p>
 <p style="text-indent:120px;"><tt>Foo: Alice</tt></p>
 <p style="text-indent:120px;"><tt>Baz: Bob</tt></p>
 <p style="text-indent:120px;"><tt>Bar: Carol</tt></p>
@@ -83,8 +84,17 @@ let tableData = [
 	"DMPEFFBBBZ",
 	"DPEMFFZZB-",
 	"DPMEFFBBZ-",
-	"----------",
-	"----------",
+	"MDEPZFZFF-",
+	"MDPEBFBFF-",
+	"MPED-FFFF-",
+	"MPDEBFFFZ-",
+	"MPDEZFFFB-",
+	"PDEMZFZFB-",
+	"PDMEBFBFZ-",
+	"PMEDBFFZF-",
+	"PMEDZFFBF-",
+	"PMDEBFFZZ-",
+	"PMDEZFFBB-",
 ]
 
 function createTable() {
@@ -102,7 +112,7 @@ function createTable() {
 				case 'D': text = 'Philosopher'; break;
 				case 'F': text = 'Foo'; break;
 				case 'B': text = 'Bar'; break;
-				case 'Z': text = 'Zab'; break;
+				case 'Z': text = 'Baz'; break;
 				case '-': text = ''; break;
 			}
 			td.appendChild(document.createTextNode(text));
