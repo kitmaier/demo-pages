@@ -14,6 +14,17 @@ th {
 <body>
 <h1>One Of The Logic Puzzles Of All Time</h1>
 <p style="text-indent:40px;">This page is based on a <a href="https://www.youtube.com/watch?v=uUPr07ThSH0">video</a> about a logic puzzle.</p>
+<p style="text-indent:40px;">In this puzzle there are four people who have four jobs, speak using three code words, and have rules about what answers they can give to questions.</p>
+<p style="text-indent:80px;"><tt>People</tt></p>
+<p style="text-indent:120px;"><tt>Alice, Bob, Carol, Dave</tt></p>
+<p style="text-indent:80px;"><tt>Codewords</tt></p>
+<p style="text-indent:120px;"><tt>Foo, Bar, Baz</tt></p>
+<p style="text-indent:80px;"><tt>Jobs</tt></p>
+<p style="text-indent:120px;"><tt>Mathematician - Accurately answers Yes or No using two code words</tt></p>
+<p style="text-indent:120px;"><tt>Physicist - Accurately answers Yes or No using the same two code words as the Mathematician but switched</tt></p>
+<p style="text-indent:120px;"><tt>Engineer - Randomly answers using the same two codewords as the Mathematician</tt></p>
+<p style="text-indent:120px;"><tt>Philosopher - Always answers Maybe with the remaining codeword</tt></p>
+<p style="text-indent:40px;">The goal of the puzzle is to identify what job each person has.</p>
 <p style="text-indent:40px;">There is a solution of this puzzle with at most 5 questions in the worst case.</p>
 <p style="text-indent:40px;">We will need to find out the identity of all 4 people. We will not need to know and will not find out which code word means Yes or No, but we will find out which code word means Maybe in all but one case. </p>
 <p style="text-indent:40px;">Without loss of generality, because all the names and codewords start out interchangeable, we may as well assume that the first question is asked of the first person and the first response is Foo. </p>
@@ -37,9 +48,25 @@ th {
 <p style="text-indent:120px;"><tt>Foo: Alice</tt></p>
 <p style="text-indent:120px;"><tt>Baz: Bob</tt></p>
 <p style="text-indent:120px;"><tt>Bar: Carol</tt></p>
+<!-- TODO: what if I merge the Q2Bar and Q2Baz cases in the table below? -->
 <p style="text-indent:80px;"><tt></tt></p>
 <p style="text-indent:80px;"><tt></tt></p>
 <p style="text-indent:80px;"><tt></tt></p>
+<p style="text-indent:40px;">But how can we be sure that this final person is trustworthy? We will consider all the possible cases, in terms of the order of jobs that are held by the people the questions are addressed to. The Mathematician and Physicist are the only two trustworthy roles, and will be used interchangeably in this listing. Crucially, in this listing the Mathematician and Physicist can always avoid directing to the Engineer.</p>
+<p style="text-indent:80px;"><tt>Engineer->Foo->Philosopher->Bar->Mathematician->Baz->Physicist</tt></p>
+<p style="text-indent:120px;"><tt>The Philosopher cannot say Foo, so will have to direct to someone trustworthy, who will then direct to the other trustworthy person.</tt></p>
+<p style="text-indent:80px;"><tt>Engineer->Foo->Mathematician->Bar->Philosopher->Baz->Physicist</tt></p>
+<p style="text-indent:120px;"><tt>The Philosopher cannot say Foo or Bar, so will have to direct to the remaining trustworthy person.</tt></p>
+<p style="text-indent:80px;"><tt>Engineer->Foo->Mathematician->Bar->Physicist->Bar->Mathematician</tt></p>
+<p style="text-indent:120px;"><tt>The Physicist can direct back to the trustworthy Mathematician using the same codeword.</tt></p>
+<p style="text-indent:80px;"><tt>Philosopher->Foo->Engineer->Bar->Mathematician->Baz->Physicist</tt></p>
+<p style="text-indent:120px;"><tt>The Engineer cannot say Foo, so will have to direct to someone trustworthy, who will then direct to the other trustworthy person.</tt></p>
+<p style="text-indent:80px;"><tt>Philosopher->Foo->Mathematician->Bar->Physicist->Bar->Mathematician</tt></p>
+<p style="text-indent:120px;"><tt>The Physicist can direct back to the trustworthy Mathematician using the same codeword.</tt></p>
+<p style="text-indent:80px;"><tt>Mathematician->Foo->Philosopher->Bar->Physicist->Foo->Mathematician</tt></p>
+<p style="text-indent:120px;"><tt>The Philosopher can only direct to the Physicist, because otherwise the Mathematician would have already.</tt></p>
+<p style="text-indent:80px;"><tt>Mathematician->Foo->Physicist->Foo->Mathematician</tt></p>
+<p style="text-indent:120px;"><tt>The Physicist can direct back to the trustworthy Mathematician using the same codeword.</tt></p>
 
 
 
