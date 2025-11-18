@@ -67,7 +67,7 @@ th {
 <p style="text-indent:120px;"><tt>The Philosopher can only direct to the Physicist, because otherwise the Mathematician would have already.</tt></p>
 <p style="text-indent:80px;"><tt>Mathematician->Foo->Physicist->Foo->Mathematician</tt></p>
 <p style="text-indent:120px;"><tt>The Physicist can direct back to the trustworthy Mathematician using the same codeword.</tt></p>
-<p style="text-indent:40px;">Below is how the table looks right now, after just those introductory questions.</p>
+<p style="text-indent:40px;">Below is how the decision table looks right now, after just those introductory questions.</p>
 <p/>
 <table id="table1" style="width:800px;">
 	<tr>
@@ -175,7 +175,7 @@ function createTable(tableName,tableData) {
 		for(let c = 0; c < tableData[r].length; c++) {
 			let td = tr.insertCell();
 			let ch = tableData[r].charAt(c);
-			let text = '?';
+			let text = '';
 			switch (ch) {
 				case 'E': text = 'Engineer'; break;
 				case 'M': text = 'Mathematician'; break;
@@ -188,9 +188,23 @@ function createTable(tableName,tableData) {
 				case '2': text = 'Bob'; break;
 				case '3': text = 'Carol'; break;
 				case '4': text = 'Dave'; break;
-				case '-': text = ''; break;
 			}
 			td.appendChild(document.createTextNode(text));
+			let bgcolor = '#FFFFFC';
+			// FFC6FF pink
+			switch (ch) {
+				case 'E': bgcolor = '#FFADAD'; break;
+				case 'D': bgcolor = '#FFD6A5'; break;
+				case 'P': bgcolor = '#FDFFB6'; break;
+				case 'M': bgcolor = '#CAFFBF'; break;
+				//case 'F': bgcolor = '#9BF6FF'; break;
+				//case 'B': bgcolor = '#A0C4FF'; break;
+				//case 'Z': bgcolor = '#BDB2FF'; break;
+				case 'F': bgcolor = '#80E0FF'; break;
+				case 'B': bgcolor = '#90A0FF'; break;
+				case 'Z': bgcolor = '#D0B2FF'; break;
+			}
+			td.style.backgroundColor = bgcolor;
 		}
 	}
 }
