@@ -28,10 +28,10 @@ th {
 <p style="text-indent:40px;">There is a solution of this puzzle with at most 5 questions in the worst case.</p>
 <p style="text-indent:40px;">We will need to find out the identity of all 4 people. We will not need to know and will not find out which code word means Yes or No, but we will find out which code word means Maybe in all but one case. </p>
 <p style="text-indent:40px;">Without loss of generality, because all the names and codewords start out interchangeable, we may as well assume that the first question is asked of the first person and the first response is Foo. </p>
-<p style="text-indent:40px;">We will start by listing out all of the possible combinations, or parallel worlds, which could be consistent with that first question.</p>
-<p style="text-indent:40px;">Then we will list out all of the answers to the questions. In many cases, these answers are totally determined by the identity of the person the question is asked of. In the other cases, the answers can be freely chosen by phrasing the question appropriately. The perfect question to get the right response can be complicated, so for now questions will be stated in a simplified form, and then expanded to the full detail later. </p>
+<p style="text-indent:40px;">We will start by listing out all of the possible combinations, or parallel worlds, which could be consistent with Foo being the answer to that first question.</p>
+<p style="text-indent:40px;">Then we will list out all of the answers to the questions. In many cases, these answers are totally determined by the identity of the person the question is asked of. In the other cases, the answers can be freely chosen by phrasing the question appropriately. The perfect question to get the right response can be complicated, so for now questions will be stated in a simplified form, and then expanded to full detail later. </p>
 <p style="text-indent:40px;">We will require a notion of trustworthiness, where the most trustworthy are the Mathematician and Physicist, the next most trustworthy is the Philosopher, and the least trustworthy is the Engineer. More explanation for this ordering will come later on. Choosing between the Mathematician and Physicist will never turn out to be necessary, because the Philosopher and Engineer do not make choices, and because the Mathematician and Physicist will not be asked to judge their own trustworthiness. </p>
-<p style="text-indent:40px;">As the first three questions progress, codewords that have already been used will be chosen to navigate back to the individual who used them, and codewords that have not been used will be chosen to navigate to a new individual for questioning. This phase of questioning is over when all three questions are answered or immediately if it navigates back to Alice. At that point all further questions are addressed to the person selected by this phase, as they have been determined to be totally trustworthy. </p>
+<p style="text-indent:40px;">As the first three questions progress, codewords that have already been used will be chosen to navigate back to the individual who first used them, and codewords that have not been used will be chosen to navigate to a new individual for questioning. This phase of questioning is over when all three questions are answered or immediately if it navigates back to Alice. In the next phase all questions will be addressed to the person selected by this phase, as they have been determined to be totally trustworthy. </p>
 <p style="text-indent:80px;"><tt>Q1 to Alice: Which of the other three people is the most trustworthy?</tt></p>
 <p style="text-indent:120px;"><tt>Foo: Bob</tt></p>
 <p style="text-indent:120px;"><tt>Bar: Carol</tt></p>
@@ -83,7 +83,31 @@ th {
 	</tr>
 </table>
 <p/>
-
+<p style="text-indent:40px;">Simplified to just the part that is visible from the outside, the table looks like this. The person who is marked as Trusted is guaranteed to be either the Mathematician or Physicist.</p>
+<p/>
+<table id="table1_1" style="width:200px;">
+	<tr>
+		<th>Q1</th>
+		<th>Q2</th>
+		<th>Q3</th>
+		<th>Trusted</th>
+	</tr>
+</table>
+<p/>
+<p style="text-indent:40px;">Now the process gets more complicated, as each sequence of answers to the first phase splits off a universe where we can ask a different set of followup questions in the second phase. In most of these questions, we will ask the trusted person to repeat a word they have already said if some statement is true, otherwise say the other word that they can say. </p>
+<p style="text-indent:80px;"><tt>FooFoo - Q3 to Alice: Foo if you are the Mathematician.</tt></p>
+<p style="text-indent:80px;"><tt>FooFooXxx - Q4 to Alice: Foo if Carol is the Engineer.</tt></p>
+<p style="text-indent:80px;"><tt>FooXxxFoo - Q4 to Alice: Foo if you are the Mathematician.</tt></p>
+<p style="text-indent:80px;"><tt>FooBarBar - Q4 to Bob: Bar if you are the Mathematician.</tt></p>
+<p style="text-indent:80px;"><tt>FooBarBarBar - Q5 to Bob: Bar if Alice is the Engineer.</tt></p>
+<p style="text-indent:80px;"><tt>FooBazBaz - Q4 to Bob: Baz if you are the Mathematician.</tt></p>
+<p style="text-indent:80px;"><tt>FooBazBazBaz - Q5 to Bob: Baz if Alice is the Engineer.</tt></p>
+<p style="text-indent:80px;"><tt>FooBazBar - Q4 to Carol: The next in cyclic sequence after the codeword for Maybe in [Foo,Bar,Baz].</tt></p>
+<p style="text-indent:80px;"><tt>FooBazBarXxx - Q5 to Carol: Repeat your last response if you are the Mathematician.</tt></p>
+<p style="text-indent:80px;"><tt>FooBarBaz - Q4 to Dave: The next in cyclic sequence after the codeword for Maybe in [Foo,Bar,Baz].</tt></p>
+<p style="text-indent:80px;"><tt>FooBarBazXxx - Q5 to Dave: Repeat your last response if you are the Mathematician.</tt></p>
+<p style="text-indent:40px;">Those results are filled in to the below table. Something interesting to observe is that we seem to get quite a bit almost for free. For instance, simply by asking questions unrelated to determining the code word for Maybe, in most cases we have found it out anyway, either by getting an answer from the Philosopher, or by process of elimination from the other words spoken. </p>
+<p style="text-indent:40px;">If the initial setup is randomized, and the Engineer chooses responses randomly, then the average number of questions asked will be 4(1/2+2/24+2/48)+5(4/24+10/48) = 4.375.</p>
 <p/>
 <table id="table2" style="width:800px;">
 	<tr>
@@ -133,6 +157,15 @@ let tableData1 = [
 	"PDMEBFBF1",
 	"PMED-FF-1",
 	"PMDE-FF-1",
+]
+let tableData1_1 = [
+	"FBZ4",
+	"FZB3",
+	"FZZ2",
+	"FBB2",
+	"FZF1",
+	"FBF1",
+	"FF-1",
 ]
 let tableData2 = [
 	"EDMPBFBZZF",
@@ -209,6 +242,7 @@ function createTable(tableName,tableData) {
 	}
 }
 createTable('table1',tableData1);
+createTable('table1_1',tableData1_1);
 createTable('table2',tableData2);
 
 </script>
