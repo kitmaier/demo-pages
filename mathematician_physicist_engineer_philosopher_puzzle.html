@@ -186,6 +186,23 @@ BazBarFooXxx - Q5 to Bob: Repeat your last response if you are the Mathematician
 </table>
 <p/>
 
+<p style="text-indent:40px;">TODO: considering alternative where Foo stays on the same person instead of going back, so that trusted person is found in only two questions. After optimizing for followup questions, the average number of questions is 4(8/24+16/48)+5(4/24+8/48) = 4.333. </p>
+
+<p/>
+<table id="table4" style="width:800px;">
+	<tr>
+		<th>Alice</th>
+		<th>Bob</th>
+		<th>Carol</th>
+		<th>Dave</th>
+		<th>Maybe</th>
+		<th>Q1</th>
+		<th>Q2</th>
+		<th>Q3</th>
+		<th>Q4</th>
+		<th>Q5</th>
+	</tr>
+</table>
 </body>
 <script>
 
@@ -356,6 +373,39 @@ let tableData3 = [
 	"ZZZB-MEDPF",
 	"ZZZZ-MDEP-",
 ]
+let tableData4 = [
+	"EDMPBFBZZF",
+	"EDMPZFZBBF",
+	"EDPMBFBFZ-",
+	"EDPMZFZFB-",
+	"EMDPBFZZF-",
+	"EMDPZFFBBB",
+	"EMPDBFFZZZ",
+	"EMPDZFBFB-",
+	"EPDMBFZFZ-",
+	"EPDMZFFBBF",
+	"EPMDBFFZZF",
+	"EPMDZFBBF-",
+	"DEMPFFBZZZ",
+	"DEMPFFZBBB",
+	"DEPMFFBBZ-",
+	"DEPMFFZBZ-",
+	"DMEPFFZZB-",
+	"DMPEFFBZB-",
+	"DPEMFFZZZ-",
+	"DPMEFFBBB-",
+	"MDEPZFZBF-",
+	"MDPEBFBZF-",
+	"MPEDBFFZFZ",
+	"MPEDZFFBFB",
+	"MPDEBFFZFF",
+	"MPDEZFFBFF",
+	"PDEMZFZFF-",
+	"PDMEBFBFF-",
+	"PMED-FFFF-",
+	"PMDEBFFFB-",
+	"PMDEZFFFZ-",
+]
 
 function createTable(tableName,tableData) {
 	configsTable = document.getElementById(tableName);
@@ -401,6 +451,7 @@ createTable('table1',tableData1);
 createTable('table1_1',tableData1_1);
 createTable('table2',tableData2);
 createTable('table3',tableData3);
+createTable('table4',tableData4);
 
 </script>
 </html>
