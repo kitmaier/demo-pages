@@ -106,7 +106,7 @@ th {
 <p style="text-indent:80px;"><tt>FooBazBarXxx - Q5 to Carol: Repeat your last response if you are the Mathematician.</tt></p>
 <p style="text-indent:80px;"><tt>FooBarBaz - Q4 to Dave: The next in cyclic sequence after the codeword for Maybe in [Foo,Bar,Baz].</tt></p>
 <p style="text-indent:80px;"><tt>FooBarBazXxx - Q5 to Dave: Repeat your last response if you are the Mathematician.</tt></p>
-<p style="text-indent:40px;">Those results are filled in to the below table. Something interesting to observe is that we seem to get quite a bit almost for free. For instance, simply by asking questions unrelated to determining the code word for Maybe, in most cases we have found it out anyway, either by getting an answer from the Philosopher, or by process of elimination from the other words spoken. </p>
+<p style="text-indent:40px;">Those results are filled in to the below table. Each set of responses to the questions is unique, and completely identifies the data on the left. Something interesting is that in most cases we have learned the codeword for Maybe without asking for it directly, either by getting a response from the Philosopher, or by process of elimination from the other words spoken. </p>
 <p style="text-indent:40px;">If the initial setup is randomized, and the Engineer chooses responses randomly, then the average number of questions asked will be 4(1/2+2/24+2/48)+5(4/24+10/48) = 4.375.</p>
 <p/>
 <table id="table2" style="width:800px;">
@@ -121,6 +121,67 @@ th {
 		<th>Q3</th>
 		<th>Q4</th>
 		<th>Q5</th>
+	</tr>
+</table>
+<p/>
+<p style="text-indent:40px;">Below is the full data sorted by the answers to the questions. The other cases were generated from the "Q1:Foo" version by swapping two columns and swapping two codewords, then sorting. This lookup table could be used while playing the game, using the expanded question list below. </p>
+<p style="margin-left:80px;"><tt>
+Q1 to Alice: Which of the other three people is the most trustworthy? [Foo: Bob, Bar: Carol, Baz: Dave]<br/>
+Foo - Q2 to Bob: Which of the other three people is the most trustworthy? [Foo: Alice, Bar: Carol, Baz: Dave]<br/>
+FooBar - Q3 to Carol: Which of the other three people is the most trustworthy? [Foo: Alice, Bar: Bob, Baz: Dave]<br/>
+FooBaz - Q3 to Dave: Which of the other three people is the most trustworthy? [Foo: Alice, Baz: Bob, Bar: Carol]<br/>
+FooFoo - Q3 to Alice: Foo if you are the Mathematician.<br/>
+FooFooXxx - Q4 to Alice: Foo if Carol is the Engineer.<br/>
+FooXxxFoo - Q4 to Alice: Foo if you are the Mathematician.<br/>
+FooBarBar - Q4 to Bob: Bar if you are the Mathematician.<br/>
+FooBarBarBar - Q5 to Bob: Bar if Alice is the Engineer.<br/>
+FooBazBaz - Q4 to Bob: Baz if you are the Mathematician.<br/>
+FooBazBazBaz - Q5 to Bob: Baz if Alice is the Engineer.<br/>
+FooBazBar - Q4 to Carol: The next in cyclic sequence after the codeword for Maybe in [Foo,Bar,Baz].<br/>
+FooBazBarXxx - Q5 to Carol: Repeat your last response if you are the Mathematician.<br/>
+FooBarBaz - Q4 to Dave: The next in cyclic sequence after the codeword for Maybe in [Foo,Bar,Baz].<br/>
+FooBarBazXxx - Q5 to Dave: Repeat your last response if you are the Mathematician.<br/>
+Bar - Q2 to Carol: Which of the other three people is the most trustworthy? [Bar: Alice, Foo: Bob, Baz: Dave]<br/>
+BarFoo - Q3 to Bob: Which of the other three people is the most trustworthy? [Bar: Alice, Foo: Carol, Baz: Dave]<br/>
+BarBaz - Q3 to Dave: Which of the other three people is the most trustworthy? [Bar: Alice, Baz: Carol, Foo: Bob]<br/>
+BarBar - Q3 to Alice: Bar if you are the Mathematician.<br/>
+BarBarXxx - Q4 to Alice: Bar if Bob is the Engineer.<br/>
+BarXxxBar - Q4 to Alice: Bar if you are the Mathematician.<br/>
+BarFooFoo - Q4 to Carol: Foo if you are the Mathematician.<br/>
+BarFooFooFoo - Q5 to Carol: Foo if Alice is the Engineer.<br/>
+BarBazBaz - Q4 to Carol: Baz if you are the Mathematician.<br/>
+BarBazBazBaz - Q5 to Carol: Baz if Alice is the Engineer.<br/>
+BarBazFoo - Q4 to Bob: The next in cyclic sequence after the codeword for Maybe in [Bar,Foo,Baz].<br/>
+BarBazFooXxx - Q5 to Bob: Repeat your last response if you are the Mathematician.<br/>
+BarFooBaz - Q4 to Dave: The next in cyclic sequence after the codeword for Maybe in [Bar,Foo,Baz].<br/>
+BarFooBazXxx - Q5 to Dave: Repeat your last response if you are the Mathematician.<br/>
+Baz - Q2 to Dave: Which of the other three people is the most trustworthy? [Baz: Alice, Bar: Carol, Foo: Bob]<br/>
+BazBar - Q3 to Carol: Which of the other three people is the most trustworthy? [Baz: Alice, Bar: Dave, Foo: Bob]<br/>
+BazFoo - Q3 to Bob: Which of the other three people is the most trustworthy? [Baz: Alice, Foo: Dave, Bar: Carol]<br/>
+BazBaz - Q3 to Alice: Baz if you are the Mathematician.<br/>
+BazBazXxx - Q4 to Alice: Baz if Carol is the Engineer.<br/>
+BazXxxBaz - Q4 to Alice: Baz if you are the Mathematician.<br/>
+BazBarBar - Q4 to Dave: Bar if you are the Mathematician.<br/>
+BazBarBarBar - Q5 to Dave: Bar if Alice is the Engineer.<br/>
+BazFooFoo - Q4 to Dave: Foo if you are the Mathematician.<br/>
+BazFooFooFoo - Q5 to Dave: Foo if Alice is the Engineer.<br/>
+BazFooBar - Q4 to Carol: The next in cyclic sequence after the codeword for Maybe in [Baz,Bar,Foo].<br/>
+BazFooBarXxx - Q5 to Carol: Repeat your last response if you are the Mathematician.<br/>
+BazBarFoo - Q4 to Bob: The next in cyclic sequence after the codeword for Maybe in [Baz,Bar,Foo].<br/>
+BazBarFooXxx - Q5 to Bob: Repeat your last response if you are the Mathematician.<br/>
+<p/>
+<table id="table3" style="width:800px;">
+	<tr>
+		<th>Q1</th>
+		<th>Q2</th>
+		<th>Q3</th>
+		<th>Q4</th>
+		<th>Q5</th>
+		<th>Alice</th>
+		<th>Bob</th>
+		<th>Carol</th>
+		<th>Dave</th>
+		<th>Maybe</th>
 	</tr>
 </table>
 <p/>
@@ -200,6 +261,101 @@ let tableData2 = [
 	"PMDEBFFZZ-",
 	"PMDEZFFBB-",
 ]
+let tableData3 = [
+	"FFFF-MPED-",
+	"FFFB-MPDEZ",
+	"FFFZ-MPDEB",
+	"FFBF-PMEDZ",
+	"FFBB-PMDEZ",
+	"FFZF-PMEDB",
+	"FFZZ-PMDEB",
+	"FBFF-MDPEB",
+	"FBFZ-PDMEB",
+	"FBBF-EPMDZ",
+	"FBBBBEMPDZ",
+	"FBBBZDMPEF",
+	"FBBZ-DPMEF",
+	"FBZFFEPDMZ",
+	"FBZFBEMDPZ",
+	"FBZBBDEPMF",
+	"FBZBZDEMPF",
+	"FBZZFEDMPB",
+	"FBZZZEDPMB",
+	"FZFF-MDEPZ",
+	"FZFB-PDEMZ",
+	"FZBFFEDMPZ",
+	"FZBFBEDPMZ",
+	"FZBBBDEMPF",
+	"FZBBZDEPMF",
+	"FZBZFEMPDB",
+	"FZBZZEPMDB",
+	"FZZF-EPDMB",
+	"FZZB-DPEMF",
+	"FZZZBDMEPF",
+	"FZZZZEMDPB",
+	"BFFFFEPMDZ",
+	"BFFFZDPMEB",
+	"BFFB-EMPDZ",
+	"BFFZ-DMPEB",
+	"BFBB-MPDEF",
+	"BFBZ-PMDEF",
+	"BFZFFDPEMB",
+	"BFZFZDMEPB",
+	"BFZBFEDMPZ",
+	"BFZBBEDPMZ",
+	"BFZZBEMDPF",
+	"BFZZZEPDMF",
+	"BBFF-PDMEZ",
+	"BBFB-PEMDZ",
+	"BBBF-MDPEZ",
+	"BBBB-MEPD-",
+	"BBBZ-MDPEF",
+	"BBZB-PEMDF",
+	"BBZZ-PDMEF",
+	"BZFFFDMEPB",
+	"BZFFZDPEMB",
+	"BZFBFEPDMZ",
+	"BZFBBEMDPZ",
+	"BZFZBEPMDF",
+	"BZFZZEMPDF",
+	"BZBF-PEDMZ",
+	"BZBB-MEDPZ",
+	"BZZF-DEPMB",
+	"BZZB-EDPMF",
+	"BZZZFDEMPB",
+	"BZZZZEDMPF",
+	"ZFFFFEPDMB",
+	"ZFFFBDPEMZ",
+	"ZFFB-DMEPZ",
+	"ZFFZ-EMDPB",
+	"ZFBFFEDMPB",
+	"ZFBFZEDPMB",
+	"ZFBBFDMPEZ",
+	"ZFBBBDPMEZ",
+	"ZFBZBEMPDF",
+	"ZFBZZEPMDF",
+	"ZFZB-PMEDF",
+	"ZFZZ-MPEDF",
+	"ZBFFFEMPDB",
+	"ZBFFZEPMDB",
+	"ZBFBFDPMEZ",
+	"ZBFBBDMPEZ",
+	"ZBFZBEPDMF",
+	"ZBFZZEMDPF",
+	"ZBBF-DEMPZ",
+	"ZBBBFDEPMZ",
+	"ZBBBBEDPMF",
+	"ZBBZ-EDMPF",
+	"ZBZF-PEMDB",
+	"ZBZZ-MEPDB",
+	"ZZFF-PEDMB",
+	"ZZFZ-PDEMB",
+	"ZZBB-PEDMF",
+	"ZZBZ-PDEMF",
+	"ZZZF-MEDPB",
+	"ZZZB-MEDPF",
+	"ZZZZ-MDEP-",
+]
 
 function createTable(tableName,tableData) {
 	configsTable = document.getElementById(tableName);
@@ -244,6 +400,7 @@ function createTable(tableName,tableData) {
 createTable('table1',tableData1);
 createTable('table1_1',tableData1_1);
 createTable('table2',tableData2);
+createTable('table3',tableData3);
 
 </script>
 </html>
