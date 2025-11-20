@@ -203,6 +203,27 @@ BazBarFooXxx - Q5 to Bob: Repeat your last response if you are the Mathematician
 		<th>Q5</th>
 	</tr>
 </table>
+<p/>
+
+<p style="text-indent:40px;">TODO: considering alternative where original questions only go through Q2 which leaves all further questions to M and P other than 4 rows for Philosopher. The Philosopher is revealed by giving the same answer twice in a row, and then Bob can be asked who is M and who is P. The average number of questions is 4(1/2+12/48)+5(12/48) = 4.25. </p>
+
+
+<p/>
+<table id="table5" style="width:800px;">
+	<tr>
+		<th>Alice</th>
+		<th>Bob</th>
+		<th>Carol</th>
+		<th>Dave</th>
+		<th>Maybe</th>
+		<th>Q1</th>
+		<th>Q2</th>
+		<th>Q3</th>
+		<th>Q4</th>
+		<th>Q5</th>
+	</tr>
+</table>
+
 </body>
 <script>
 
@@ -407,6 +428,40 @@ let tableData4 = [
 	"PMDEZFFFZ-",
 ]
 
+let tableData5 = [
+	"EDMPBFBFFF",
+	"EDMPZFZFFF",
+	"EDPMBFBFFZ",
+	"EDPMZFZFFB",
+	"EMDPBFZFZ-",
+	"EMDPZFBZZF",
+	"EMPDBFZBBF",
+	"EMPDZFBBF-",
+	"EPDMBFZZF-",
+	"EPDMZFBZZB",
+	"EPMDBFZBBZ",
+	"EPMDZFBFB-",
+	"DEMPFFBBBB",
+	"DEMPFFZZZB",
+	"DEPMFFBBBZ",
+	"DEPMFFZZZZ",
+	"DMEPFFZZB-",
+	"DMPEFFBZB-",
+	"DPEMFFZBZ-",
+	"DPMEFFBBZ-",
+	"MDEPZFZBF-",
+	"MDPEBFBZF-",
+	"MPEDBFFZZ-",
+	"MPEDZFFBB-",
+	"MPDEBFFZF-",
+	"MPDEZFFBF-",
+	"PDEMZFZFB-",
+	"PDMEBFBFZ-",
+	"PMED-FFFF-",
+	"PMDEBFFFZ-",
+	"PMDEZFFFB-",
+]
+
 function createTable(tableName,tableData) {
 	configsTable = document.getElementById(tableName);
 	for(let r = 0; r < tableData.length; r++) {
@@ -452,6 +507,7 @@ createTable('table1_1',tableData1_1);
 createTable('table2',tableData2);
 createTable('table3',tableData3);
 createTable('table4',tableData4);
+createTable('table5',tableData5);
 
 </script>
 </html>
