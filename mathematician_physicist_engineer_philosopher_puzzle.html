@@ -185,6 +185,89 @@ BazBarFooXxx - Q5 to Bob: Repeat your last response if you are the Mathematician
 	</tr>
 </table>
 <p/>
+<h1>The Table Structure</h1>
+<p style="text-indent:40px;">The table structure being used comes in three sections.</p>
+<p style="text-indent:80px;"><tt>Jobs - the explicit assignment of a role to each person.</tt></p>
+<p style="text-indent:80px;"><tt>Codewords - the explicit assignment of a meaning to each codeword.</tt></p>
+<p style="text-indent:80px;"><tt>Answers - the explicit codeword reply to each question.</tt></p>
+<p style="text-indent:40px;">These sections have different properties within the cause-and-effect structure of the puzzle. </p>
+<p style="text-indent:80px;"><tt>Jobs - must be deduced with certainty by the end of the game, never directly available for observation.</tt></p>
+<p style="text-indent:80px;"><tt>Codewords - might or might not be deduced by the end of the game, never directly available for observation.</tt></p>
+<p style="text-indent:80px;"><tt>Answers - the only part that can be observed or influenced by the player.</tt></p>
+<p style="text-indent:40px;">At any given point in gameplay, there is a set of Jobs+Codewords assignments that are consistent with the answers provided to the questions so far. At the beginning of the game, this is the full set of all possible combinations, and at the end, it must be a single assignment of Jobs with possibly one or more assignments of Codewords.</p>
+<p style="text-indent:40px;">Suppose we were to ask the question "Are you the Mathematician?" to each person, and receive the below responses. </p>
+<p style="text-indent:80px;"><tt>Alice - Bar</tt></p>
+<p style="text-indent:80px;"><tt>Bob - Foo</tt></p>
+<p style="text-indent:80px;"><tt>Carol - Baz</tt></p>
+<p style="text-indent:80px;"><tt>Dave - Foo</tt></p>
+<p style="text-indent:40px;">Then at that point, below are the possible Jobs+Codewords assignments that are consistent with that, where Yes and No are interpreted from the perspective of the Mathematician, and the Physicist takes the opposite view. Notice that Foo cannot mean Maybe in this case, because it would be impossible for two different people to give that response. The Mathematician and Physicist will respond with the same code word, so Foo must mean Yes.</p>
+
+<p/>
+<table id="table_ts1" style="width:800px;">
+	<tr>
+		<th>Alice</th>
+		<th>Bob</th>
+		<th>Carol</th>
+		<th>Dave</th>
+		<th>Yes</th>
+		<th>No</th>
+		<th>Maybe</th>
+		<th>Q1</th>
+		<th>Q2</th>
+		<th>Q3</th>
+		<th>Q4</th>
+	</tr>
+</table>
+<p/>
+
+<p style="text-indent:40px;">Now that we have determined all possible scenarios consistent with the answers so far, we can design a question to narrow down the options further. This question can be conditional on the answers received, so we don't need to worry about what questions we would have asked given other answers. The questions can form a decision tree where we only worry about narrowing down what is in front of us now.</p>
+<p style="text-indent:40px;">We should avoid asking questions of the Engineer, who will always give multiple answers in a way that expands the number of cases we have to deal with. We usually want to avoid the Philosopher, who will always give the same answer and will rarely help narrow things down. Since we know that Bob and Dave must not be the Engineer or Philosopher, we can direct questions to one of them. We could ask Bob, "Is Alice the Engineer?"</p>
+
+<p/>
+<table id="table_ts2" style="width:800px;">
+	<tr>
+		<th>Alice</th>
+		<th>Bob</th>
+		<th>Carol</th>
+		<th>Dave</th>
+		<th>Yes</th>
+		<th>No</th>
+		<th>Maybe</th>
+		<th>Q1</th>
+		<th>Q2</th>
+		<th>Q3</th>
+		<th>Q4</th>
+		<th>Q5</th>
+	</tr>
+</table>
+<p/>
+
+<p style="text-indent:40px;">Now we have completely determined the assignment of jobs in two cases, and we have two cases that are still indistinguishable based on the answers so far. This is the best outcome possible, as there are only three codewords, so it would not be possible to tell four scenarios apart with just one further answer. We will need to ask another question, conditional on the last answer being Foo. We could ask Bob, "Is Alice the Philosopher?". This question may seem redundant, but because the Mathematician and Physicist are using the codewords differently in these two cases, it will prevent them from saying the same word. </p>
+
+<p/>
+<table id="table_ts3" style="width:800px;">
+	<tr>
+		<th>Alice</th>
+		<th>Bob</th>
+		<th>Carol</th>
+		<th>Dave</th>
+		<th>Yes</th>
+		<th>No</th>
+		<th>Maybe</th>
+		<th>Q1</th>
+		<th>Q2</th>
+		<th>Q3</th>
+		<th>Q4</th>
+		<th>Q5</th>
+		<th>Q6</th>
+	</tr>
+</table>
+<p/>
+
+
+
+
+<h1>Further Notes</h1>
 
 <p style="text-indent:40px;">TODO: considering alternative where Foo stays on the same person instead of going back, so that trusted person is found in only two questions. After optimizing for followup questions, the average number of questions is 4(8/24+16/48)+5(4/24+8/48) = 4.333. </p>
 
@@ -394,6 +477,28 @@ let tableData3 = [
 	"ZZZB-MEDPF",
 	"ZZZZ-MDEP-",
 ]
+
+let tableData_ts1 = [
+	"EMDPFBZBFZF",
+	"EPDMFBZBFZF",
+	"DMEPFZBBFZF",
+	"DPEMFZBBFZF",
+]
+
+let tableData_ts2 = [
+	"EMDPFBZBFZFF",
+	"EPDMFBZBFZFB",
+	"DMEPFZBBFZFZ",
+	"DPEMFZBBFZFF",
+]
+
+let tableData_ts3 = [
+	"EMDPFBZBFZFFB",
+	"EPDMFBZBFZFB-",
+	"DMEPFZBBFZFZ-",
+	"DPEMFZBBFZFFZ",
+]
+
 let tableData4 = [
 	"EDMPBFBZZF",
 	"EDMPZFZBBF",
@@ -506,6 +611,9 @@ createTable('table1',tableData1);
 createTable('table1_1',tableData1_1);
 createTable('table2',tableData2);
 createTable('table3',tableData3);
+createTable('table_ts1',tableData_ts1);
+createTable('table_ts2',tableData_ts2);
+createTable('table_ts3',tableData_ts3);
 createTable('table4',tableData4);
 createTable('table5',tableData5);
 
