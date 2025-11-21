@@ -241,9 +241,7 @@ BazBarFooXxx - Q5 to Bob: Repeat your last response if you are the Mathematician
 	</tr>
 </table>
 <p/>
-
 <p style="text-indent:40px;">Now we have completely determined the assignment of jobs in two cases, and we have two cases that are still indistinguishable based on the answers so far. This is the best outcome possible, as there are only three codewords, so it would not be possible to tell four scenarios apart with just one further answer. We will need to ask another question, conditional on the last answer being Foo. We could ask Bob, "Is Alice the Philosopher?". This question may seem redundant, but because the Mathematician and Physicist are using the codewords differently in these two cases, it will prevent them from saying the same word. </p>
-
 <p/>
 <table id="table_ts3" style="width:800px;">
 	<tr>
@@ -264,10 +262,62 @@ BazBarFooXxx - Q5 to Bob: Repeat your last response if you are the Mathematician
 </table>
 <p/>
 <p style="text-indent:40px;">So after only two further questions the four cases are fully differentiated, and it cannot be done in any fewer. In this case the meanings of the codewords are also fully determined, but that is not necessary in general. </p>
+<p style="text-indent:40px;">We could instead have asked a question of Alice, and the question itself would not matter, because both the Philsopher and the Engineer will ignore the question and reply with their default answers. </p>
+<p/>
+<table id="table_ts4" style="width:800px;">
+	<tr>
+		<th>Alice</th>
+		<th>Bob</th>
+		<th>Carol</th>
+		<th>Dave</th>
+		<th>Yes</th>
+		<th>No</th>
+		<th>Maybe</th>
+		<th>Q1</th>
+		<th>Q2</th>
+		<th>Q3</th>
+		<th>Q4</th>
+		<th>Q5</th>
+	</tr>
+</table>
+<p/>
+<p style="text-indent:40px;">Now we still have the original four indistinguishable cases that are still indistinguishable, and an additional group of two cases which will need to be handled separately. This is why it is usually unhelpful to ask these two jobs any questions.</p>
 <h1>How To Ask Questions</h1>
 <p style="text-indent:40px;">As was explained in the video, it is possible to ask complicated and logically intricate questions to get information that seems like it would be difficult to get. </p>
 <p style="text-indent:40px;">For instance, suppose that you know that Alice is either the Mathematician or the Physicist, and you also know that the Mathematician says "Bar" to mean "Yes" and "Baz" to mean "No". You cannot find out which they are by simply asking "Are you the Mathematician?". If the Mathematician says "Bar" to mean "Yes", then the Physicist will also say "Bar" to mean "No", which will give you no information.</p>
+<p/>
+<table id="table_htaq1" style="width:200px;">
+	<tr>
+		<th>Alice</th>
+		<th>Yes</th>
+		<th>No</th>
+		<th>Q1</th>
+	</tr>
+</table>
+<p/>
 <p style="text-indent:40px;">You can ask a more complicated question which reveals the desired information. You could ask, "If you were asked if you were the Mathematician, would you say Bar?" The Mathematician would say Bar meaning Yes, and the Physicist would say Baz, also meaning Yes. </p>
+<p/>
+<table id="table_htaq2" style="width:200px;">
+	<tr>
+		<th>Alice</th>
+		<th>Yes</th>
+		<th>No</th>
+		<th>Q1</th>
+	</tr>
+</table>
+<p/>
+<p/>
+<p style="text-indent:40px;">This trick can even handle cases where we don't know which of the two codewords is Yes and which is No. By asking this style of question we can ask a person what their job is without finding out what codewords they use. </p>
+<p/>
+<table id="table_htaq3" style="width:200px;">
+	<tr>
+		<th>Alice</th>
+		<th>Yes</th>
+		<th>No</th>
+		<th>Q1</th>
+	</tr>
+</table>
+<p/>
 <p style="text-indent:40px;">For even more detail, you could ask Alice something like, "If you were asked whether Alice is the Mathematician and Bob is the Physicist and Carol is the Engineer and Dave is the Philosopher and Baz means Maybe, would you say Bar?" If the answer is Yes then Alice will say Bar no matter which codeword means Yes, confirming that all of this information is true at once. </p>
 <p style="text-indent:40px;">To cover all bases, then a question can be asked that contains every possible combination of events and directs the person answering the question what codeword to use in response, provided that that person is the Mathematician or Physicist. </p>
 <p style="text-indent:40px;">This means that the table of answers can be filled in nearly arbitrarily for questions directed to the Mathematician and Physicist, and a suitably complicated artificial question can be constructed which produces that combination of answers. </p>
@@ -518,6 +568,30 @@ let tableData_ts3 = [
 	"DPEMFZBBFZFFZ",
 ]
 
+let tableData_ts4 = [
+	"EMDPFBZBFZFF",
+	"EMDPFBZBFZFB",
+	"EPDMFBZBFZFF",
+	"EPDMFBZBFZFB",
+	"DMEPFZBBFZFB",
+	"DPEMFZBBFZFB",
+]
+
+let tableData_htaq1 = [
+	"MBZB",
+	"PBZB",
+]
+let tableData_htaq2 = [
+	"MBZB",
+	"PBZZ",
+]
+let tableData_htaq3 = [
+	"MBZB",
+	"MZBB",
+	"PBZZ",
+	"PZBZ",
+]
+
 let tableData4 = [
 	"EDMPBFBZZF",
 	"EDMPZFZBBF",
@@ -633,6 +707,10 @@ createTable('table3',tableData3);
 createTable('table_ts1',tableData_ts1);
 createTable('table_ts2',tableData_ts2);
 createTable('table_ts3',tableData_ts3);
+createTable('table_ts4',tableData_ts4);
+createTable('table_htaq1',tableData_htaq1);
+createTable('table_htaq2',tableData_htaq2);
+createTable('table_htaq3',tableData_htaq3);
 createTable('table4',tableData4);
 createTable('table5',tableData5);
 
