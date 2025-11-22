@@ -376,6 +376,56 @@ BazBarFooXxx - Q5 to Bob: Repeat your last response if you are the Mathematician
 	</tr>
 </table>
 
+<p style="text-indent:40px;">TODO: incorporating original simpler solution that takes 8 (?) questions </p>
+<p style="text-indent:80px;"><tt>Q1 to Alice - Are you the Engineer?</tt></p>
+<p style="text-indent:80px;"><tt>Q2 to Bob - Are you the Engineer?</tt></p>
+<p style="text-indent:80px;"><tt>Q3 to Carol - Are you the Engineer?</tt></p>
+<p style="text-indent:80px;"><tt>Q4 to Dave - Are you the Engineer?</tt></p>
+<p style="text-indent:40px;">After these four questions, it must be the case that we see all three codewords. The Philosopher will always say Maybe, and the Mathematician and Physicist will say different words for No. There will also be two answers that match, because the codeword the Engineer says will have to match either the Mathematician or the Physicist. Without loss of generality, we may as well assume that the duplicated word comes first and is Foo, followed by Bar, then Baz. </p>
+<p/>
+<table id="table6" style="width:800px;">
+	<tr>
+		<th>Alice</th>
+		<th>Bob</th>
+		<th>Carol</th>
+		<th>Dave</th>
+		<th>Yes</th>
+		<th>No</th>
+		<th>Maybe</th>
+		<th>Q1</th>
+		<th>Q2</th>
+		<th>Q3</th>
+		<th>Q4</th>
+	</tr>
+</table>
+<p/>
+<p style="text-indent:40px;">In the first four questions, we forced the Mathematician and Physicist to say their codeword for No. Now we can force them to say Yes. Then once we have identified one of them, we can ask direct questions about the others. </p>
+<p style="text-indent:80px;"><tt>Q5 to Carol - Are you something other than the Engineer?</tt></p>
+<p style="text-indent:80px;"><tt>If Q5 answer is Foo: Q6 to Carol - If asked whether you are the Mathematician would you say Foo?</tt></p>
+<p style="text-indent:80px;"><tt>If Q5 answer is Bar: Q6 to Dave - If asked whether you are the Mathematician would you say Foo?</tt></p>
+<p style="text-indent:80px;"><tt>If Q5 answer is Foo: Q7 to Carol - If asked whether Bob is the Engineer would you say Foo?</tt></p>
+<p style="text-indent:80px;"><tt>If Q5 answer is Bar: Q7 to Dave - If asked whether Bob is the Engineer would you say Foo?</tt></p>
+<p/>
+<table id="table7" style="width:800px;">
+	<tr>
+		<th>Alice</th>
+		<th>Bob</th>
+		<th>Carol</th>
+		<th>Dave</th>
+		<th>Yes</th>
+		<th>No</th>
+		<th>Maybe</th>
+		<th>Q1</th>
+		<th>Q2</th>
+		<th>Q3</th>
+		<th>Q4</th>
+		<th>Q5</th>
+		<th>Q6</th>
+		<th>Q7</th>
+	</tr>
+</table>
+<p/>
+
 </body>
 <script>
 
@@ -660,6 +710,28 @@ let tableData5 = [
 	"PMDEZFFFB-",
 ]
 
+let tableData6 = [
+	"MEPDBFZFFBZ",
+	"MEDPZFBFFBZ",
+	"PEMDFBZFFBZ",
+	"PEDMFZBFFBZ",
+	"EMPDBFZFFBZ",
+	"EMDPZFBFFBZ",
+	"EPMDFBZFFBZ",
+	"EPDMFZBFFBZ",
+]
+
+let tableData7 = [
+	"MEPDBFZFFBZFBF",
+	"MEDPZFBFFBZBZF",
+	"PEMDFBZFFBZFFF",
+	"PEDMFZBFFBZBFF",
+	"EMPDBFZFFBZFBB",
+	"EMDPZFBFFBZBZZ",
+	"EPMDFBZFFBZFFB",
+	"EPDMFZBFFBZBFZ",
+]
+
 function createTable(tableName,tableData) {
 	configsTable = document.getElementById(tableName);
 	for(let r = 0; r < tableData.length; r++) {
@@ -713,6 +785,50 @@ createTable('table_htaq2',tableData_htaq2);
 createTable('table_htaq3',tableData_htaq3);
 createTable('table4',tableData4);
 createTable('table5',tableData5);
+createTable('table6',tableData6);
+createTable('table7',tableData7);
+
+function printPermutations(rules) {
+	for(let c1 of ['M','P','E','D']) {
+		for(let c2 of ['M','P','E','D']) {
+			if(c1==c2) continue;
+			for(let c3 of ['M','P','E','D']) {
+				if(c1==c3||c2==c3) continue;
+				for(let c4 of ['M','P','E','D']) {
+					if(c1==c4||c2==c4||c3==c4) continue;
+					for(let c5 of ['F','B','Z']) {
+						for(let c6 of ['F','B','Z']) {
+							if(c5==c6) continue;
+							for(let c7 of ['F','B','Z']) {
+								if(c5==c7||c6==c7) continue;
+								if(rules=="blank") {
+									console.log(c1+c2+c3+c4+c5+c6+c7);
+								}
+								if(rules=="table6") {
+									let c8 = c1=='M'?c6:(c1=='P'?c5:(c1=='D'?c7:c5));
+									let c9 = c2=='M'?c6:(c2=='P'?c5:(c2=='D'?c7:c5));
+									let c10 = c3=='M'?c6:(c3=='P'?c5:(c3=='D'?c7:c5));
+									let c11 = c4=='M'?c6:(c4=='P'?c5:(c4=='D'?c7:c5));
+									if(c8+c9+c10+c11=="FFBZ") {
+										console.log(c1+c2+c3+c4+c5+c6+c7+c8+c9+c10+c11);
+									}
+									c8 = c1=='M'?c6:(c1=='P'?c5:(c1=='D'?c7:c6));
+									c9 = c2=='M'?c6:(c2=='P'?c5:(c2=='D'?c7:c6));
+									c10 = c3=='M'?c6:(c3=='P'?c5:(c3=='D'?c7:c6));
+									c11 = c4=='M'?c6:(c4=='P'?c5:(c4=='D'?c7:c6));
+									if(c8+c9+c10+c11=="FFBZ") {
+										console.log(c1+c2+c3+c4+c5+c6+c7+c8+c9+c10+c11);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+printPermutations("table6");
 
 </script>
 </html>
