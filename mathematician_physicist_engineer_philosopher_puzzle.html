@@ -332,6 +332,51 @@ BazBarFooXxx - Q5 to Bob: Repeat your last response if you are the Mathematician
 <p style="text-indent:40px;">We will now consider the codewords. The example above showed that it is possible to solve the puzzle without ever finding out which codeword is Yes and which is No, but still identified Maybe in most cases. This shows that the original count of 6 permutations of codewords was an overcounting, and we could actually have reduced that to only 3. That would take the previous count from 180 to 90. </p>
 <p style="text-indent:40px;">In most cases, it is not possible to solve the puzzle without finding out the codeword that means Maybe along the way. The solution must identify every job, so if the Philosopher has spoken at all, then the codeword for Maybe is revealed. Similarly, if any of the other jobs have said two different words, then the third codeword must mean Maybe by process of elimination. So the only case where the codeword that means Maybe would not be revealed is if the Philosopher did not answer any questions, and the others only said one word over and over again. Even then, it is clear that Maybe is not that word. As there are three codewords, there are only three cases where this can happen. This reduces those cases from 3*3 = 9 to 2*3 = 6 and the total from 90 to 87. </p>
 <p style="text-indent:40px;">Because 87 is greater than 81, it seems that it would be impossible to separate those 87 cases with only 4 questions.  </p>
+<h1>Simplified Puzzles</h1>
+<p style="text-indent:40px;">The old, traditional two guards puzzle contains only two jobs (Mathematician and Physicist) and only two codewords (Foo and Bar) and can be solved in one question, "Alice, would you say Foo if I asked you if you are the Mathematician?"</p>
+<p/>
+<table id="table_s1" style="width:300px;">
+	<tr>
+		<th>Alice</th>
+		<th>Bob</th>
+		<th>Yes</th>
+		<th>No</th>
+		<th>Q1</th>
+	</tr>
+</table>
+<p/>
+<p style="text-indent:40px;">What if one of these was the Philosopher instead, and we used all three codewords? Any question that might be directed to the Philosopher will provide incomplete information, so at least two questions are needed.</p>
+<p style="text-indent:80px;"><tt>Q1 to Alice: Are you the Mathematician?</tt></p>
+<p style="text-indent:80px;"><tt>Q2 to Alice: Are you the Philosopher?</tt></p>
+<p/>
+<table id="table_s2" style="width:400px;">
+	<tr>
+		<th>Alice</th>
+		<th>Bob</th>
+		<th>Yes</th>
+		<th>No</th>
+		<th>Maybe</th>
+		<th>Q1</th>
+		<th>Q2</th>
+	</tr>
+</table>
+<p/>
+<p style="text-indent:40px;">What if one of these was the Engineer instead, and we used two codewords? This is impossible to solve, because the Engineer can always give the same answer as the Mathematician, so there is no sequence of questions that would be guaranteed to differentiate them. Solving the puzzle when the Engineer is involved always relies on getting the Mathematician and Physicist to vouch for each other.</p>
+<p style="text-indent:80px;"><tt>Q1 to Alice: Are you the Mathematician?</tt></p>
+<p style="text-indent:80px;"><tt>Q1 to Alice: Are you the Engineer?</tt></p>
+<p/>
+<table id="table_s3" style="width:400px;">
+	<tr>
+		<th>Alice</th>
+		<th>Bob</th>
+		<th>Yes</th>
+		<th>No</th>
+		<th>Q1</th>
+		<th>Q2</th>
+	</tr>
+</table>
+<p/>
+
 
 
 
@@ -376,7 +421,7 @@ BazBarFooXxx - Q5 to Bob: Repeat your last response if you are the Mathematician
 	</tr>
 </table>
 
-<p style="text-indent:40px;">TODO: incorporating original simpler solution that takes 8 (?) questions </p>
+<p style="text-indent:40px;">TODO: incorporating original simpler solution that takes 7 questions </p>
 <p style="text-indent:80px;"><tt>Q1 to Alice - Are you the Engineer?</tt></p>
 <p style="text-indent:80px;"><tt>Q2 to Bob - Are you the Engineer?</tt></p>
 <p style="text-indent:80px;"><tt>Q3 to Carol - Are you the Engineer?</tt></p>
@@ -400,7 +445,7 @@ BazBarFooXxx - Q5 to Bob: Repeat your last response if you are the Mathematician
 </table>
 <p/>
 <p style="text-indent:40px;">In the first four questions, we forced the Mathematician and Physicist to say their codeword for No. Now we can force them to say Yes. Then once we have identified one of them, we can ask direct questions about the others. </p>
-<p style="text-indent:80px;"><tt>Q5 to Carol - Are you something other than the Engineer?</tt></p>
+<p style="text-indent:80px;"><tt>Q5 to Carol - Are you the Mathematician or Physicist?</tt></p>
 <p style="text-indent:80px;"><tt>If Q5 answer is Foo: Q6 to Carol - If asked whether you are the Mathematician would you say Foo?</tt></p>
 <p style="text-indent:80px;"><tt>If Q5 answer is Bar: Q6 to Dave - If asked whether you are the Mathematician would you say Foo?</tt></p>
 <p style="text-indent:80px;"><tt>If Q5 answer is Foo: Q7 to Carol - If asked whether Bob is the Engineer would you say Foo?</tt></p>
@@ -642,6 +687,41 @@ let tableData_htaq3 = [
 	"PZBZ",
 ]
 
+let tableData_s1 = [
+	"MPFBF",
+	"MPBFF",
+	"PMFBB",
+	"PMBFB",
+]
+let tableData_s2 = [
+	"MDFBZFB",
+	"MDFZBFZ",
+	"MDBFZBF",
+	"MDBZFBZ",
+	"MDZFBZF",
+	"MDZBFZB",
+	"DMFBZZZ",
+	"DMFZBBB",
+	"DMBFZZZ",
+	"DMBZFFF",
+	"DMZFBBB",
+	"DMZBFFF",
+]
+
+let tableData_s3 = [
+	"MEFBFB",
+	"MEBFBF",
+	"EMFBFF",
+	"EMFBFB",
+	"EMFBBF",
+	"EMFBBB",
+	"EMBFBB",
+	"EMBFBF",
+	"EMBFFB",
+	"EMBFFF",
+]
+
+
 let tableData4 = [
 	"EDMPBFBZZF",
 	"EDMPZFZBBF",
@@ -783,6 +863,9 @@ createTable('table_ts4',tableData_ts4);
 createTable('table_htaq1',tableData_htaq1);
 createTable('table_htaq2',tableData_htaq2);
 createTable('table_htaq3',tableData_htaq3);
+createTable('table_s1',tableData_s1);
+createTable('table_s2',tableData_s2);
+createTable('table_s3',tableData_s3);
 createTable('table4',tableData4);
 createTable('table5',tableData5);
 createTable('table6',tableData6);
