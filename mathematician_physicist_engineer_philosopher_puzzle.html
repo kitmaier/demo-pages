@@ -363,9 +363,24 @@ BazBarFooXxx - Q5 to Bob: Repeat your last response if you are the Mathematician
 <p/>
 <p style="text-indent:40px;">What if one of these was the Engineer instead, and we used two codewords? This is impossible to solve, because the Engineer can always give the same answer as the Mathematician, so there is no sequence of questions that would be guaranteed to differentiate them. Solving the puzzle when the Engineer is involved always relies on getting the Mathematician and Physicist to vouch for each other.</p>
 <p style="text-indent:80px;"><tt>Q1 to Alice: Are you the Mathematician?</tt></p>
-<p style="text-indent:80px;"><tt>Q1 to Alice: Are you the Engineer?</tt></p>
+<p style="text-indent:80px;"><tt>Q2 to Alice: Are you the Engineer?</tt></p>
 <p/>
 <table id="table_s3" style="width:400px;">
+	<tr>
+		<th>Alice</th>
+		<th>Bob</th>
+		<th>Yes</th>
+		<th>No</th>
+		<th>Q1</th>
+		<th>Q2</th>
+	</tr>
+</table>
+<p/>
+<p style="text-indent:40px;">What if there are only the Mathematician and Physicist, but there are still three codewords? This cannot be solved in one question. Suppose that a question were asked of Alice, and we looked only at the responses that the Mathematician can give. There is no single codeword that is available across all universes that the Mathematician is allowed to say, so there must be at least two different codewords used. The same will apply to the Physicist. Since there are only three codewords in all, there must be some codeword in common. That means that there is some response to the question that is consistent with Alice being both the Mathematician and Physicist, which means that one question is not enough. </p>
+<p style="text-indent:80px;"><tt>Q1 to Alice: Are you the Mathematician?</tt></p>
+<p style="text-indent:80px;"><tt>Q2 to Alice: Are you either the Mathematician or the Physicist?</tt></p>
+<p/>
+<table id="table_s4" style="width:400px;">
 	<tr>
 		<th>Alice</th>
 		<th>Bob</th>
@@ -707,7 +722,6 @@ let tableData_s2 = [
 	"DMZFBBB",
 	"DMZBFFF",
 ]
-
 let tableData_s3 = [
 	"MEFBFB",
 	"MEBFBF",
@@ -719,6 +733,20 @@ let tableData_s3 = [
 	"EMBFBF",
 	"EMBFFB",
 	"EMBFFF",
+]
+let tableData_s4 = [
+	"MPFBFF",
+	"MPFZFF",
+	"MPBFBB",
+	"MPBZBB",
+	"MPZFZZ",
+	"MPZBZZ",
+	"PMFBFB",
+	"PMFZFZ",
+	"PMBFBF",
+	"PMBZBZ",
+	"PMZFZF",
+	"PMZBZB",
 ]
 
 
@@ -866,6 +894,7 @@ createTable('table_htaq3',tableData_htaq3);
 createTable('table_s1',tableData_s1);
 createTable('table_s2',tableData_s2);
 createTable('table_s3',tableData_s3);
+createTable('table_s4',tableData_s4);
 createTable('table4',tableData4);
 createTable('table5',tableData5);
 createTable('table6',tableData6);
