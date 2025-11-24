@@ -322,6 +322,18 @@ BazBarFooXxx - Q5 to Bob: Repeat your last response if you are the Mathematician
 <p style="text-indent:40px;">To cover all bases, then a question can be asked that contains every possible combination of events and directs the person answering the question what codeword to use in response, provided that that person is the Mathematician or Physicist. </p>
 <p style="text-indent:40px;">This means that the table of answers can be filled in nearly arbitrarily for questions directed to the Mathematician and Physicist, and a suitably complicated artificial question can be constructed which produces that combination of answers. </p>
 <p style="text-indent:40px;">This further underscores that the most important problem is quickly identifying who the Mathematician and Physicist are so that as many questions as possible can be directed to them. </p>
+<p style="text-indent:40px;">For an example of a more complex question, consider the below randomly generated list of answers. Also marked is what the codeword actually means to the person being asked the question. In order to ask a single question that gets this response in all cases, it is necessary to join together a detailed description of each row in the table marked True. Such a question would be, "Is it the case that you are the Mathematician and if you were asked first whether you are the Mathematician and then whether you are the Physicist you would reply either Bar then Foo or Baz then Foo, or is it the case that you are the Physicist and if you were asked first whether you are the Mathematician and then whether you are the Physicist you would reply Baz then Bar?"</p>
+<p/>
+<table id="table_htaq4" style="width:300px;">
+	<tr>
+		<th>Alice</th>
+		<th>Yes</th>
+		<th>No</th>
+		<th>Q1</th>
+		<th>Truth</th>
+	</tr>
+</table>
+<p/>
 <h1>Optimality</h1>
 <p style="text-indent:40px;">What is the fewest questions needed in order to solve the puzzle? Can it be done in only four? I don't think so, and here's an explanation as to why. </p>
 <p style="text-indent:40px;">First, there is an upper bound on how much complexity can be handled with only 4 questions, because there are only 3 legal answers to each question. This means there are at most 3*3*3*3 = 3^4 = 81 cases that can be unambiguously differentiated with 4 questions. In practice, the constraints of the puzzle will most likely make it difficult to achieve even that level of ideal performance. </p>
@@ -741,6 +753,20 @@ let tableData_htaq3 = [
 	"PBZZ",
 	"PZBZ",
 ]
+let tableData_htaq4 = [
+	"MFBBf",
+	"MFZZf",
+	"MBFBt",
+	"MBZZf",
+	"MZFZt",
+	"MZBBf",
+	"PFBFf",
+	"PFZFf",
+	"PBFBf",
+	"PBZBf",
+	"PZFZf",
+	"PZBBt",
+]
 
 let tableData_s1 = [
 	"MPFBF",
@@ -928,6 +954,8 @@ function createTable(tableName,tableData) {
 				case '2': text = 'Bob'; break;
 				case '3': text = 'Carol'; break;
 				case '4': text = 'Dave'; break;
+				case 't': text = 'True'; break;
+				case 'f': text = 'False'; break;
 			}
 			td.appendChild(document.createTextNode(text));
 			let bgcolor = '#FFFFFC';
@@ -943,6 +971,8 @@ function createTable(tableName,tableData) {
 				case 'F': bgcolor = '#80E0FF'; break;
 				case 'B': bgcolor = '#90A0FF'; break;
 				case 'Z': bgcolor = '#D0B2FF'; break;
+				case 't': bgcolor = '#00FF00'; break;
+				case 'f': bgcolor = '#FF0000'; break;
 			}
 			td.style.backgroundColor = bgcolor;
 		}
@@ -959,6 +989,7 @@ createTable('table_ts4',tableData_ts4);
 createTable('table_htaq1',tableData_htaq1);
 createTable('table_htaq2',tableData_htaq2);
 createTable('table_htaq3',tableData_htaq3);
+createTable('table_htaq4',tableData_htaq4);
 createTable('table_s1',tableData_s1);
 createTable('table_s2',tableData_s2);
 createTable('table_s3',tableData_s3);
