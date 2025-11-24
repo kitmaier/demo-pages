@@ -391,6 +391,46 @@ BazBarFooXxx - Q5 to Bob: Repeat your last response if you are the Mathematician
 	</tr>
 </table>
 <p/>
+<p style="text-indent:40px;">What if we have all jobs but the Engineer? This cannot be solved in two questions. Suppose it could, then there would need to be no more than 3*3 = 9 distinct cases. There are 3! = 3*2*1 = 6 permutations of the jobs, and there are 3 possible codewords for Maybe, which will be revealed in all but at most 3 universes, for a total of 15 cases that must be distinguished. It can be done with three questions, and the first two questions will be used to identify what Alice's job is. </p>
+<p style="text-indent:80px;"><tt>Q1 to Alice: What is the first word after the codeword for Maybe in cyclic order in [Foo, Bar, Baz] if you are the Mathematician, or the second if you are the Physicist?</tt></p>
+<p style="text-indent:120px;"><tt>Full question: If the Mathematician were asked first whether they are the Mathematician and then whether they are the Physicist, is it the case that they would say either Foo then Bar, or Bar then Baz, or Baz then Foo?</tt></p>
+<p style="text-indent:80px;"><tt>Q2 to Alice: What is the word you can say that is different from your last answer?</tt></p>
+<p style="text-indent:120px;"><tt>Full question: If the Mathematician were asked first whether they are the Mathematician and then whether they are the Physicist, is it the case that they would say either Bar then Foo, or Baz then Bar, or Foo then Baz?</tt></p>
+<p style="text-indent:80px;"><tt>If the answers to Q1 and Q2 are different - Q3 to Alice: Repeat your answer to Q1 if Bob is the Philosopher, otherwise repeat your answer to Q2.</tt></p>
+<p style="text-indent:120px;"><tt>Full question: </tt></p>
+<p style="text-indent:80px;"><tt>If the answers to Q1 and Q2 are the same - Q3 to Bob: What is the first word after the codeword for Maybe in cyclic order in [Foo, Bar, Baz] if you are the Mathematician, or the second if you are the Physicist?</tt></p>
+<p style="text-indent:120px;"><tt>Full question: </tt></p>
+<p/>
+<table id="table_s5" style="width:500px;">
+	<tr>
+		<th>Alice</th>
+		<th>Bob</th>
+		<th>Carol</th>
+		<th>Maybe</th>
+		<th>Q1</th>
+		<th>Q2</th>
+		<th>Q3</th>
+	</tr>
+</table>
+<p/>
+<p style="text-indent:40px;">But if we already knew what all the codewords meant, then it would be possible in only two questions. </p>
+<p style="text-indent:80px;"><tt>Q1 to Alice: If asked whether you are the Mathematician, would you say Foo?</tt></p>
+<p style="text-indent:80px;"><tt>If the answer to Q1 is Foo or Bar - Q2 to Alice: If asked whether Bob is the Philosopher, would you say Foo?</tt></p>
+<p style="text-indent:80px;"><tt>If the answer to Q1 is Baz - Q2 to Bob: If asked whether you are the Mathematician, would you say Foo?</tt></p>
+<p/>
+<table id="table_s6" style="width:500px;">
+	<tr>
+		<th>Alice</th>
+		<th>Bob</th>
+		<th>Carol</th>
+		<th>Yes</th>
+		<th>No</th>
+		<th>Maybe</th>
+		<th>Q1</th>
+		<th>Q2</th>
+	</tr>
+</table>
+<p/>
 
 
 
@@ -748,6 +788,34 @@ let tableData_s4 = [
 	"PMZFZF",
 	"PMZBZB",
 ]
+let tableData_s5 = [
+	"MPDFBZ-",
+	"MPDBZF-",
+	"MPDZFB-",
+	"MDPFBZ-",
+	"MDPBZF-",
+	"MDPZFB-",
+	"PMDFZB-",
+	"PMDBFZ-",
+	"PMDZBF-",
+	"PDMFZB-",
+	"PDMBFZ-",
+	"PDMZBF-",
+	"DMPFFF-",
+	"DMPBBB-",
+	"DMPZZZ-",
+	"DPMFFF-",
+	"DPMBBB-",
+	"DPMZZZ-",
+]
+let tableData_s6 = [
+	"MPDFBZFB",
+	"MDPFBZFF",
+	"PMDFBZBB",
+	"PDMFBZBF",
+	"DMPFBZZF",
+	"DPMFBZZB",
+]
 
 
 let tableData4 = [
@@ -895,6 +963,8 @@ createTable('table_s1',tableData_s1);
 createTable('table_s2',tableData_s2);
 createTable('table_s3',tableData_s3);
 createTable('table_s4',tableData_s4);
+createTable('table_s5',tableData_s5);
+createTable('table_s6',tableData_s6);
 createTable('table4',tableData4);
 createTable('table5',tableData5);
 createTable('table6',tableData6);
