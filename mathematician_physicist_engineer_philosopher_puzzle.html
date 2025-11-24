@@ -391,15 +391,15 @@ BazBarFooXxx - Q5 to Bob: Repeat your last response if you are the Mathematician
 	</tr>
 </table>
 <p/>
-<p style="text-indent:40px;">What if we have all jobs but the Engineer? This cannot be solved in two questions. Suppose it could, then there would need to be no more than 3*3 = 9 distinct cases. There are 3! = 3*2*1 = 6 permutations of the jobs, and there are 3 possible codewords for Maybe, which will be revealed in all but at most 3 universes, for a total of 15 cases that must be distinguished. It can be done with three questions, and the first two questions will be used to identify what Alice's job is. </p>
+<p style="text-indent:40px;">What if we have all jobs but the Engineer? This cannot be solved in two questions. Suppose it could, then there would need to be no more than 3*3 = 9 distinct cases. There are 3! = 3*2*1 = 6 permutations of the jobs, and there are 3 possible codewords for Maybe, which will be revealed in all but at most 3 universes, for a total of 15 cases that must be distinguished. It can be done with three questions, and the first two questions will be used to simultaneously identify both what Alice's job is, and what word means Maybe. </p>
 <p style="text-indent:80px;"><tt>Q1 to Alice: What is the first word after the codeword for Maybe in cyclic order in [Foo, Bar, Baz] if you are the Mathematician, or the second if you are the Physicist?</tt></p>
 <p style="text-indent:120px;"><tt>Full question: If the Mathematician were asked first whether they are the Mathematician and then whether they are the Physicist, is it the case that they would say either Foo then Bar, or Bar then Baz, or Baz then Foo?</tt></p>
 <p style="text-indent:80px;"><tt>Q2 to Alice: What is the word you can say that is different from your last answer?</tt></p>
 <p style="text-indent:120px;"><tt>Full question: If the Mathematician were asked first whether they are the Mathematician and then whether they are the Physicist, is it the case that they would say either Bar then Foo, or Baz then Bar, or Foo then Baz?</tt></p>
 <p style="text-indent:80px;"><tt>If the answers to Q1 and Q2 are different - Q3 to Alice: Repeat your answer to Q1 if Bob is the Philosopher, otherwise repeat your answer to Q2.</tt></p>
-<p style="text-indent:120px;"><tt>Full question: </tt></p>
+<p style="text-indent:120px;"><tt>Full question: Is it the case that Bob is the Philosopher and if the Mathematician were asked first whether they are the Mathematician and then whether they are the Physicist, they would say either Foo then Bar, or Bar then Baz, or Baz then Foo, or is it the case that Bob is not the Philosopher and if the Mathematician were asked first whether they are the Mathematician and then whether they are the Physicist, they would say either Bar then Foo, or Baz then Bar, or Foo then Baz?</tt></p>
 <p style="text-indent:80px;"><tt>If the answers to Q1 and Q2 are the same - Q3 to Bob: What is the first word after the codeword for Maybe in cyclic order in [Foo, Bar, Baz] if you are the Mathematician, or the second if you are the Physicist?</tt></p>
-<p style="text-indent:120px;"><tt>Full question: </tt></p>
+<p style="text-indent:120px;"><tt>Full question: If the Mathematician were asked first whether they are the Mathematician and then whether they are the Physicist, is it the case that they would say either Foo then Bar, or Bar then Baz, or Baz then Foo?</tt></p>
 <p/>
 <table id="table_s5" style="width:500px;">
 	<tr>
@@ -789,24 +789,24 @@ let tableData_s4 = [
 	"PMZBZB",
 ]
 let tableData_s5 = [
-	"MPDFBZ-",
-	"MPDBZF-",
-	"MPDZFB-",
-	"MDPFBZ-",
-	"MDPBZF-",
-	"MDPZFB-",
-	"PMDFZB-",
-	"PMDBFZ-",
-	"PMDZBF-",
-	"PDMFZB-",
-	"PDMBFZ-",
-	"PDMZBF-",
-	"DMPFFF-",
-	"DMPBBB-",
-	"DMPZZZ-",
-	"DPMFFF-",
-	"DPMBBB-",
-	"DPMZZZ-",
+	"MPDFBZZ",
+	"MPDBZFF",
+	"MPDZFBB",
+	"MDPFBZB",
+	"MDPBZFZ",
+	"MDPZFBF",
+	"PMDFZBB",
+	"PMDBFZZ",
+	"PMDZBFF",
+	"PDMFZBZ",
+	"PDMBFZF",
+	"PDMZBFB",
+	"DMPFFFB",
+	"DMPBBBZ",
+	"DMPZZZF",
+	"DPMFFFZ",
+	"DPMBBBF",
+	"DPMZZZB",
 ]
 let tableData_s6 = [
 	"MPDFBZFB",
