@@ -318,10 +318,6 @@ BazBarFooXxx - Q5 to Bob: Repeat your last response if you are the Mathematician
 	</tr>
 </table>
 <p/>
-<p style="text-indent:40px;">For even more detail, you could ask Alice something like, "If you were asked whether Alice is the Mathematician and Bob is the Physicist and Carol is the Engineer and Dave is the Philosopher and Baz means Maybe, would you say Bar?" If the answer is Yes then Alice will say Bar no matter which codeword means Yes, confirming that all of this information is true at once. </p>
-<p style="text-indent:40px;">To cover all bases, then a question can be asked that contains every possible combination of events and directs the person answering the question what codeword to use in response, provided that that person is the Mathematician or Physicist. </p>
-<p style="text-indent:40px;">This means that the table of answers can be filled in nearly arbitrarily for questions directed to the Mathematician and Physicist, and a suitably complicated artificial question can be constructed which produces that combination of answers. </p>
-<p style="text-indent:40px;">This further underscores that the most important problem is quickly identifying who the Mathematician and Physicist are so that as many questions as possible can be directed to them. </p>
 <p style="text-indent:40px;">For an example of a more complex question, consider the below randomly generated list of answers. Also marked is what the codeword actually means to the person being asked the question. In order to ask a single question that gets this response in all cases, it is necessary to join together a detailed description of each row in the table marked True. Such a question would be, "Is it the case that you are the Mathematician and if you were asked first whether you are the Mathematician and then whether you are the Physicist you would reply either Bar then Foo or Baz then Foo, or is it the case that you are the Physicist and if you were asked first whether you are the Mathematician and then whether you are the Physicist you would reply Baz then Bar?"</p>
 <p/>
 <table id="table_htaq4" style="width:300px;">
@@ -334,6 +330,8 @@ BazBarFooXxx - Q5 to Bob: Repeat your last response if you are the Mathematician
 	</tr>
 </table>
 <p/>
+<p style="text-indent:40px;">It can be verified that for each row in the table, the person being asked the question ultimately responds with exactly the codeword intended. This means that the table of answers can be filled in nearly arbitrarily for questions directed to the Mathematician and Physicist, and a suitably complicated artificial question can be constructed which produces that combination of answers. </p>
+<p style="text-indent:40px;">This further underscores that the most important problem is quickly identifying who the Mathematician and Physicist are so that as many questions as possible can be directed to them. </p>
 <h1>Optimality</h1>
 <p style="text-indent:40px;">What is the fewest questions needed in order to solve the puzzle? Can it be done in only four? I don't think so, and here's an explanation as to why. </p>
 <p style="text-indent:40px;">First, there is an upper bound on how much complexity can be handled with only 4 questions, because there are only 3 legal answers to each question. This means there are at most 3*3*3*3 = 3^4 = 81 cases that can be unambiguously differentiated with 4 questions. In practice, the constraints of the puzzle will most likely make it difficult to achieve even that level of ideal performance. </p>
@@ -971,8 +969,8 @@ function createTable(tableName,tableData) {
 				case 'F': bgcolor = '#80E0FF'; break;
 				case 'B': bgcolor = '#90A0FF'; break;
 				case 'Z': bgcolor = '#D0B2FF'; break;
-				case 't': bgcolor = '#00FF00'; break;
-				case 'f': bgcolor = '#FF0000'; break;
+				case 't': bgcolor = '#CAFFBF'; break;
+				case 'f': bgcolor = '#FFADAD'; break;
 			}
 			td.style.backgroundColor = bgcolor;
 		}
