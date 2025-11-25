@@ -442,6 +442,28 @@ BazBarFooXxx - Q5 to Bob: Repeat your last response if you are the Mathematician
 </table>
 <p/>
 
+<p style="text-indent:40px;">What if there are only two codewords, and every job but the Philosopher? As shown in the original video, this can be solved in three questions. </p>
+<p style="text-indent:80px;"><tt>Q1 to Alice: Which of the other is the most trustworthy? [Foo:Bob, Bar:Carol]</tt></p>
+<p style="text-indent:120px;"><tt>Full question: If you were asked whether Carol is the Engineer, would you say Foo?</tt></p>
+<p style="text-indent:80px;"><tt>If the answer to Q1 is Foo - Q2 to Bob: If you were asked whether Alice is the Engineer, would you say Foo?</tt></p>
+<p style="text-indent:80px;"><tt>If the answer to Q1 is Bar - Q2 to Carol: If you were asked whether Alice is the Engineer, would you say Foo?</tt></p>
+<p style="text-indent:80px;"><tt>If the answer to Q2 is Foo - Q3 to Bob: If you were asked whether you are the Mathematician, would you say Foo?</tt></p>
+<p style="text-indent:80px;"><tt>If the answer to Q2 is Bar - Q3 to Alice: If you were asked whether you are the Mathematician, would you say Foo?</tt></p>
+<p/>
+<table id="table_s7" style="width:500px;">
+	<tr>
+		<th>Alice</th>
+		<th>Bob</th>
+		<th>Carol</th>
+		<th>Yes</th>
+		<th>No</th>
+		<th>Q1</th>
+		<th>Q2</th>
+		<th>Q3</th>
+	</tr>
+</table>
+<p/>
+
 
 
 
@@ -840,7 +862,24 @@ let tableData_s6 = [
 	"DMPFBZZF",
 	"DPMFBZZB",
 ]
-
+let tableData_s7 = [
+	"EMPFBFFF",
+	"EMPFBBFF",
+	"EMPBFFFF",
+	"EMPBFBFF",
+	"EPMFBFFB",
+	"EPMFBBFB",
+	"EPMBFFFB",
+	"EPMBFBFB",
+	"MEPFBBBF",
+	"MEPBFBBF",
+	"MPEFBFBF",
+	"MPEBFFBF",
+	"PEMFBBBB",
+	"PEMBFBBB",
+	"PMEFBFBB",
+	"PMEBFFBB",
+]
 
 let tableData4 = [
 	"EDMPBFBZZF",
@@ -994,6 +1033,7 @@ createTable('table_s3',tableData_s3);
 createTable('table_s4',tableData_s4);
 createTable('table_s5',tableData_s5);
 createTable('table_s6',tableData_s6);
+createTable('table_s7',tableData_s7);
 createTable('table4',tableData4);
 createTable('table5',tableData5);
 createTable('table6',tableData6);
