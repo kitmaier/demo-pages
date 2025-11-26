@@ -462,13 +462,30 @@ BazBarFooXxx - Q5 to Bob: Repeat your last response if you are the Mathematician
 	</tr>
 </table>
 <p/>
-<p style="text-indent:40px;">What if the puzzle is the same as it was originally, except that we already know what all of the codewords mean? This cannot be solved in 3 questions. There are 24 permutations of 4 jobs, and taking into account the Engineer, that makes 30 cases that will have to be distinguished after the first question. But there are at most 3*3*3 = 27 cases that can be distinguished in 3 questions with 3 codewords. The problem can be solved in 4 questions. </p>
+<p style="text-indent:40px;">What if the puzzle is the same as it was originally, except that we already know what all of the codewords mean? This cannot be solved in 3 questions. There are 24 permutations of 4 jobs, and taking into account the Engineer, that makes 30 cases that will have to be distinguished after the first question, or 32 after the second. But there are at most 3*3*3 = 27 cases that can be distinguished in 3 questions with 3 codewords. The problem can be solved in 4 questions. </p>
 <p style="text-indent:80px;"><tt>Q1 to Alice: Which of the others is more trustworthy? [Foo:Bob, Bar:Carol]</tt></p>
-<p style="text-indent:120px;"><tt>Full question: </tt></p>
+<p style="text-indent:120px;"><tt>Full question: If you were asked whether it is the case that Bob is the Mathematician or Physicist, or that Bob is the Philosopher and Carol is the Engineer, would you say Foo? </tt></p>
 <p style="text-indent:80px;"><tt>If the answer to Q1 is Foo - Q2 to Bob: If you were asked whether Alice is the Engineer, would you say Foo?</tt></p>
 <p style="text-indent:80px;"><tt>If the answer to Q1 is Bar - Q2 to Carol: If you were asked whether Alice is the Engineer, would you say Foo?</tt></p>
 <p style="text-indent:80px;"><tt>If the answer to Q1 is Baz - Q2 to Bob: Which of the others is more trustworthy? [Foo:Carol, Bar:Dave]</tt></p>
-<p style="text-indent:120px;"><tt>Full question: </tt></p>
+<p style="text-indent:120px;"><tt>Full question: If you were asked whether Dave is the engineer, would you say Foo? </tt></p>
+<p style="text-indent:80px;"><tt>FooBaz - Q3 to Dave: If you were asked whether Alice is the Engineer, would you say Foo?</tt></p>
+<p style="text-indent:80px;"><tt>BarBaz - Q3 to Dave: If you were asked whether Alice is the Engineer, would you say Foo?</tt></p>
+<p style="text-indent:80px;"><tt>FooBazXxx - Q4 to Dave: If you were asked whether you are the Mathematician, would you say Foo?</tt></p>
+<p style="text-indent:80px;"><tt>BarBazXxx - Q4 to Dave: If you were asked whether you are the Mathematician, would you say Foo?</tt></p>
+<p style="text-indent:80px;"><tt>FooBar - Q3 to Alice: If you were asked whether Dave is the Engineer, would you say Foo?</tt></p>
+<p style="text-indent:80px;"><tt>BarBar - Q3 to Alice: If you were asked whether Dave is the Engineer, would you say Foo?</tt></p>
+<p style="text-indent:80px;"><tt>FooBarXxx - Q4 to Alice: If you were asked whether you are the Mathematician, would you say Foo?</tt></p>
+<p style="text-indent:80px;"><tt>BarBarXxx - Q4 to Alice: If you were asked whether you are the Mathematician, would you say Foo?</tt></p>
+<p style="text-indent:80px;"><tt>FooFoo - Q3 to Bob: If you were asked whether Dave is the Philosopher, would you say Foo?</tt></p>
+<p style="text-indent:80px;"><tt>BarFoo - Q3 to Carol: If you were asked whether Dave is the Philosopher, would you say Foo?</tt></p>
+<p style="text-indent:80px;"><tt>FooFooXxx - Q4 to Bob: If you were asked whether you are the Mathematician, would you say Foo?</tt></p>
+<p style="text-indent:80px;"><tt>BarFooXxx - Q4 to Carol: If you were asked whether you are the Mathematician, would you say Foo?</tt></p>
+<p style="text-indent:80px;"><tt>BazFoo - Q3 to Carol: If you were asked whether Bob is the Engineer, would you say Foo?</tt></p>
+<p style="text-indent:80px;"><tt>BazBar - Q3 to Dave: If you were asked whether Bob is the Engineer, would you say Foo?</tt></p>
+<p style="text-indent:80px;"><tt>BazXxxFoo - Q4 to Carol: If you were asked whether you are the Mathematician, would you say Foo?</tt></p>
+<p style="text-indent:80px;"><tt>BazXxxBar - Q4 to Bob: If you were asked whether you are the Mathematician, would you say Foo?</tt></p>
+
 <p/>
 <table id="table_s8" style="width:700px;">
 	<tr>
@@ -904,38 +921,38 @@ let tableData_s7 = [
 	"PMEBFFBB",
 ]
 let tableData_s8 = [
-	"MPEDFBZFB--",
-	"MPDEFBZFB--",
-	"MEPDFBZBB--",
-	"MEDPFBZBZ--",
-	"MDPEFBZBB--",
-	"MDEPFBZFZ--",
-	"PMEDFBZFB--",
-	"PMDEFBZFB--",
-	"PEMDFBZBB--",
-	"PEDMFBZBZ--",
-	"PDMEFBZBB--",
-	"PDEMFBZFZ--",
-	"EMPDFBZFF--",
-	"EMPDFBZBF--",
-	"EMDPFBZFF--",
-	"EMDPFBZBZ--",
-	"EPMDFBZFF--",
-	"EPMDFBZBF--",
-	"EPDMFBZFF--",
-	"EPDMFBZBZ--",
-	"EDMPFBZFZ--",
-	"EDMPFBZBF--",
-	"EDPMFBZFZ--",
-	"EDPMFBZBF--",
-	"DMPEFBZZF--",
-	"DMEPFBZZB--",
-	"DPMEFBZZF--",
-	"DPEMFBZZB--",
-	"DEMPFBZZF--",
-	"DEMPFBZZB--",
-	"DEPMFBZZF--",
-	"DEPMFBZZB--",
+	"MPEDFBZFBBF",
+	"MPDEFBZFBFF",
+	"MEPDFBZBBBF",
+	"MEDPFBZBZBB",
+	"MDPEFBZBBFF",
+	"MDEPFBZFZBB",
+	"PMEDFBZFBBB",
+	"PMDEFBZFBFB",
+	"PEMDFBZBBBB",
+	"PEDMFBZBZBF",
+	"PDMEFBZBBFB",
+	"PDEMFBZFZBF",
+	"EMPDFBZFFFF",
+	"EMPDFBZBFFB",
+	"EMDPFBZFFBF",
+	"EMDPFBZBZFB",
+	"EPMDFBZFFFB",
+	"EPMDFBZBFFF",
+	"EPDMFBZFFBB",
+	"EPDMFBZBZFF",
+	"EDMPFBZFZFB",
+	"EDMPFBZBFBF",
+	"EDPMFBZFZFF",
+	"EDPMFBZBFBB",
+	"DMPEFBZZFBF",
+	"DMEPFBZZBBF",
+	"DPMEFBZZFBB",
+	"DPEMFBZZBBB",
+	"DEMPFBZZFFF",
+	"DEMPFBZZBFF",
+	"DEPMFBZZFFB",
+	"DEPMFBZZBFB",
 ]
 
 let tableData4 = [
