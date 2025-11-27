@@ -477,15 +477,14 @@ BazBarFooXxx - Q5 to Bob: Repeat your last response if you are the Mathematician
 <p style="text-indent:80px;"><tt>BarBar - Q3 to Alice: If you were asked whether Dave is the Engineer, would you say Foo?</tt></p>
 <p style="text-indent:80px;"><tt>FooBarXxx - Q4 to Alice: If you were asked whether you are the Mathematician, would you say Foo?</tt></p>
 <p style="text-indent:80px;"><tt>BarBarXxx - Q4 to Alice: If you were asked whether you are the Mathematician, would you say Foo?</tt></p>
-<p style="text-indent:80px;"><tt>FooFoo - Q3 to Bob: If you were asked whether Dave is the Philosopher, would you say Foo?</tt></p>
-<p style="text-indent:80px;"><tt>BarFoo - Q3 to Carol: If you were asked whether Dave is the Philosopher, would you say Foo?</tt></p>
-<p style="text-indent:80px;"><tt>FooFooXxx - Q4 to Bob: If you were asked whether you are the Mathematician, would you say Foo?</tt></p>
-<p style="text-indent:80px;"><tt>BarFooXxx - Q4 to Carol: If you were asked whether you are the Mathematician, would you say Foo?</tt></p>
+<p style="text-indent:80px;"><tt>FooFoo - Q3 to Dave: If you were asked whether you are the Mathematician, would you say Foo?</tt></p>
+<p style="text-indent:80px;"><tt>BarFoo - Q3 to Dave: If you were asked whether you are the Mathematician, would you say Foo?</tt></p>
+<p style="text-indent:80px;"><tt>FooFooBaz - Q4 to Bob: If you were asked whether you are the Mathematician, would you say Foo?</tt></p>
+<p style="text-indent:80px;"><tt>BarFooBaz - Q4 to Bob: If you were asked whether you are the Mathematician, would you say Foo?</tt></p>
 <p style="text-indent:80px;"><tt>BazFoo - Q3 to Carol: If you were asked whether Bob is the Engineer, would you say Foo?</tt></p>
 <p style="text-indent:80px;"><tt>BazBar - Q3 to Dave: If you were asked whether Bob is the Engineer, would you say Foo?</tt></p>
 <p style="text-indent:80px;"><tt>BazXxxFoo - Q4 to Carol: If you were asked whether you are the Mathematician, would you say Foo?</tt></p>
 <p style="text-indent:80px;"><tt>BazXxxBar - Q4 to Bob: If you were asked whether you are the Mathematician, would you say Foo?</tt></p>
-
 <p/>
 <table id="table_s8" style="width:700px;">
 	<tr>
@@ -503,8 +502,54 @@ BazBarFooXxx - Q5 to Bob: Repeat your last response if you are the Mathematician
 	</tr>
 </table>
 <p/>
-
-
+<p style="text-indent:40px;">An interesting detail of this solution is that it is slightly better to talk to the Philosopher even after the trusted individual is identified, provided that there is a need to separate the Philosopher from the Mathematician and Physicist and not from the Engineer. This is the case where the Philosopher is not consulted, focusing on the responses FooBar and FooFoo: </p>
+<p style="text-indent:80px;"><tt>Q1 to Alice: Which of the others is more trustworthy? [Foo:Bob, Bar:Carol]</tt></p>
+<p style="text-indent:80px;"><tt>If the answer to Q1 is Foo - Q2 to Bob: If you were asked whether Alice is the Engineer, would you say Foo?</tt></p>
+<p style="text-indent:80px;"><tt>FooBar - Q3 to Alice: If you were asked whether Dave is the Engineer, would you say Foo?</tt></p>
+<p style="text-indent:80px;"><tt>FooBarXxx - Q4 to Alice: If you were asked whether you are the Mathematician, would you say Foo?</tt></p>
+<p style="text-indent:80px;"><tt>FooFoo - Q3 to Bob: If you were asked whether Dave is the Philosopher, would you say Foo?</tt></p>
+<p style="text-indent:80px;"><tt>FooFooXxx - Q4 to Bob: If you were asked whether you are the Mathematician, would you say Foo?</tt></p>
+<p/>
+<table id="table_s9" style="width:700px;">
+	<tr>
+		<th>Alice</th>
+		<th>Bob</th>
+		<th>Carol</th>
+		<th>Dave</th>
+		<th>Yes</th>
+		<th>No</th>
+		<th>Maybe</th>
+		<th>Q1</th>
+		<th>Q2</th>
+		<th>Q3</th>
+		<th>Q4</th>
+	</tr>
+</table>
+<p/>
+<p style="text-indent:40px;">And this is where the Philosopher is consulted. Notice that in the case where a question is asked of both the Philosopher and Engineer, the number of total questions is still 4 in every case, but if the question is asked of the Philosopher, Mathematician, and Physicist only, then the number of questions can be reduced to 3 in some cases. </p>
+<p style="text-indent:80px;"><tt>Q1 to Alice: Which of the others is more trustworthy? [Foo:Bob, Bar:Carol]</tt></p>
+<p style="text-indent:80px;"><tt>If the answer to Q1 is Foo - Q2 to Bob: If you were asked whether Alice is the Engineer, would you say Foo?</tt></p>
+<p style="text-indent:80px;"><tt>FooBar - Q3 to Dave: The question does not matter because the Philosopher and Engineer will both ignore it.</tt></p>
+<p style="text-indent:80px;"><tt>FooBarXxx - Q4 to Alice: If you were asked whether you are the Mathematician, would you say Foo?</tt></p>
+<p style="text-indent:80px;"><tt>FooFoo - Q3 to Dave: If you were asked whether you are the Mathematician, would you say Foo?</tt></p>
+<p style="text-indent:80px;"><tt>FooFooBaz - Q4 to Bob: If you were asked whether you are the Mathematician, would you say Foo?</tt></p>
+<p/>
+<table id="table_s10" style="width:700px;">
+	<tr>
+		<th>Alice</th>
+		<th>Bob</th>
+		<th>Carol</th>
+		<th>Dave</th>
+		<th>Yes</th>
+		<th>No</th>
+		<th>Maybe</th>
+		<th>Q1</th>
+		<th>Q2</th>
+		<th>Q3</th>
+		<th>Q4</th>
+	</tr>
+</table>
+<p/>
 
 
 
@@ -933,18 +978,18 @@ let tableData_s8 = [
 	"PEDMFBZBZBF",
 	"PDMEFBZBBFB",
 	"PDEMFBZFZBF",
-	"EMPDFBZFFFF",
-	"EMPDFBZBFFB",
-	"EMDPFBZFFBF",
+	"EMPDFBZFFZF",
+	"EMPDFBZBFZF",
+	"EMDPFBZFFB-",
 	"EMDPFBZBZFB",
-	"EPMDFBZFFFB",
-	"EPMDFBZBFFF",
-	"EPDMFBZFFBB",
+	"EPMDFBZFFZB",
+	"EPMDFBZBFZB",
+	"EPDMFBZFFF-",
 	"EPDMFBZBZFF",
 	"EDMPFBZFZFB",
-	"EDMPFBZBFBF",
+	"EDMPFBZBFB-",
 	"EDPMFBZFZFF",
-	"EDPMFBZBFBB",
+	"EDPMFBZBFF-",
 	"DMPEFBZZFBF",
 	"DMEPFBZZBBF",
 	"DPMEFBZZFBB",
@@ -953,6 +998,28 @@ let tableData_s8 = [
 	"DEMPFBZZBFF",
 	"DEPMFBZZFFB",
 	"DEPMFBZZBFB",
+]
+let tableData_s9 = [
+	"MPEDFBZFBBF",
+	"MPDEFBZFBFF",
+	"PMEDFBZFBBB",
+	"PMDEFBZFBFB",
+	"EMPDFBZFFFF",
+	"EMDPFBZFFBF",
+	"EPMDFBZFFFB",
+	"EPDMFBZFFBB",
+]
+let tableData_s10 = [
+	"MPEDFBZFBZF",
+	"MPDEFBZFBFF",
+	"MPDEFBZFBBF",
+	"PMEDFBZFBZB",
+	"PMDEFBZFBFB",
+	"PMDEFBZFBBB",
+	"EMPDFBZFFZF",
+	"EMDPFBZFFB-",
+	"EPMDFBZFFZB",
+	"EPDMFBZFFF-",
 ]
 
 let tableData4 = [
@@ -1109,6 +1176,8 @@ createTable('table_s5',tableData_s5);
 createTable('table_s6',tableData_s6);
 createTable('table_s7',tableData_s7);
 createTable('table_s8',tableData_s8);
+createTable('table_s9',tableData_s9);
+createTable('table_s10',tableData_s10);
 createTable('table4',tableData4);
 createTable('table5',tableData5);
 createTable('table6',tableData6);
