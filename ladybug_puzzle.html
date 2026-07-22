@@ -2,11 +2,61 @@
 <body>
 	<b>Ladybug Puzzle</b>
 	<p/>
-	<svg id="svg"></svg>
+	<!-- TODO: allow user to select number of positions around wheel -->
+	<!-- TODO: display calculated expected outcome -->
+	Expected outcome: the probability of all final positions is equal - if there are N positions other than the starting position, they all have a 1/N chance of being the final position
+	<p/>
+	Simulated average result:
+	<p/>
+	<svg id="svg1"></svg>
+	<p/>
+	<b>Example</b>
+	<p/>
+	<svg id="svg2"></svg>
 </body>
 <script>
-	function updateImage(n,ladybug,filled) {
-		let svg = document.getElementById("svg");
+	function simulateSingleResult(n) {
+		let ladybug = 0;
+		let filled = [];
+		for(let k=0; k<n; k++) {
+			filled.push(0);
+		}
+		filled[0] = 1;
+		let count = 1;
+		while(true) {
+			if(Math.random()>0.5) {
+				ladybug = (ladybug+1)%n;
+			} else {
+				ladybug = (ladybug+n-1)%n;
+			}
+			if(filled[ladybug]==0) {
+				count++;
+				filled[ladybug] = 1;
+			}
+			if(count==n) break;
+		}
+		return ladybug;
+	}
+	function simulateAverageResult(n) {
+		let results = [];
+		for(let k=0; k<n; k++) {
+			results.push(0);
+		}
+		// TODO: optimize number of iterations
+		let numIterations = 100*n*n;
+		for(let k=0; k<numIterations; k++) {
+			let result = simulateSingleResult(n);
+			results[result]++;
+		}
+		for(let k=0; k<n; k++) {
+			// results as percentages
+			results[k] = (results[k]*100.0/numIterations).toFixed(1);
+		}
+		return results;
+	}
+	function updateImage1(n) {
+		let results = simulateAverageResult(n);
+		let svg = document.getElementById("svg1");
 		let width = 600;
 		let height = 600;
 		let w = width/2.0;
@@ -14,7 +64,46 @@
 		let r = Math.min(w,h)*(0.7);
 		svg.setAttribute("width",width);
 		svg.setAttribute("height",height);
-		console.log(width+","+height+","+w+","+h)
+		svg.replaceChildren(); // Clears all interior content
+		let svgNamespace = "http://www.w3.org/2000/svg";
+		for(let i=0.0; i<n; i++) {
+			// draw clock positions
+			let x = h+r*Math.sin(2*Math.PI*(i/n));
+			let y = w-r*Math.cos(2*Math.PI*(i/n));
+			let circle = document.createElementNS(svgNamespace, "circle");
+			circle.setAttribute("cx", x);
+			circle.setAttribute("cy", y);
+			circle.setAttribute("r", 10);
+			circle.setAttribute("fill", "white");
+			circle.setAttribute("stroke", "black");
+			circle.setAttribute("stroke-width", "2");
+			svg.appendChild(circle);
+		}
+		for(let i=1.0; i<n; i++) {
+			// draw number labels
+			let r2 = Math.min(w,h)*(0.9);
+			let x2 = h+r2*Math.sin(2*Math.PI*(i/n));
+			let y2 = w-r2*Math.cos(2*Math.PI*(i/n));
+			let text = document.createElementNS(svgNamespace, "text");
+			text.setAttribute("x", x2-20);
+			text.setAttribute("y", y2);
+			text.setAttribute("fill", "black");
+			text.setAttribute("font-size", "20");
+			text.setAttribute("font-family", "Arial");
+			text.textContent = results[i]+"%";
+			svg.appendChild(text);
+		}
+	}
+	updateImage1(11);
+	function updateImage2(n,ladybug,filled) {
+		let svg = document.getElementById("svg2");
+		let width = 600;
+		let height = 600;
+		let w = width/2.0;
+		let h = height/2.0;
+		let r = Math.min(w,h)*(0.7);
+		svg.setAttribute("width",width);
+		svg.setAttribute("height",height);
 		svg.replaceChildren(); // Clears all interior content
 		let svgNamespace = "http://www.w3.org/2000/svg";
 		for(let i=0.0; i<n; i++) {
@@ -52,7 +141,7 @@
 			ladybug = (ladybug+n-1)%n;
 		}
 		filled[ladybug] = 1;
-		updateImage(n,ladybug,filled);
+		updateImage2(n,ladybug,filled);
 		let count = 0;
 		for(let k=0; k<n; k++) {
 			if(filled[k]) {
@@ -69,7 +158,7 @@
 			filled.push(0);
 		}
 		filled[0] = 1;
-		updateImage(n,ladybug,filled);
+		updateImage2(n,ladybug,filled);
 		setTimeout(animateRandomExampleTimer,1000/n,n,ladybug,filled);
 	}
 	animateRandomExample(12);
