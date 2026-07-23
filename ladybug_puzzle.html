@@ -2,9 +2,10 @@
 <body>
 	<b>Ladybug Puzzle</b>
 	<p/>
-	<!-- TODO: allow user to select number of positions around wheel -->
-	<!-- TODO: display calculated expected outcome -->
-	Expected outcome: the probability of all final positions is equal - if there are N positions other than the starting position, they all have a 1/N chance of being the final position
+	<label for="number_of_positions">Number of positions (3-30):</label>
+	<input type="number" id="number_of_positions" name="number_of_positions" min="3" max="30" value="12" onchange="numberOfPositionsChangedEvent(event)"/>
+	<p/>
+	<label id="estimated_expected_positional_probability">Expected outcome: The probability of each position aside from the starting position being the final position is 1/(N-1) = 1/11 = 9.1%</label>
 	<p/>
 	Simulated average result:
 	<p/>
@@ -15,6 +16,8 @@
 	<svg id="svg2"></svg>
 </body>
 <script>
+	let numberOfPositions = 12;
+	let timeoutID = -1;
 	function simulateSingleResult(n) {
 		let ladybug = 0;
 		let filled = [];
@@ -94,7 +97,7 @@
 			svg.appendChild(text);
 		}
 	}
-	updateImage1(11);
+	updateImage1(numberOfPositions);
 	function updateImage2(n,ladybug,filled) {
 		let svg = document.getElementById("svg2");
 		let width = 600;
@@ -133,6 +136,16 @@
 		circle2.setAttribute("stroke-width", "2");
 		svg.appendChild(circle2);
 	}
+	function myClearTimeout() {
+		if(timeoutID>0) {
+			clearTimeout(timeoutID);
+			timeoutID = -1;
+		}
+	}
+	function mySetTimeout(a,b,c,d,e) {
+		myClearTimeout();
+		timeoutID = setTimeout(a,b,c,d,e);
+	}
 	function animateRandomExampleTimer(n,ladybug,filled) {
 		if(ladybug==n) return;
 		if(Math.random()>0.5) {
@@ -149,7 +162,7 @@
 			}
 		}
 		if(count==n) return;
-		setTimeout(animateRandomExampleTimer,1000/n,n,ladybug,filled);
+		mySetTimeout(animateRandomExampleTimer,1000/n,n,ladybug,filled);
 	}
 	function animateRandomExample(n) {
 		let ladybug = 0;
@@ -159,8 +172,24 @@
 		}
 		filled[0] = 1;
 		updateImage2(n,ladybug,filled);
-		setTimeout(animateRandomExampleTimer,1000/n,n,ladybug,filled);
+		mySetTimeout(animateRandomExampleTimer,1000/n,n,ladybug,filled);
 	}
-	animateRandomExample(12);
+	animateRandomExample(numberOfPositions);
+	function numberOfPositionsChanged(eventTargetValue) {
+		numberOfPositions = eventTargetValue;
+		let expectedValue = 1.0/(numberOfPositions-1);
+		document.getElementById("estimated_expected_positional_probability").textContent = "Expected outcome: The probability of each position aside from the starting position being the final position is 1/(N-1) = 1/"+(numberOfPositions-1)+" = "+((100.0/(numberOfPositions-1)).toFixed(1))+"%";
+		// TODO: the naming convention between different uses of N etc is confusing here
+		updateImage1(numberOfPositions);
+		animateRandomExample(numberOfPositions);
+	}
+	function numberOfPositionsChangedEvent(event) {
+		// TODO: something about changing the number of positions is causing the animation to freak out
+		// TODO: something about changing the number of positions is causing the simulated average calculation to freak out
+		// TODO: provide button for the user to rerun animation without changing number of positions
+		myClearTimeout();
+		// convert to number to avoid very weird bugs
+		numberOfPositionsChanged(Number(event.target.value));
+	}
 </script>
 </html>
