@@ -13,6 +13,8 @@
 	<p/>
 	<b>Example</b>
 	<p/>
+	<input id="run_example_again" type="button" value="Run Again" onclick="runExampleAgain();" />
+	<p/>
 	<svg id="svg2"></svg>
 </body>
 <script>
@@ -203,6 +205,9 @@
 		myClearTimeout();
 		// convert to number to avoid very weird bugs
 		numberOfPositionsChanged(Number(event.target.value));
+	}
+	function runExampleAgain() {
+		animateRandomExample(numberOfPositions);
 	}
 </script>
 </html>
