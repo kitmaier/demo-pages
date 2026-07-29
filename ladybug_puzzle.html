@@ -16,6 +16,75 @@
 	<input id="run_example_again" type="button" value="Run Again" onclick="runExampleAgain();" />
 	<p/>
 	<svg id="svg2"></svg>
+	<p/>
+	<b>Probability Calculation</b>
+	<p/>
+	If there are N positions around the circle, let them be numbered from 0 to N-1 clockwise, starting from 0 at the top of the circle. 
+	<p/>
+	The ladybug starts at position 0 at the top of the cicle, and moves randomly around the circle with a 50% chance at each step of moving clockwise or counterclockwise. As the ladybug moves, it paints each new position it reaches red until all positions have been painted. 
+	<p/>
+	The challenge is to determine, for each possible position, the probability of it being the last position the ladybug puts paint onto. 
+	<p/>
+	Suppose that there are N positions, position 0 and 1 have been visited, and the ladybug is at position 1. What are the odds that it will come out next at position 2 or position N-1?
+	<p/>
+	The first step will take the ladybug to position 0 or 2 with probability 1/2 each, and the next step from position 0 will take it to position N-1 or 1 with probability 1/4 each.
+	<p/>
+	At this point, there is probability 1/2 of ending at position 2, 1/4 at position N-1, and 1/4 back at position 1 where we started. 
+	<p/>
+	After this, the same process happens again, but with each value multiplied by 1/4, and again after that, and so on forever. 
+	<p/>
+	The position 2 probability accumulates an <a href="https://en.wikipedia.org/wiki/Geometric_series">infinite sum</a> that looks like 1/2*(1+1/4+1/16+1/64+...), and the position N-1 probability looks like 1/4*(1+1/4+1/16+1/64+...), while the probability of staying at the positions 0 and 1 diminishes towards nothing. 
+	<p/>
+	This infinite sum 1+1/4+1/16+1/64+... = 4/3, and in general, the sum of 1+1/x+1/x^2+1/x^3+... = x/(x-1).
+	<p/>
+	In total then, given unlimited time for the ladybug to eventually exit the area it has already visited, the probability of making it to position 2 is 1/2*4/3 = 2/3, and the probability of N-1 is 1/4*4/3 = 1/3. 
+	<p/>
+	By symmetry, if the ladybug had gone counterclockwise instead of clockwise, visiting 0 and N-1, the probability of next visiting N-2 would be 2/3, and the probability of next visiting 1 would be 1/3. 
+	<p/>
+	More generally, if the ladybug has visited positions 0 to K-1, and is at position K-1, then the probability that it will next exit that region at the adjacent position K is K/(K+1), and the probability that it will next exit at the farther position N-1 is 1/(K+1).
+	<p/>
+	This is also applicable for any range of K consecutive positions, such as if the ladybug has visited positions N-1 to K-2, and is at position K-2. 
+	<p/>
+	This can be demonstrated by an inductive argument. 
+	<p/>
+	Suppose that this has already been demonstrated for each case below K. So we know that when the ladybug has visited positions 0 to K-2, and is at K-2, then the probability that it will eventually exit at the nearer end is (K-1)/K, and the probability that it will eventually exit at the far end is 1/K, and the same for any number or arrangement of consecutive positions up to K-1. 
+	<p/>
+	Given that, suppose that the ladybug has visited all positions from 0 to K-1, and is at K-1. Then of the two positions 0 and K, which have K-1 positions in between them, the probability of the ladybug making it to 0 first is 1/K, and the probability of the ladybug making it to position K first is (K-1)/K. If it makes it to 0, then the probability of it continuing to N-1 is (1/K)*(K-1)/K = (K-1)/(K^2), and the probability of it making it all the way back to position K-1 instead is (1/K)*(1/K) = 1/(K^2). 
+	<p/>
+	At this point, the same process will continue over and over again, multiplied by 1/(K^2) at each repetition. 
+	<p/>
+	The probability of exiting at the near end K is ((K-1)/K)*(1+1/K^2+1/K^4+1/K^6+...) = ((K-1)/K)*(K^2/(K^2-1)) = K/(K+1), and the probability of exiting at the far end at N-1 is ((K-1)/K^2)*(1+1/K^2+1/K^4+1/K^6+...) = ((K-1)/K^2)*(K^2/(K^2-1)) = 1/(K+1), as expected. 
+	<p/>
+	So for 2 positions visited, the odds of exiting at either end are 1/3 and 2/3, for 3 positions visited the odds are 1/4 and 3/4, for 4 positions visited the odds are 1/5 and 4/5, etc. 
+	<p/>
+	As the ladybug wanders around, we can focus on each moment where it reaches a new position for the first time, breaking out of the region that it had previously inhabited. In each case, it starts at one or the other end of a continuous range of already visited positions, then eventually exits either at the same end it started at, or the far end, and starts another cycle in a slightly larger region. At each stage, the probability of exiting the region of already visited positions at one end or the other can be calculated with the formulas already given. 
+	<p/>
+	The probability of ending up with a particular region of already visited positions later may depend on several possible ways of exploring the region, categorized by in what order each position is visited first. For instance, suppose there are 5 positions, numbered from 0 to 4, and the ladybug eventually visits all of them, ending on position 2. Then it may have visited 1 before 3, or it may have visited 3 before 1. It may have visited 1 before 4, or it may have visited 4 before 1. It may have visited 3 immediately after 4, or it may have visited 4, then 1, then 3. So in all, the order of new positions visited might have been [0,1,4,3,2], [0,4,1,3,2], or [0,4,3,1,2], and each of these may have a different probability, with all of them contributing to the total probability of visiting position 2 last. In fact, the probability of the first case is (1/2)*(1/3)*(3/4) = 1/8, the probability of the second case is (1/2)*(1/3)*(1/4) = 1/24, and the probability of the third case is (1/2)*(2/3)*(1/4) = 1/12, for a total of 1/8+1/24+1/12 = 1/4. We don't need to include a probability in the multiplication for ending on 2, because once all the other positions have been visited, that is guaranteed. If we did, we would include the probability 4/5+1/5 = 1, because that is the probability of entering the position 2 from each direction, and as expected, multiplying by 1 does nothing. 
+	<p/>
+	It is remarkable that after all that complicated calculation, the probability of ending on position 2 is such a simple value, equalling exactly 1/(N-1), where N is 5 in this case. It turns out that this will always happen. 
+	<p/>
+	We will work towards this conclusion with one further intermediate formula. Let K = A+B+1. The probability of a particular range of K positions being visited, from N-A to B, with the ladybug ending on B, is B/(K(K-1)). Symmetrically in the other direction, the probability of a range of K positions being visited, from N-A to B, with the ladybug ending on N-A, is A/(K(K-1)). 
+	<p/>
+	This can be shown by a similar inductive argument. It is true in the smallest cases. If K is 2 and B is 1, then the probability is 1/2 as expected. If K is 3 and B is 2, then the probability is 1/3, and if K is 3 and B is 1, then the probability 1/6, which match the prior calculations. That is, if K is 3 and B is 2, then the ladybug must have moved twice in the same direction, for (1/2)*(2/3) = 1/3, and if K is 3 and B is 1, then the ladybug must have moved once clockwise and then once counterclockwise, for (1/2)*(1/3) = 1/6. 
+	<p/>
+	For the inductive step, suppose that it is true for all regions smaller than K positions. Then it is true for the region from N-(A-1) to B, and for the region from N-A to B-1. This breaks up into four cases. 
+	<p/>
+	The probability of covering the region from N-A to B-1 and the ladybug ending up at N-A is A/((K-1)(K-2)), and the further probability of next visiting B is that times 1/K, for a total of A/(K(K-1)(K-2)). 
+	<p/>
+	The probability of covering the region from N-A to B-1 and the ladybug ending up at B-1 is (B-1)/((K-1)(K-2)), and the further probability of next visiting B is that times (K-1)/K, for a total of (B-1)/(K(K-2)). 
+	<p/>
+	The probability of covering the region from N-(A-1) to B and the ladybug ending up at N-(A-1) is (A-1)/((K-1)(K-2)), and the further probability of next visiting N-A is that times (K-1)/K, for a total of (A-1)/(K(K-2)). 
+	<p/>
+	The probability of covering the region from N-(A-1) to B and the ladybug ending up at B is B/((K-1)(K-2)), and the further probability of next visiting N-A is that times 1/K, for a total of B/(K(K-1)(K-2)). 
+	<p/>
+	Adding the first two of these up, we get (A+(B-1)(K-1))/(K(K-1)(K-2)) = (K-B-1+BK-B-K+1)/(K(K-1)(K-2)) = B(K-2)/(K(K-1)(K-2)) = B/(K(K-1)), which confirms this case. 
+	<p/>
+	Adding the second two of these up, we get ((A-1)(K-1)+B)/(K(K-1)(K-2)) = (AK-A-K+1+K-A-1)/(K(K-1)(K-2)) = A(K-2)/(K(K-1)(K-2)) = A/(K(K-1)), which confirms this case.  
+	<p/>
+	To achieve the final formula, we can simply observe that when the final space is filled in, it can be filled in coming from either direction, and K = N-1 = A+B+1. Coming from one direction, the probability is A/((N-1)(N-2)), and coming from the other direction, the probability is B/((N-1)(N-2)), so these add up to (A+B)/((N-1)(N-2)) = (N-2)/((N-1)(N-2)) = 1/(N-1).  
+	<p/>
+	<p/>
+	<p/>
 </body>
 <script>
 	let numberOfPositions = 12;
