@@ -1,0 +1,108 @@
+<html>
+<body>
+	<b>Cube Distances Coloring Puzzle</b>
+	<p/>
+	This is based on a puzzle introduced in <a href="https://www.youtube.com/shorts/6XPlmCDNLNc">a 3Blue1Brown video</a>. 
+	<p/>
+	The puzzle is for a 4x4x4 grid of 64 small cubes which are colored with 3 colors, find 6 nonoverlapping pairs of small cubes which are all the same color and where the distances between the centers of the cubes in the pairs are all the same. 
+	<p/>
+	First, by the <a href="https://en.wikipedia.org/wiki/Pigeonhole_principle">pigeonhole principle</a>, as there are 3 colors and 64 = 3*21+1 cubes, it must be the case that there are at least 22 cubes of some color. We can consider only the first 22 cubes of that color going forward. 
+	<p/>
+	Of those cubes, there are <a href="https://en.wikipedia.org/wiki/Triangular_number">(22 choose 2)</a> or 22*21/2 = 231 pairs of cubes, each with some distance between the cubes. 
+	<p/>
+	In the overall 4x4x4 grid, there are only 18 distinct distances between small cubes, the total table of counts of distances is below. 
+	<p/>
+	<table id="table"/>
+	<p/>
+	By the pigeonhole principle again, since 231 = 18*12+15, there must be at least one distance which shows up in at least 13 pairs of the 22 cubes, although we only really need 12. 
+	<p/>
+	Of these 12 pairs, there must be at least 6 pairs that are nonoverlapping. Any particular small cube can only show up in at most two of these pairs.
+	<p/>
+	TODO: actually that is not true, it is possible for many pairs to contain the same small cube, requiring that only one of them can be chosen. 
+	<p/>
+	<p/>
+	<p/>
+	<p/>
+	<p/>
+	<p/>
+	<p/>
+</body>
+<script>
+
+	function abcd() {
+		console.log("aaa");
+		let counts = [];
+		for(let k=0; k<30; k++) {
+			counts.push(0);
+		}
+		for(let a=0; a<4; a++) {
+			for(let b=0; b<4; b++) {
+				for(let c=0; c<4; c++) {
+					for(let d=0; d<4; d++) {
+						for(let e=0; e<4; e++) {
+							for(let f=0; f<4; f++) {
+								let val = (d-a)*(d-a)+(e-b)*(e-b)+(f-c)*(f-c);
+								counts[val]++;
+							}
+						}
+					}
+				}
+			}
+		}
+		console.log(counts);
+		let table = document.getElementById("table");
+		table.replaceChildren(); // Clears all interior content
+		let header = table.createTHead();
+		let headerRow = header.insertRow(0);
+		headerRow.insertCell(0).innerHTML = "<b>Distance</b>";
+		headerRow.insertCell(1).innerHTML = "<b>Count</b>";
+		for(let k=1; k<=27; k++) {
+			let row = table.insertRow(k);
+			row.insertCell(0).innerHTML = "√"+k;
+			row.insertCell(1).innerHTML = counts[k]/2;
+		}
+		let points = []
+		for(let k=0; k<22; k++) {
+			let a = Math.floor(Math.random()*4);
+			let b = Math.floor(Math.random()*4);
+			let c = Math.floor(Math.random()*4);
+			let point = [a,b,c];
+			points.push(point);
+		}
+		console.log(points);
+		counts = [];
+		for(let k=0; k<30; k++) {
+			counts.push(0);
+		}
+		for(let k=0; k<22; k++) {
+			for(let j=0; j<k; j++) {
+				let p1 = points[k];
+				let p2 = points[j];
+				let val = (p1[0]-p2[0])*(p1[0]-p2[0])+(p1[1]-p2[1])*(p1[1]-p2[1])+(p1[2]-p2[2])*(p1[2]-p2[2]);
+				counts[val]++;
+			}
+		}
+		console.log(counts);
+		// X-X-
+		// -X-X
+		// X-X-
+		// -X-X
+
+		// -X-X
+		// X-X-
+		// -X-X
+		// X-X-
+
+		// X-X-
+		// -X-X
+		// X-X-
+		// -X-X
+
+		// -X-X
+		// X-X-
+		// -X-X
+		// X-X-
+	}
+	abcd();
+</script>
+</html>
