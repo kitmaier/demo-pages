@@ -1,0 +1,152 @@
+<html>
+<body>
+	<b>Circle Covering Puzzle</b>
+	<p/>
+	This is based on <a href="https://www.youtube.com/shorts/QLu_ZsRc_G0">a puzzle from the YouTube channel 3Blue1Brown</a>.
+	<p/>
+	The puzzle is to determine whether 10 arbitrary points in the plane can always be covered by nonoverlapping unit discs. 
+	<p/>
+	If the number of points were small, such as up to 3 or 4 points, then it would always be easy to cover them with discs. 
+	<p/>
+	If the number of points were very large, then there would be simple ways of arranging them that could not be covered. For instance, a large grid of closely spaced points cannot be covered by nonoverlapping discs because when three discs get very close together, there is always a small curved wedge in between them that cannot be covered. 
+	<p/>
+	<svg id="svg1"/>
+	<p/>
+	In fact, this can even be achieved with only two short lines of closely spaced points. Here the lines are long enough that they cannot be covered by a single disc, so in one of the lines there must be two consecutive points that are covered by two different discs. In order for these discs not to overlap, they must be arranged nearly side by side in a small range of positions. The second line of dots can be placed a short distance away such that the first two discs must have a gap into which at least one dot falls, which cannot be reached by a third disc. To be determined is the minimum number of dots in this arrangement that cannot be covered, it is estimated to be less than 100. 
+	<p/>
+	<svg id="svg2"/>
+	<p/>
+	<svg id="svg3"/>
+	<p/>
+	TODO: given a collection of points, is there an easy way to tell whether they can all be covered with one disc? (circumcenter?) Is there a way to two-dimensionally sort the points (quad tree?) so as to efficiently determine this for all subsets of points? would having that structure of information allow for automatically covering a given set of points or proving they could not be covered?
+	<p/>
+	TODO: provide an interface to create and remove points and circles to play around and build tactile familiarity with the puzzle, maybe with automatic hints and color coding
+	<p/>
+	TODO: is there a simple way to determine the smallest circle containing a given set of points? could be done iteratively fairly quickly, or could start with arbitrary very big circle, sort points by distance from center and select furthest point to contract down to, hold tangent at that point and contract circle until it touches another point, hold those two points fixed and sweep through to find smallest that does not lose a point. although that might not find the best possible circle, if the first point is not among the points that would make the best circle. https://en.wikipedia.org/wiki/Smallest-circle_problem
+	<p/>
+	<svg id="svg4"/>
+	<p/>
+	TODO: would it be faster to check if a given set of points lies within a circle of a given radius?
+	<p/>
+	<p/>
+	<p/>
+</body>
+<script>
+	function drawCircle(svg,x,y,r) {
+		let svgNamespace = "http://www.w3.org/2000/svg";
+		let circle = document.createElementNS(svgNamespace, "circle");
+		circle.setAttribute("cx", x);
+		circle.setAttribute("cy", y);
+		circle.setAttribute("r", r);
+		circle.setAttribute("fill", "white");
+		circle.setAttribute("stroke", "black");
+		circle.setAttribute("stroke-width", "3");
+		svg.appendChild(circle);
+	}
+	function drawDot(svg,x,y) {
+		let svgNamespace = "http://www.w3.org/2000/svg";
+		let dot = document.createElementNS(svgNamespace, "circle");
+		dot.setAttribute("cx", x);
+		dot.setAttribute("cy", y);
+		dot.setAttribute("r", "3");
+		dot.setAttribute("fill", "red");
+		dot.setAttribute("stroke", "red");
+		dot.setAttribute("stroke-width", "1");
+		svg.appendChild(dot);
+	}
+	function updateImage1() {
+		let svg = document.getElementById("svg1");
+		let width = 600;
+		let height = 600;
+		svg.setAttribute("width",width);
+		svg.setAttribute("height",height);
+		svg.replaceChildren(); // Clears all interior content
+		for(let i=0; i<50; i++) {
+			for(let j=0; j<50; j++) {
+				drawDot(svg,i*10+55,j*10+50);
+			}
+		}
+		drawCircle(svg,180,400,120);
+		drawCircle(svg,420,400,120);
+		drawCircle(svg,300,190,120);
+	}
+	function updateImage2() {
+		let svg = document.getElementById("svg2");
+		let width = 600;
+		let height = 600;
+		svg.setAttribute("width",width);
+		svg.setAttribute("height",height);
+		svg.replaceChildren(); // Clears all interior content
+		drawCircle(svg,180,400,120);
+		drawCircle(svg,420,400,120);
+		drawCircle(svg,300,190,120);
+		for(let i=0; i<50; i++) {
+			drawDot(svg,i*10+55,400);
+		}
+		for(let i=0; i<50; i++) {
+			drawDot(svg,i*10+55,350);
+		}
+	}
+	function updateImage3() {
+		let svg = document.getElementById("svg3");
+		let width = 600;
+		let height = 600;
+		svg.setAttribute("width",width);
+		svg.setAttribute("height",height);
+		svg.replaceChildren(); // Clears all interior content
+		drawCircle(svg,180,400,120);
+		drawCircle(svg,420,400,120);
+		drawCircle(svg,300,190,120);
+		drawDot(svg,400,400);
+		drawDot(svg,150,400);
+		drawDot(svg,275,183);
+		drawDot(svg,275,328);
+	}
+	function findSmallestCircleAroundPoints(dotsList) {
+		let x = 300;
+		let y = 300;
+		let r2 = 0;
+		let direction = [0,0];
+		// TODO: optimize the number of steps to iterate
+		for(let j=0; j<10000; j++) {
+			x += direction[0]*0.001;
+			y += direction[1]*0.001;
+			r2 = 0;
+			for(let k=0; k<dotsList.length; k++) {
+				let dot = dotsList[k];
+				let xd = dot[0];
+				let yd = dot[1];
+				let radiusSquared = (x-xd)*(x-xd)+(y-yd)*(y-yd);
+				if(radiusSquared>r2) {
+					r2 = radiusSquared;
+					direction = [xd-x,yd-y];
+				}
+			}
+		}
+		return [x,y,Math.sqrt(r2)];
+	}
+	function updateImage4() {
+		let svg = document.getElementById("svg4");
+		let width = 600;
+		let height = 600;
+		svg.setAttribute("width",width);
+		svg.setAttribute("height",height);
+		svg.replaceChildren(); // Clears all interior content
+		let dotsList = [];
+		for(let k=0; k<10; k++) {
+			let x = 200+200*Math.random();
+			let y = 200+200*Math.random();
+			dotsList.push([x,y]);
+		}
+		let circleData = findSmallestCircleAroundPoints(dotsList);
+		drawCircle(svg,circleData[0],circleData[1],circleData[2]);
+		for(let k=0; k<10; k++) {
+			drawDot(svg,dotsList[k][0],dotsList[k][1]);
+		}
+	}
+	updateImage1();
+	updateImage2();
+	updateImage3();
+	updateImage4();
+</script>
+</html>
