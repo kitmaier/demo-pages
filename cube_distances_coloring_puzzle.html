@@ -12,14 +12,19 @@
 	<p/>
 	In the overall 4x4x4 grid, there are only 18 distinct distances between small cubes, the total table of counts of distances is below. 
 	<p/>
-	<table id="table"/>
+	<table id="table" border="1" style="border-collapse: collapse"></table>
+	<p/>
+	Example arrangement of small cubes:
+	<p/>
+	<table id="board" border="1" style="border-collapse: collapse"></table>
 	<p/>
 	By the pigeonhole principle again, since 231 = 18*12+15, there must be at least one distance which shows up in at least 13 pairs of the 22 cubes, although we only really need 12. 
 	<p/>
 	Of these 12 pairs, there must be at least 6 pairs that are nonoverlapping. Any particular small cube can only show up in at most two of these pairs.
 	<p/>
-	TODO: actually that is not true, it is possible for many pairs to contain the same small cube, requiring that only one of them can be chosen. 
+	TODO: actually that is not true, it is possible for many pairs to contain the same small cube, requiring that only one of them can be chosen. For instance, the below arrangement of 22 small cubes in the 4x4x4 grid has 22 pairs that are adjacent with distance 1, but only 5 of them can be selected at a time in a nonoverlapping way, because every pair that exists includes one of the five connecting cubes. 
 	<p/>
+	<table id="board2" border="1" style="border-collapse: collapse"></table>
 	<p/>
 	<p/>
 	<p/>
@@ -29,8 +34,7 @@
 </body>
 <script>
 
-	function abcd() {
-		console.log("aaa");
+	function generateTable() {
 		let counts = [];
 		for(let k=0; k<30; k++) {
 			counts.push(0);
@@ -49,40 +53,81 @@
 				}
 			}
 		}
-		console.log(counts);
-		let table = document.getElementById("table");
-		table.replaceChildren(); // Clears all interior content
-		let header = table.createTHead();
-		let headerRow = header.insertRow(0);
-		headerRow.insertCell(0).innerHTML = "<b>Distance</b>";
-		headerRow.insertCell(1).innerHTML = "<b>Count</b>";
-		for(let k=1; k<=27; k++) {
-			let row = table.insertRow(k);
-			row.insertCell(0).innerHTML = "√"+k;
-			row.insertCell(1).innerHTML = counts[k]/2;
-		}
+		let board = [[[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]],[[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]],[[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]],[[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]]];
 		let points = []
-		for(let k=0; k<22; k++) {
+		while(points.length<22) {
 			let a = Math.floor(Math.random()*4);
 			let b = Math.floor(Math.random()*4);
 			let c = Math.floor(Math.random()*4);
-			let point = [a,b,c];
-			points.push(point);
+			if(board[a][b][c]==0) {
+				board[a][b][c] = 1;
+				points.push([a,b,c]);
+			}
 		}
-		console.log(points);
-		counts = [];
+		let counts2 = [];
 		for(let k=0; k<30; k++) {
-			counts.push(0);
+			counts2.push(0);
 		}
 		for(let k=0; k<22; k++) {
 			for(let j=0; j<k; j++) {
 				let p1 = points[k];
 				let p2 = points[j];
 				let val = (p1[0]-p2[0])*(p1[0]-p2[0])+(p1[1]-p2[1])*(p1[1]-p2[1])+(p1[2]-p2[2])*(p1[2]-p2[2]);
-				counts[val]++;
+				counts2[val]++;
 			}
 		}
-		console.log(counts);
+		let table = document.getElementById("table");
+		table.replaceChildren(); // Clears all interior content
+		let header = table.createTHead();
+		let headerRow = header.insertRow(0);
+		headerRow.insertCell(0).innerHTML = "<b>Distance</b>";
+		headerRow.insertCell(1).innerHTML = "<b>Count</b>";
+		headerRow.insertCell(2).innerHTML = "<b>Example</b>";
+		for(let k=1; k<=27; k++) {
+			let row = table.insertRow(k);
+			row.insertCell(0).innerHTML = "√"+k;
+			row.insertCell(1).innerHTML = counts[k]/2;
+			row.insertCell(2).innerHTML = counts2[k];
+		}
+		let boardTable = document.getElementById("board");
+		boardTable.replaceChildren(); // Clears all interior content
+		for(let a=0; a<4; a++) {
+			let row = boardTable.insertRow(a);
+			let index = 0;
+			for(let b=0; b<4; b++) {
+				for(let c=0; c<4; c++) {
+					row.insertCell(index).innerHTML = board[a][b][c] ? "X" : "_";
+					index++;
+				}
+				if(b<3) {
+					row.insertCell(index).innerHTML = "|";
+					index++;
+				}
+			}
+		}
+		let board2 = [
+			[[1,1,1,0],[0,1,0,0],[1,1,1,0],[0,0,0,0]],
+			[[0,1,0,0],[0,0,0,0],[0,1,0,1],[0,0,0,0]],
+			[[1,1,1,0],[0,1,0,1],[1,1,1,1],[0,0,0,0]],
+			[[0,1,0,0],[0,0,0,0],[0,1,0,1],[0,0,0,0]]
+		]
+		let boardTable2 = document.getElementById("board2");
+		boardTable2.replaceChildren(); // Clears all interior content
+		for(let a=0; a<4; a++) {
+			let row = boardTable2.insertRow(a);
+			let index = 0;
+			for(let b=0; b<4; b++) {
+				for(let c=0; c<4; c++) {
+					row.insertCell(index).innerHTML = board2[a][b][c] ? "X" : "_";
+					index++;
+				}
+				if(b<3) {
+					row.insertCell(index).innerHTML = "|";
+					index++;
+				}
+			}
+		}
+
 		// X-X-
 		// -X-X
 		// X-X-
@@ -103,6 +148,6 @@
 		// -X-X
 		// X-X-
 	}
-	abcd();
+	generateTable();
 </script>
 </html>
