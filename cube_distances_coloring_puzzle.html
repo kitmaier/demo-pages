@@ -37,7 +37,37 @@
 	<p/>
 </body>
 <script>
-
+	function countNonAdjacentEdges(graph) {
+		// assuming every edge is doubly connected / undirected, and there are no self-connections
+		// assuming that the input data is not available for modification and deep copies must be created
+		// assuming that keys are numbers and values are sets of numbers (or lists?)
+		// assuming that if a vertex exists then it has at least one edge connected to it
+		if(graph.size==0) return 0;
+		if(graph.size==2) return 1;
+		// if there is any vertex with only one edge, then it can be greedily counted and all neighbors removed
+		for(let [v1, edges] of graph.entries()) {
+			if(edges.size==1) {
+				let newGraph = structuredClone(graph);
+				for(const v2 of edges) {
+					for(const v3 of newGraph.get(v2)) {
+						newGraph.get(v3).delete(v2);
+						if(newGraph.get(v3).size==0) {
+							newGraph.delete(v3);
+						}
+					}
+					newGraph.delete(v2);
+				}
+				newGraph.delete(v1);
+				return 1 + countNonAdjacentEdges(newGraph);
+			}
+		}
+		return -1;
+	}
+	console.log(countNonAdjacentEdges(new Map()))	; // 0
+	console.log(countNonAdjacentEdges(new Map([[1,new Set([2])],[2,new Set([1])]]))); // 1
+	console.log(countNonAdjacentEdges(new Map([[1,new Set([2])],[2,new Set([1,3])],[3,new Set([2])]]))); // 1
+	console.log(countNonAdjacentEdges(new Map([[1,new Set([2])],[2,new Set([1,3])],[3,new Set([2,4])],[4,new Set([3])]]))); // 2
+	console.log(countNonAdjacentEdges(new Map([[1,new Set([2,3])],[2,new Set([1,3])],[3,new Set([1,2])]])));
 	function generateTable() {
 		let counts = [];
 		for(let k=0; k<30; k++) {
