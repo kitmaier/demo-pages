@@ -26,9 +26,13 @@
 	<p/>
 	<table id="board2" border="1" style="border-collapse: collapse"></table>
 	<p/>
+	TODO: it seems like connectivity depends a lot on even vs odd parity of distances with respect to the checkerboard coloring, maybe identify for each distance whether it has even or odd parity and see what effect that has
 	<p/>
+	TODO: calculate for each distance what is the largest number of nonoverlapping pairs possible in the whole grid, and then in a randomly selected example of 22 cubes. fairly easy to do by hand for the whole grid, might be difficult to determine automatically for a randomly selected sample since it will require constructing the graph of overlapping pairs and finding a maximal set of nonoverlapping subpairs within it
 	<p/>
+	TODO: it seems like increasing the amount of overlapping pairs of one distance increases the amount of nonoverlapping pairs of certain other distances, is there a way to prove this relationship?
 	<p/>
+	TODO: maybe break things down by each distance individually and look at what is the best and worst case for that? for sqrt(22) it would be easy to have clusters such that with 20 cubes and 15 pairs there are only 5 nonoverlapping pairs, although that could be excluded from the counting argument by bundling it with sqrt(27) and throwing them both away. sqrt(19) splits up into 4 sets of 3 strands of 3 pairs connecting antipodal corners of the grid, each of which can have up to 4 nonoverlapping pairs, meaning you could have 18 cubes with 14 pairs and 5 nonoverlapping pairs by just clustering around 4 corners. 
 	<p/>
 	<p/>
 </body>
