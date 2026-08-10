@@ -34,6 +34,9 @@
 	<p/>
 	TODO: maybe break things down by each distance individually and look at what is the best and worst case for that? for sqrt(22) it would be easy to have clusters such that with 20 cubes and 15 pairs there are only 5 nonoverlapping pairs, although that could be excluded from the counting argument by bundling it with sqrt(27) and throwing them both away. sqrt(19) splits up into 4 sets of 3 strands of 3 pairs connecting antipodal corners of the grid, each of which can have up to 4 nonoverlapping pairs, meaning you could have 18 cubes with 14 pairs and 5 nonoverlapping pairs by just clustering around 4 corners. 
 	<p/>
+	TODO: iterate through example grids, moving one small cube at a time in a way that reduces the total value of the sum of the amounts by which the maximum number of nonoverlapping pairs for each distance exceeds 5
+	<p/>
+	TODO: is there a convenient / simple way to prove the maximum number of nonoverlapping pairs in the full grid for distance √13 and √14?
 	<p/>
 </body>
 <script>
@@ -56,10 +59,12 @@
 		graph.delete(v1);
 	}
 	let memo = new Map();
+	let memoUseCount = 0;
 	function countNonAdjacentEdges(graph) {
 		let gkey = serializeGraph(graph);
+		//console.log(gkey);
 		if(memo.has(gkey)) {
-			// TODO: seems like memoization is not really needed for performance
+			memoUseCount++;
 			return memo.get(gkey);
 		}
 		// assuming every edge is doubly connected / undirected, and there are no self-connections
@@ -84,22 +89,20 @@
 				return returnVal;
 			}
 		}
+		let bestCount = 0;
 		let v = sortedKeys[0];
 		for(const v2 of graph.get(v)) {
 			let newGraph = structuredClone(graph);
 			removeVertex(newGraph,v);
 			removeVertex(newGraph,v2);
-			let returnVal = 1 + countNonAdjacentEdges(newGraph);
-			memo.set(gkey,returnVal);
-			return returnVal;
+			let newCount = 1 + countNonAdjacentEdges(newGraph);
+			if(newCount>bestCount) {
+				bestCount = newCount;
+			}
 		}
-		return "error";
+		memo.set(gkey,bestCount);
+		return bestCount;
 	}
-	console.log(countNonAdjacentEdges(new Map()))	; // 0
-	console.log(countNonAdjacentEdges(new Map([[1,new Set([2])],[2,new Set([1])]]))); // 1
-	console.log(countNonAdjacentEdges(new Map([[1,new Set([2])],[2,new Set([1,3])],[3,new Set([2])]]))); // 1
-	console.log(countNonAdjacentEdges(new Map([[1,new Set([2])],[2,new Set([1,3])],[3,new Set([2,4])],[4,new Set([3])]]))); // 2
-	console.log(countNonAdjacentEdges(new Map([[1,new Set([2,3])],[2,new Set([1,3])],[3,new Set([1,2])]]))); // error for now
 	function p2n(p) {
 		let a = p[0];
 		let b = p[1];
@@ -164,6 +167,19 @@
 				createEdge(graphs2[val],p1,p2);
 			}
 		}
+		let sqDistToCount = new Map();
+		sqDistToCount.set(1,32);
+		sqDistToCount.set(2,32);
+		sqDistToCount.set(3,32);
+		sqDistToCount.set(4,32);
+		sqDistToCount.set(5,32);
+		sqDistToCount.set(6,32);
+		sqDistToCount.set(8,32);
+		sqDistToCount.set(9,32);
+		sqDistToCount.set(10,28);
+		sqDistToCount.set(11,28);
+		sqDistToCount.set(12,32);
+		sqDistToCount.set(14,"?"); // ???
 		let table = document.getElementById("table");
 		table.replaceChildren(); // Clears all interior content
 		let header = table.createTHead();
@@ -177,9 +193,14 @@
 			let row = table.insertRow(k);
 			row.insertCell(0).innerHTML = "√"+k;
 			row.insertCell(1).innerHTML = counts[k]/2;
-			row.insertCell(2).innerHTML = countNonAdjacentEdges(graphs[k]);
+			let a = sqDistToCount.has(k) ? sqDistToCount.get(k) : countNonAdjacentEdges(graphs[k]);
+			row.insertCell(2).innerHTML = a;
 			row.insertCell(3).innerHTML = counts2[k];
-			row.insertCell(4).innerHTML = countNonAdjacentEdges(graphs2[k]);
+			let b = countNonAdjacentEdges(graphs2[k]);
+			row.insertCell(4).innerHTML = b;
+			//110232 167104
+console.log(memoUseCount,memo.size,a,b);
+//return;
 		}
 		console.log(memo);
 		let boardTable = document.getElementById("board");
