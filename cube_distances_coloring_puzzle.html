@@ -46,10 +46,20 @@
 		}
 		return JSON.stringify(data);
 	}
+	function removeVertex(graph,v1) {
+		for(const v2 of graph.get(v1)) {
+			graph.get(v2).delete(v1);
+			if(graph.get(v2).size==0) {
+				graph.delete(v2);
+			}
+		}
+		graph.delete(v1);
+	}
 	let memo = new Map();
 	function countNonAdjacentEdges(graph) {
 		let gkey = serializeGraph(graph);
 		if(memo.has(gkey)) {
+			// TODO: seems like memoization is not really needed for performance
 			return memo.get(gkey);
 		}
 		// assuming every edge is doubly connected / undirected, and there are no self-connections
@@ -58,7 +68,6 @@
 		// assuming that if a vertex exists then it has at least one edge connected to it
 		if(graph.size==0) return 0;
 		if(graph.size==2) return 1;
-		// TODO: implement separating out one connected component (or is that really needed?)
 		// if there is any vertex with only one edge, then it can be greedily counted and all neighbors removed
 		// sorting keys to keep order of execution consistent for debugging and memoization
 		let sortedKeys = Array.from(graph.keys()).toSorted((a, b) => a - b);
@@ -67,13 +76,7 @@
 			if(edges.size==1) {
 				let newGraph = structuredClone(graph);
 				for(const v2 of edges) {
-					for(const v3 of newGraph.get(v2)) {
-						newGraph.get(v3).delete(v2);
-						if(newGraph.get(v3).size==0) {
-							newGraph.delete(v3);
-						}
-					}
-					newGraph.delete(v2);
+					removeVertex(newGraph,v2);
 				}
 				newGraph.delete(v1);
 				let returnVal = 1 + countNonAdjacentEdges(newGraph);
@@ -81,8 +84,15 @@
 				return returnVal;
 			}
 		}
-		// TODO: implement selecting highest degree vertex and iterating over several sliced copies of the graph
-		// TODO: is there a dynamic programming solution that is more efficient?
+		let v = sortedKeys[0];
+		for(const v2 of graph.get(v)) {
+			let newGraph = structuredClone(graph);
+			removeVertex(newGraph,v);
+			removeVertex(newGraph,v2);
+			let returnVal = 1 + countNonAdjacentEdges(newGraph);
+			memo.set(gkey,returnVal);
+			return returnVal;
+		}
 		return "error";
 	}
 	console.log(countNonAdjacentEdges(new Map()))	; // 0
@@ -140,8 +150,10 @@
 			}
 		}
 		let counts2 = [];
+		let graphs2 = [];
 		for(let k=0; k<30; k++) {
 			counts2.push(0);
+			graphs2.push(new Map());
 		}
 		for(let k=0; k<22; k++) {
 			for(let j=0; j<k; j++) {
@@ -149,6 +161,7 @@
 				let p2 = points[j];
 				let val = (p1[0]-p2[0])*(p1[0]-p2[0])+(p1[1]-p2[1])*(p1[1]-p2[1])+(p1[2]-p2[2])*(p1[2]-p2[2]);
 				counts2[val]++;
+				createEdge(graphs2[val],p1,p2);
 			}
 		}
 		let table = document.getElementById("table");
@@ -157,13 +170,16 @@
 		let headerRow = header.insertRow(0);
 		headerRow.insertCell(0).innerHTML = "<b>Distance</b>";
 		headerRow.insertCell(1).innerHTML = "<b>Count</b>";
-		headerRow.insertCell(2).innerHTML = "<b>Example</b>";
+		headerRow.insertCell(2).innerHTML = "<b>NonOvrlp</b>";
+		headerRow.insertCell(3).innerHTML = "<b>Example</b>";
+		headerRow.insertCell(4).innerHTML = "<b>NonOvrlp</b>";
 		for(let k=1; k<=27; k++) {
 			let row = table.insertRow(k);
 			row.insertCell(0).innerHTML = "√"+k;
 			row.insertCell(1).innerHTML = counts[k]/2;
-			row.insertCell(2).innerHTML = counts2[k];
-			console.log(k+","+countNonAdjacentEdges(graphs[k]));
+			row.insertCell(2).innerHTML = countNonAdjacentEdges(graphs[k]);
+			row.insertCell(3).innerHTML = counts2[k];
+			row.insertCell(4).innerHTML = countNonAdjacentEdges(graphs2[k]);
 		}
 		console.log(memo);
 		let boardTable = document.getElementById("board");
