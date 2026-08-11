@@ -36,8 +36,15 @@
 	<p/>
 	TODO: iterate through example grids, moving one small cube at a time in a way that reduces the total value of the sum of the amounts by which the maximum number of nonoverlapping pairs for each distance exceeds 5
 	<p/>
-	TODO: is there a convenient / simple way to prove the maximum number of nonoverlapping pairs in the full grid for distance √13 and √14?
+	TODO: is there a convenient / simple way to prove the maximum number of nonoverlapping pairs in the full grid for distance √13 and √14?? yes for 13. suppose we divide up the small cubes into corner, edge, face, and middle cubes. the middle is out of bounds. each matched pair includes one edge cube, and there are only 24 of those, so the maximum is 24, and that is also achievable. Yes also for 14, as everything but the middle can be filled in as shown below, for a total of 28 pairs. 
 	<p/>
+	<table id="board_full_13" border="1" style="border-collapse: collapse"></table>
+	<p/>
+	<table id="board_full_14" border="1" style="border-collapse: collapse"></table>
+	<p/>
+	TODO: is it possible to prove that if all 22 cubes are restricted to one color of the checkerboard pattern, then there must be at least 6 nonoverlapping pairs with distance √2? seems like this subgrid could have its own checkerboard pattern as well
+	<p/>
+	TODO: what is the average number of nonoverlapping pairs for each distance across randomly chosen arrangements of 22 cubes? is there any correlation between values that shows a tradeoff between one distance and another? 
 </body>
 <script>
 	function serializeGraph(graph) {
@@ -179,7 +186,7 @@
 		sqDistToCount.set(10,28);
 		sqDistToCount.set(11,28);
 		sqDistToCount.set(12,32);
-		sqDistToCount.set(14,"?"); // ???
+		sqDistToCount.set(14,28);
 		let table = document.getElementById("table");
 		table.replaceChildren(); // Clears all interior content
 		let header = table.createTHead();
@@ -193,16 +200,11 @@
 			let row = table.insertRow(k);
 			row.insertCell(0).innerHTML = "√"+k;
 			row.insertCell(1).innerHTML = counts[k]/2;
-			let a = sqDistToCount.has(k) ? sqDistToCount.get(k) : countNonAdjacentEdges(graphs[k]);
-			row.insertCell(2).innerHTML = a;
+			row.insertCell(2).innerHTML = sqDistToCount.has(k) ? sqDistToCount.get(k) : countNonAdjacentEdges(graphs[k]);
 			row.insertCell(3).innerHTML = counts2[k];
-			let b = countNonAdjacentEdges(graphs2[k]);
-			row.insertCell(4).innerHTML = b;
-			//110232 167104
-console.log(memoUseCount,memo.size,a,b);
-//return;
+			row.insertCell(4).innerHTML = countNonAdjacentEdges(graphs2[k]);
 		}
-		console.log(memo);
+		//console.log(memo);
 		let boardTable = document.getElementById("board");
 		boardTable.replaceChildren(); // Clears all interior content
 		for(let a=0; a<4; a++) {
@@ -241,26 +243,50 @@ console.log(memoUseCount,memo.size,a,b);
 				}
 			}
 		}
-
-		// X-X-
-		// -X-X
-		// X-X-
-		// -X-X
-
-		// -X-X
-		// X-X-
-		// -X-X
-		// X-X-
-
-		// X-X-
-		// -X-X
-		// X-X-
-		// -X-X
-
-		// -X-X
-		// X-X-
-		// -X-X
-		// X-X-
+		let boardF13 = [
+			[['-','O','P','-'],['T','I','J','R'],['X','K','L','V'],['-','M','N','-']],
+			[['F','A','B','E'],['Q','-','-','S'],['U','-','-','W'],['B','E','F','A']],
+			[['H','C','D','G'],['R','-','-','T'],['V','-','-','X'],['D','G','H','C']],
+			[['-','K','L','-'],['S','M','N','Q'],['W','O','P','U'],['-','I','J','-']]
+		]
+		let boardTableF13 = document.getElementById("board_full_13");
+		boardTableF13.replaceChildren(); // Clears all interior content
+		for(let a=0; a<4; a++) {
+			let row = boardTableF13.insertRow(a);
+			let index = 0;
+			for(let b=0; b<4; b++) {
+				for(let c=0; c<4; c++) {
+					row.insertCell(index).innerHTML = boardF13[a][b][c];
+					index++;
+				}
+				if(b<3) {
+					row.insertCell(index).innerHTML = "|";
+					index++;
+				}
+			}
+		}
+		let boardF14 = [
+			[['A','T','S','B'],['X','Y','Z','V'],['3','Q','R','2'],['E','K','I','F']],
+			[['I','G','H','K'],['M','-','-','O'],['U','-','-','W'],['P','C','D','N']],
+			[['J','E','F','L'],['N','-','-','P'],['V','-','-','X'],['O','A','B','M']],
+			[['C','R','Q','D'],['W','2','3','U'],['Z','S','T','Y'],['G','L','J','H']]
+		]
+		let boardTableF14 = document.getElementById("board_full_14");
+		boardTableF14.replaceChildren(); // Clears all interior content
+		for(let a=0; a<4; a++) {
+			let row = boardTableF14.insertRow(a);
+			let index = 0;
+			for(let b=0; b<4; b++) {
+				for(let c=0; c<4; c++) {
+					row.insertCell(index).innerHTML = boardF14[a][b][c];
+					index++;
+				}
+				if(b<3) {
+					row.insertCell(index).innerHTML = "|";
+					index++;
+				}
+			}
+		}
 	}
 	generateTable();
 </script>
