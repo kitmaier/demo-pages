@@ -1,0 +1,1596 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cards in the projective plane</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=STIX+Two+Text:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+:root {
+  --paper: #EEF1F5;
+  --surface: #F9FAFC;
+  --card: #FFFFFF;
+  --band: #E0E6EF;
+  --ink: #1B2A4A;
+  --muted: #5B677D;
+  --rule: #C9D1DC;
+  --accent: #2346D9;
+  --accent-ink: #FFFFFF;
+  --accent-soft: rgba(35, 70, 217, .14);
+  --cursor: #B87206;
+  --line: #C2410C;
+  --line-soft: rgba(194, 65, 12, .16);
+  --error: #B42318;
+  --serif: "STIX Two Text", "Cambria Math", Cambria, "Times New Roman", serif;
+  --sans: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --emoji: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Twemoji Mozilla", sans-serif;
+  color-scheme: light;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: var(--paper);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0F1420;
+    --surface: #161D2B;
+    --card: #1C2434;
+    --band: #182132;
+    --ink: #E4E9F2;
+    --muted: #9AA6BA;
+    --rule: #2F3A4D;
+    --accent: #8EA2FF;
+    --accent-ink: #0F1420;
+    --accent-soft: rgba(142, 162, 255, .18);
+    --cursor: #F0B54A;
+    --line: #FF8F3F;
+    --line-soft: rgba(255, 143, 63, .22);
+    --error: #FF8A7A;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0F1420;
+  --surface: #161D2B;
+  --card: #1C2434;
+  --band: #182132;
+  --ink: #E4E9F2;
+  --muted: #9AA6BA;
+  --rule: #2F3A4D;
+  --accent: #8EA2FF;
+  --accent-ink: #0F1420;
+  --accent-soft: rgba(142, 162, 255, .18);
+  --cursor: #F0B54A;
+  --line: #FF8F3F;
+  --line-soft: rgba(255, 143, 63, .22);
+  --error: #FF8A7A;
+  color-scheme: dark;
+}
+html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+*, *::before, *::after { box-sizing: inherit; }
+[hidden] { display: none !important; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 1rem;
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+}
+
+.page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding-top: clamp(1.25rem, 3.5vw, 2.75rem);
+  padding-bottom: clamp(2rem, 5vw, 4rem);
+  padding-left: max(clamp(1rem, 3.5vw, 2.75rem), env(safe-area-inset-left, 0px));
+  padding-right: max(clamp(1rem, 3.5vw, 2.75rem), env(safe-area-inset-right, 0px));
+}
+
+h1.site {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--muted);
+  margin: 0 0 clamp(1rem, 3vw, 2rem);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 330px);
+  grid-template-rows: auto auto 1fr;
+  column-gap: clamp(1.75rem, 4vw, 3.25rem);
+  grid-template-areas:
+    "hero controls"
+    "plot controls"
+    "plot results";
+}
+.hero { grid-area: hero; }
+.plotwrap { grid-area: plot; min-width: 0; }
+.controls { grid-area: controls; }
+.results { grid-area: results; }
+
+.controls, .results {
+  border-left: 1px solid var(--rule);
+  padding-left: clamp(1.25rem, 3vw, 2rem);
+}
+.controls { padding-bottom: 1.75rem; }
+
+i { font-style: italic; font-family: var(--serif); }
+.emo { font-family: var(--emoji); font-style: normal; }
+
+/* Hero */
+.eq {
+  font-family: var(--serif);
+  font-size: clamp(2.25rem, 6vw, 4rem);
+  font-weight: 400;
+  line-height: 1.1;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.eq sup, .homog sup { font-size: .58em; line-height: 0; }
+.over {
+  font-family: var(--serif);
+  font-size: clamp(1.05rem, 2vw, 1.25rem);
+  color: var(--muted);
+  margin: .45rem 0 .2rem;
+  max-width: 48ch;
+}
+.homog {
+  font-family: var(--serif);
+  font-size: clamp(1.05rem, 2vw, 1.25rem);
+  margin: 0 0 1.1rem;
+  overflow-wrap: anywhere;
+}
+.homog .k { color: var(--muted); }
+.hero.stale, #plot.stale { opacity: .35; }
+.hero, #plot { transition: opacity .2s; }
+
+/* Plot */
+.plotscroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding: 4px;
+  margin: -4px;
+}
+#plot {
+  display: block;
+  width: 100%;
+  max-width: 780px;
+  height: auto;
+  touch-action: manipulation;
+  border-radius: 6px;
+  -webkit-tap-highlight-color: transparent;
+}
+#plot:focus { outline: none; }
+#plot:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+#plot .band { fill: var(--band); }
+#plot .cap { font-family: var(--sans); font-size: 13px; fill: var(--muted); }
+#plot .tick, #plot .slope { font-family: var(--serif); fill: var(--muted); }
+#plot .tick { font-size: 16px; }
+#plot .slope { font-size: 14px; }
+#plot .tick.cur, #plot .slope.cur { fill: var(--cursor); font-weight: 600; }
+#plot .atitle { font-family: var(--serif); font-style: italic; font-size: 19px; fill: var(--ink); }
+#plot .card { transition: opacity .2s, transform .8s cubic-bezier(.65, 0, .35, 1); }
+#plot.no-anim .card { transition: none; }
+#plot .card.dim { opacity: .3; }
+#plot .face { fill: var(--card); stroke: var(--rule); stroke-width: 1; transition: stroke .2s, stroke-width .2s; }
+#plot .card.on .face { stroke: var(--accent); stroke-width: 3.5; }
+#plot .sym { font-family: var(--emoji); pointer-events: none; }
+#plot .hl { fill: var(--line-soft); stroke: var(--line); stroke-width: 1.75; }
+#plot .lhalo { fill: none; stroke: var(--line); stroke-width: 2.5; }
+#plot .shalo { stroke-width: 4; }
+#plot .chalo { fill: none; stroke: var(--cursor); stroke-width: 3; }
+#plot .rhalo { fill: none; stroke: var(--cursor); stroke-width: 2; stroke-dasharray: 4 4; }
+#plot .badge { fill: var(--line); }
+#plot .badgetxt { font-family: var(--sans); font-weight: 700; font-size: 13px; fill: var(--paper); }
+#plot .hit { fill: transparent; cursor: pointer; }
+
+.readout {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  margin: 1.1rem 0 0;
+  min-height: 8.5rem;
+  color: var(--muted);
+}
+.readout .txt { flex: 1 1 auto; max-width: 56ch; }
+.readout strong, .readout .side { color: var(--ink); }
+.readout .side { font-family: var(--serif); font-size: 1.08em; }
+.readout sup { font-size: .7em; line-height: 0; }
+.readout .yes { color: var(--accent); font-weight: 700; }
+.readout .no { color: var(--ink); font-weight: 700; }
+.bigcard {
+  --bc: 132px;
+  position: relative;
+  flex: 0 0 auto;
+  width: var(--bc);
+  height: var(--bc);
+  border-radius: 16px;
+  background: var(--card);
+  border: 1px solid var(--rule);
+}
+.bigcard.on { border: 3px solid var(--accent); }
+.bigcard span {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  line-height: 1;
+  font-family: var(--emoji);
+}
+.bigcard span.hl {
+  background: var(--line-soft);
+  box-shadow: 0 0 0 1.5px var(--line);
+  border-radius: 50%;
+  padding: .14em;
+}
+
+/* Controls */
+.field + .field { margin-top: 1.4rem; }
+.label {
+  display: block;
+  font-weight: 700;
+  font-size: .95rem;
+  margin: 0 0 .45rem;
+}
+#eq-input {
+  width: 100%;
+  font-family: var(--serif);
+  font-size: 1.4rem;
+  padding: .5rem .75rem;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1.5px solid var(--rule);
+  border-radius: 6px;
+}
+#eq-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+#eq-input[aria-invalid="true"] { border-color: var(--error); }
+.hint { font-size: .875rem; color: var(--muted); margin: .5rem 0 0; }
+.hint.error { color: var(--error); }
+
+.chips { display: flex; flex-wrap: wrap; gap: .4rem; }
+.chip {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  line-height: 1.35;
+  padding: .25rem .75rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+.chip sup { font-size: .65em; line-height: 0; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+@media (hover: hover) {
+  .chip:hover { border-color: var(--accent); }
+  .act:hover { border-color: var(--line); }
+}
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.seg {
+  display: inline-flex;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.seg button {
+  font: inherit;
+  font-size: .95rem;
+  min-width: 2.9rem;
+  padding: .4rem .8rem;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+.seg button + button { border-left: 1px solid var(--rule); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.seg button:focus-visible { outline-offset: -3px; }
+
+.pickrow { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .75rem; margin-top: .6rem; }
+.pickrow .hint { margin: 0; flex: 1 1 12rem; }
+.act {
+  font: inherit;
+  font-size: .9rem;
+  padding: .35rem .75rem;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+/* Results */
+.results h2 { font-size: .95rem; font-weight: 700; margin: 0 0 .6rem; }
+.results h3 { font-size: .9rem; font-weight: 700; color: var(--muted); margin: 1.1rem 0 .45rem; }
+.facts { margin: 0 0 .6rem; max-width: 46ch; }
+.facts sub, .facts sup { font-size: .7em; }
+.facts .emo { font-size: 1.6em; vertical-align: -.2em; }
+.pts { display: flex; flex-wrap: wrap; gap: .35rem; }
+.pt {
+  font-family: var(--serif);
+  font-size: 1.02rem;
+  font-variant-numeric: tabular-nums;
+  padding: .15rem .5rem;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.pt.cur { border-color: var(--cursor); box-shadow: inset 0 0 0 1px var(--cursor); }
+.none { color: var(--muted); margin: 0; }
+.linebox { margin-bottom: 1.75rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--rule); }
+.linebox h2 { color: var(--line); }
+.lineeq { font-family: var(--serif); font-size: 1.35rem; margin: 0 0 .5rem; }
+.linebox .act { margin-top: .9rem; }
+.acts { display: flex; flex-wrap: wrap; gap: .4rem; }
+.acts .act { font-family: var(--serif); font-size: 1rem; }
+.matrow { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem .9rem; margin-top: .75rem; }
+.mat {
+  display: inline-grid;
+  grid-template-columns: repeat(3, 2.75rem);
+  gap: .3rem;
+  padding: .3rem .45rem;
+  border-left: 2px solid var(--ink);
+  border-right: 2px solid var(--ink);
+  border-radius: 5px;
+}
+.mat input {
+  width: 2.75rem;
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  text-align: center;
+  padding: .25rem 0;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  background: var(--surface);
+  color: var(--ink);
+}
+.mat input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+.total { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .75rem; margin-top: .75rem; font-size: .9rem; color: var(--muted); }
+.matview {
+  display: inline-grid;
+  grid-template-columns: repeat(3, 1.5rem);
+  font-family: var(--serif);
+  font-size: 1rem;
+  text-align: center;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  padding: .05rem .3rem;
+  border-left: 1.5px solid var(--ink);
+  border-right: 1.5px solid var(--ink);
+  border-radius: 3px;
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto;
+    grid-template-areas: "hero" "controls" "plot" "results";
+  }
+  .controls, .results { border-left: 0; padding-left: 0; }
+  .controls { padding-bottom: 1.75rem; }
+  .results { border-top: 1px solid var(--rule); padding-top: 1.5rem; margin-top: 1rem; }
+}
+@media (max-width: 520px) {
+  .bigcard { --bc: 108px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero, #plot, #plot .card, #plot .face { transition: none; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <h1 class="site">Cards in the projective plane</h1>
+  <div class="layout">
+    <div class="hero" id="hero">
+      <p class="eq" id="hero-eq"></p>
+      <p class="over" id="hero-over"></p>
+      <p class="homog" id="hero-homog"></p>
+    </div>
+
+    <div class="plotwrap">
+      <div class="plotscroll">
+        <svg id="plot" tabindex="0" role="img" aria-describedby="readout" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+      <div class="readout" id="readout" aria-live="polite"></div>
+    </div>
+
+    <div class="controls">
+      <div class="field">
+        <label class="label" for="eq-input">Equation</label>
+        <input id="eq-input" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-describedby="eq-hint">
+        <p class="hint" id="eq-hint"></p>
+      </div>
+      <div class="field">
+        <span class="label" id="presets-label">Examples</span>
+        <div class="chips" id="presets" role="group" aria-labelledby="presets-label"></div>
+      </div>
+      <div class="field">
+        <span class="label" id="line-label">Line through two cards</span>
+        <div class="seg" id="line-seg" role="group" aria-labelledby="line-label">
+          <button type="button" data-on="0">Off</button><button type="button" data-on="1">On</button>
+        </div>
+        <div class="pickrow" id="pick-row" hidden>
+          <p class="hint" id="pick-hint" aria-live="polite"></p>
+          <button type="button" class="act" id="clear-btn" hidden>Clear picks</button>
+        </div>
+      </div>
+      <div class="field">
+        <span class="label" id="aut-label">Automorphism</span>
+        <div class="acts" id="aut-presets" role="group" aria-labelledby="aut-label"></div>
+        <div class="matrow">
+          <div class="mat" id="mat" role="group" aria-label="Matrix M, acting on [X : Y : Z]"></div>
+          <button type="button" class="act" id="apply-btn">Apply <i>M</i></button>
+        </div>
+        <p class="hint" id="aut-hint" aria-live="polite"></p>
+        <div class="total" id="total" hidden>
+          <span>Total so far</span><span class="matview" id="matview" aria-label="Combined matrix"></span>
+          <button type="button" class="act" id="reset-btn">Put cards back</button>
+        </div>
+      </div>
+      <div class="field">
+        <span class="label" id="p-label">Field size</span>
+        <div class="seg" id="p-seg" role="group" aria-labelledby="p-label"></div>
+      </div>
+      <div class="field">
+        <span class="label" id="lab-label">Label elements as</span>
+        <div class="seg" id="lab-seg" role="group" aria-labelledby="lab-label"></div>
+      </div>
+    </div>
+
+    <div class="results" id="results"></div>
+  </div>
+</div>
+
+<script>
+// ---core-start
+class ParseError extends Error {}
+
+const mod = (a, p) => ((a % p) + p) % p;
+
+function powF(a, e, p) {
+  a = mod(a, p);
+  if (e < 0) {
+    if (a === 0) return null;
+    a = powF(a, p - 2, p);
+    e = -e;
+  }
+  let r = 1 % p, b = a;
+  while (e > 0) {
+    if (e % 2 === 1) r = (r * b) % p;
+    b = (b * b) % p;
+    e = Math.floor(e / 2);
+  }
+  return r;
+}
+const invF = (a, p) => (mod(a, p) === 0 ? null : powF(a, p - 2, p));
+
+function tokenize(src) {
+  const s = src
+    .replace(/\*\*/g, '^')
+    .replace(/[−–]/g, '-')
+    .replace(/[×·⋅]/g, '*')
+    .replace(/÷/g, '/')
+    .replace(/²/g, '^2')
+    .replace(/³/g, '^3');
+  const toks = [];
+  let i = 0;
+  while (i < s.length) {
+    const c = s[i];
+    if (/\s/.test(c)) { i++; continue; }
+    if (/[0-9]/.test(c)) {
+      let j = i;
+      while (j < s.length && /[0-9]/.test(s[j])) j++;
+      if (j - i > 12) throw new ParseError('Numbers longer than 12 digits can’t be used.');
+      toks.push({ t: 'num', v: Number(s.slice(i, j)) });
+      i = j;
+      continue;
+    }
+    if (/[xyXY]/.test(c)) { toks.push({ t: 'var', v: c.toLowerCase() }); i++; continue; }
+    if ('+-*/^()='.includes(c)) { toks.push({ t: c }); i++; continue; }
+    throw new ParseError(`“${c}” can’t be used here. Use x, y, whole numbers, + − * / ^ and parentheses.`);
+  }
+  return toks;
+}
+
+function parse(src) {
+  const toks = tokenize(src);
+  let k = 0;
+  const peek = () => toks[k];
+  const next = () => toks[k++];
+  const show = tk => (tk.t === 'num' || tk.t === 'var' ? String(tk.v) : tk.t);
+  const unexpected = tk => new ParseError(`Unexpected “${show(tk)}”. Check the equation around it.`);
+
+  function expr() {
+    let n = term();
+    while (peek() && (peek().t === '+' || peek().t === '-')) {
+      const op = next().t;
+      n = { type: op === '+' ? 'add' : 'sub', a: n, b: term() };
+    }
+    return n;
+  }
+  function term() {
+    let n = unary();
+    for (;;) {
+      const tk = peek();
+      if (!tk) break;
+      if (tk.t === '*' || tk.t === '/') {
+        next();
+        n = { type: tk.t === '*' ? 'mul' : 'div', a: n, b: unary() };
+      } else if (tk.t === 'num' || tk.t === 'var' || tk.t === '(') {
+        n = { type: 'mul', a: n, b: unary() }; // implicit multiplication: 2x, x(x+1)
+      } else break;
+    }
+    return n;
+  }
+  function unary() {
+    const tk = peek();
+    if (tk && tk.t === '-') { next(); return { type: 'neg', a: unary() }; }
+    if (tk && tk.t === '+') { next(); return unary(); }
+    return power();
+  }
+  function power() {
+    const base = primary();
+    if (peek() && peek().t === '^') {
+      next();
+      return { type: 'pow', a: base, b: unary() };
+    }
+    return base;
+  }
+  function primary() {
+    const tk = next();
+    if (!tk) throw new ParseError('The equation ends too early. Finish it with a number, x, y, or a closing parenthesis.');
+    if (tk.t === 'num') return { type: 'num', v: tk.v };
+    if (tk.t === 'var') return { type: 'var', v: tk.v };
+    if (tk.t === '(') {
+      const n = expr();
+      const c = next();
+      if (!c || c.t !== ')') throw new ParseError('A parenthesis is opened but never closed.');
+      return n;
+    }
+    throw unexpected(tk);
+  }
+
+  if (!toks.length) throw new ParseError('');
+  const left = expr();
+  if (peek() && peek().t === '=') {
+    next();
+    const right = expr();
+    if (peek()) throw peek().t === '=' ? new ParseError('Use only one equals sign.') : unexpected(peek());
+    return { explicit: true, lhs: left, rhs: right };
+  }
+  if (peek()) throw unexpected(peek());
+  return { explicit: false, expr: left };
+}
+
+function contains(n, v) {
+  if (!n) return false;
+  if (n.type === 'var') return n.v === v;
+  return contains(n.a, v) || contains(n.b, v);
+}
+
+// Constant integer arithmetic, used for exponents.
+function evalInt(n) {
+  const ok = r => (Number.isFinite(r) && Math.abs(r) <= 1e15 ? r : null);
+  switch (n.type) {
+    case 'num': return n.v;
+    case 'neg': { const a = evalInt(n.a); return a === null ? null : -a; }
+    case 'add': case 'sub': case 'mul': case 'div': case 'pow': {
+      const a = evalInt(n.a), b = evalInt(n.b);
+      if (a === null || b === null) return null;
+      if (n.type === 'add') return ok(a + b);
+      if (n.type === 'sub') return ok(a - b);
+      if (n.type === 'mul') return ok(a * b);
+      if (n.type === 'div') return b === 0 || a % b !== 0 ? null : a / b;
+      if (b < 0) return a === 1 ? 1 : a === -1 ? (b % 2 === 0 ? 1 : -1) : null;
+      return ok(Math.pow(a, b));
+    }
+  }
+  return null;
+}
+
+// Polynomials in x, y over F_p: Map from key (i*K + j) for x^i y^j to a coefficient.
+const K = 256, MAXDEG = 40;
+const degOf = k => Math.floor(k / K) + (k % K);
+
+function polyOps(p) {
+  const clean = m => { for (const [k, c] of m) if (c === 0) m.delete(k); return m; };
+  const konst = c => clean(new Map([[0, mod(c, p)]]));
+  const one = () => konst(1);
+  const add = (a, b, s = 1) => {
+    const r = new Map(a);
+    for (const [k, c] of b) r.set(k, mod((r.get(k) || 0) + s * c, p));
+    return clean(r);
+  };
+  const scale = (a, s) => { const r = new Map(); for (const [k, c] of a) r.set(k, mod(c * s, p)); return clean(r); };
+  const mul = (a, b) => {
+    const r = new Map();
+    for (const [k1, c1] of a) for (const [k2, c2] of b) {
+      const k = k1 + k2;
+      if (degOf(k) > MAXDEG) throw new ParseError(`The degree is too high to draw. Keep it at ${MAXDEG} or below.`);
+      r.set(k, mod((r.get(k) || 0) + c1 * c2, p));
+    }
+    return clean(r);
+  };
+  const isConst = a => a.size === 0 || (a.size === 1 && a.has(0));
+  const lead = a => { let best = -1; for (const k of a.keys()) if (k > best) best = k; return best; };
+  // Exact division under lex order; null if b does not divide a.
+  const exactDiv = (a, b) => {
+    const r = new Map(a), q = new Map();
+    const lb = lead(b), icb = invF(b.get(lb), p), bi = Math.floor(lb / K), bj = lb % K;
+    for (let guard = 0; r.size; guard++) {
+      if (guard > 4000) return null;
+      const lr = lead(r), ri = Math.floor(lr / K), rj = lr % K;
+      if (ri < bi || rj < bj) return null;
+      const tk = (ri - bi) * K + (rj - bj), tc = mod(r.get(lr) * icb, p);
+      q.set(tk, mod((q.get(tk) || 0) + tc, p));
+      for (const [k, c] of b) {
+        const kk = k + tk;
+        if (kk % K < k % K) return null;
+        r.set(kk, mod((r.get(kk) || 0) - tc * c, p));
+      }
+      clean(r);
+    }
+    return clean(q);
+  };
+  // Cancel the obvious common factors of a fraction n/d.
+  const reduce = ({ n, d }) => {
+    if (!n.size) return { n, d: one() };
+    let mi = Infinity, mj = Infinity;
+    for (const k of [...n.keys(), ...d.keys()]) { mi = Math.min(mi, Math.floor(k / K)); mj = Math.min(mj, k % K); }
+    if (mi || mj) {
+      const shift = m => new Map([...m].map(([k, c]) => [k - mi * K - mj, c]));
+      n = shift(n); d = shift(d);
+    }
+    if (isConst(d)) return { n, d };
+    const q = exactDiv(n, d);
+    if (q) return { n: q, d: one() };
+    if (!isConst(n)) { const q2 = exactDiv(d, n); if (q2) return { n: one(), d: q2 }; }
+    return { n, d };
+  };
+  return { clean, konst, one, add, scale, mul, reduce, isConst };
+}
+
+function toRational(node, P) {
+  const r = n => toRational(n, P);
+  switch (node.type) {
+    case 'num': return { n: P.konst(node.v), d: P.one() };
+    case 'var': return { n: new Map([[node.v === 'x' ? K : 1, 1]]), d: P.one() };
+    case 'neg': { const a = r(node.a); return { n: P.scale(a.n, -1), d: a.d }; }
+    case 'add': case 'sub': {
+      const a = r(node.a), b = r(node.b), s = node.type === 'add' ? 1 : -1;
+      const same = a.d.size === b.d.size && [...a.d].every(([k, c]) => b.d.get(k) === c);
+      if (same) return { n: P.add(a.n, b.n, s), d: a.d };
+      return P.reduce({ n: P.add(P.mul(a.n, b.d), P.mul(b.n, a.d), s), d: P.mul(a.d, b.d) });
+    }
+    case 'mul': {
+      const a = r(node.a), b = r(node.b);
+      return P.reduce({ n: P.mul(a.n, b.n), d: P.mul(a.d, b.d) });
+    }
+    case 'div': {
+      const a = r(node.a), b = r(node.b);
+      if (!b.n.size) throw new ParseError('This divides by 0, which is undefined in any field.');
+      return P.reduce({ n: P.mul(a.n, b.d), d: P.mul(a.d, b.n) });
+    }
+    case 'pow': {
+      if (contains(node.b, 'x') || contains(node.b, 'y'))
+        throw new ParseError('Exponents must be whole numbers, not expressions in x or y, so the equation stays a polynomial.');
+      let e = evalInt(node.b);
+      if (e === null || !Number.isInteger(e)) throw new ParseError('Exponents must be whole numbers.');
+      if (Math.abs(e) > MAXDEG) throw new ParseError(`The degree is too high to draw. Keep it at ${MAXDEG} or below.`);
+      let base = r(node.a);
+      if (e < 0) {
+        if (!base.n.size) throw new ParseError('This divides by 0, which is undefined in any field.');
+        base = P.reduce({ n: base.d, d: base.n });
+        e = -e;
+      }
+      let out = { n: P.one(), d: P.one() };
+      for (let i = 0; i < e; i++) out = { n: P.mul(out.n, base.n), d: P.mul(out.d, base.d) };
+      return P.reduce(out);
+    }
+  }
+  throw new ParseError('This equation can’t be read.');
+}
+
+// Evaluate a polynomial homogenized to degree d at [X : Y : Z].
+function evalHom(m, d, t, p) {
+  let s = 0;
+  for (const [k, c] of m) {
+    const i = Math.floor(k / K), j = k % K;
+    s += c * powF(t[0], i, p) * powF(t[1], j, p) * powF(t[2], d - i - j, p);
+  }
+  return mod(s, p);
+}
+
+function buildModel(src, p) {
+  const eq = parse(src);
+  let lhs, rhs;
+  if (eq.explicit) { lhs = eq.lhs; rhs = eq.rhs; }
+  else if (contains(eq.expr, 'y')) { lhs = eq.expr; rhs = { type: 'num', v: 0 }; }
+  else { lhs = { type: 'var', v: 'y' }; rhs = eq.expr; }
+
+  const P = polyOps(p);
+  const L = toRational(lhs, P), R = toRational(rhs, P);
+  const Lp = P.mul(L.n, R.d), Rp = P.mul(R.n, L.d);   // clear denominators
+  const F = P.add(Lp, Rp, -1);
+  const zero = F.size === 0;
+  let d = 0;
+  for (const k of F.keys()) d = Math.max(d, degOf(k));
+
+  // Keep each term on the side the person wrote it on.
+  let left = new Map(), right = new Map();
+  for (const [k, c] of F) {
+    if (Lp.has(k)) left.set(k, c);
+    else right.set(k, mod(-c, p));
+  }
+  if (d > 0 && !left.size && right.size) { left = right; right = new Map(); }
+
+  const points = [];
+  for (let x = 0; x < p; x++) for (let y = 0; y < p; y++) points.push([x, y, 1]);
+  for (let m = 0; m < p; m++) points.push([1, m, 0]);
+  points.push([0, 1, 0]);
+
+  const cells = new Map(), on = [];
+  for (const t of points) {
+    const Lv = evalHom(left, d, t, p), Rv = evalHom(right, d, t, p);
+    const hit = zero || Lv === Rv;
+    cells.set(t.join(','), { L: Lv, R: Rv, on: hit });
+    if (hit) on.push(t);
+  }
+  return { lhs, rhs, left, right, d, zero, cells, on, p };
+}
+
+// Typeset an expression tree as HTML. q = precedence of the printed form.
+function pp(n) {
+  switch (n.type) {
+    case 'num': return { h: String(n.v), q: 5 };
+    case 'var': return { h: `<i>${n.v}</i>`, q: 5 };
+    case 'neg': {
+      const c = pp(n.a);
+      return { h: '−' + (c.q < 3 ? `(${c.h})` : c.h), q: 3 };
+    }
+    case 'add': case 'sub': {
+      const a = pp(n.a), b = pp(n.b);
+      const wrap = b.q === 3 || (n.type === 'sub' && b.q <= 1);
+      return { h: `${a.h} ${n.type === 'add' ? '+' : '−'} ${wrap ? `(${b.h})` : b.h}`, q: 1 };
+    }
+    case 'mul': {
+      const a = pp(n.a), b = pp(n.b);
+      const A = a.q < 2 ? `(${a.h})` : a.h;
+      const B = b.q < 2 || b.q === 3 ? `(${b.h})` : b.h;
+      return { h: A + (/^[0-9]/.test(B) ? ' · ' : '') + B, q: 2 };
+    }
+    case 'div': {
+      const a = pp(n.a), b = pp(n.b);
+      const A = a.q < 2 ? `(${a.h})` : a.h;
+      const B = b.q <= 3 ? `(${b.h})` : b.h;
+      return { h: `${A}/${B}`, q: 2 };
+    }
+    case 'pow': {
+      const a = pp(n.a), b = pp(n.b);
+      return { h: `${a.q < 5 ? `(${a.h})` : a.h}<sup>${b.h}</sup>`, q: 4 };
+    }
+  }
+  return { h: '', q: 5 };
+}
+
+// Typeset a homogeneous polynomial in X, Y, Z. Coefficients use signed representatives.
+function ppHom(m, d, p) {
+  if (!m.size) return '0';
+  return [...m].sort((a, b) => b[0] - a[0]).map(([k, c], idx) => {
+    const i = Math.floor(k / K), j = k % K, z = d - i - j;
+    const r = c > p / 2 ? c - p : c, a = Math.abs(r);
+    const mono = [['X', i], ['Y', j], ['Z', z]].filter(([, e]) => e > 0)
+      .map(([v, e]) => `<i>${v}</i>${e > 1 ? `<sup>${e}</sup>` : ''}`).join('');
+    const body = (a === 1 && mono ? '' : String(a)) + mono;
+    return idx === 0 ? (r < 0 ? '−' : '') + body : (r < 0 ? ' − ' : ' + ') + body;
+  }).join('');
+}
+
+// The line through two projective points is their cross product: aX + bY + cZ = 0.
+function lineThrough(a, b, p) {
+  return normLine([a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]], p);
+}
+// Scale a line so Y (or else X, or else Z) has coefficient 1.
+function normLine(l, p) {
+  l = l.map(v => mod(v, p));
+  const s = invF(l[1] || l[0] || l[2], p);
+  return l.map(v => mod(v * s, p));
+}
+// Scale a point to [x : y : 1], [1 : m : 0] or [0 : 1 : 0].
+function normPoint(t, p) {
+  t = t.map(v => mod(v, p));
+  const s = invF(t[2] || t[0] || t[1], p);
+  return t.map(v => mod(v * s, p));
+}
+
+// Automorphisms are invertible 3x3 matrices: a point (column) t goes to Mt,
+// and a line (row) l goes to l M^-1, so a moved line l' came from l' M.
+const matVec = (M, t, p) => M.map(r => mod(r[0] * t[0] + r[1] * t[1] + r[2] * t[2], p));
+const vecMat = (l, M, p) => [0, 1, 2].map(j => mod(l[0] * M[0][j] + l[1] * M[1][j] + l[2] * M[2][j], p));
+const matMul = (A, B, p) => A.map(r => [0, 1, 2].map(j => mod(r[0] * B[0][j] + r[1] * B[1][j] + r[2] * B[2][j], p)));
+const det3 = (M, p) => mod(
+  M[0][0] * (M[1][1] * M[2][2] - M[1][2] * M[2][1]) -
+  M[0][1] * (M[1][0] * M[2][2] - M[1][2] * M[2][0]) +
+  M[0][2] * (M[1][0] * M[2][1] - M[1][1] * M[2][0]), p);
+const I3 = () => [[1, 0, 0], [0, 1, 0], [0, 0, 1]];
+
+// Every line gets a number, and that number picks its symbol:
+//   Y = mX + kZ  ->  m*p + k     X = kZ  ->  p*p + k     Z = 0  ->  p*p + p
+function lineIndex(l, p) {
+  const [a, b, c] = l;
+  if (b) return mod(-a, p) * p + mod(-c, p);
+  if (a) return p * p + mod(-c, p);
+  return p * p + p;
+}
+// The p + 1 lines through a point, in a fixed slot order.
+// Affine cards: slot k is the line in direction k (slopes in display order, then vertical).
+function cardLines(t, p, ord) {
+  if (t[2] === 1) return [...ord.map(m => m * p + mod(t[1] - m * t[0], p)), p * p + t[0]];
+  if (t[0] === 1) return [...ord.map(k => t[1] * p + k), p * p + p];
+  return [...ord.map(k => p * p + k), p * p + p];
+}
+
+// One symbol per line; groups are interleaved so neighbouring lines look different.
+const SYMBOL_GROUPS = [
+  '🐙 🦊 🐢 🦉 🐝 🦒 🐧 🦀 🐌 🦁 🐬 🐸 🦄 🐘 🦋 🐞 🐼 🦈 🐨 🦓 🐳 🦚 🐍 🦜 🦇 🐊 🦔 🦕 🐵 🦢 🐷 🦘 🐭 🦙 🐰 🦖 🐮 🦝 🐱 🦏 🐶 🦅 🐻 🦆 🐹 🦛 🐺 🦍 🐯 🐡 🐠 🦐 🦑 🐜 🐛 🦂 🦎 🐔 🐤 🐪 🦌 🦃 🐏 🐐 🐗 🐴',
+  '🍎 🥕 🍕 🧀 🍌 🥑 🍩 🍓 🌽 🍔 🍉 🥐 🍋 🍪 🍄 🥨 🍇 🌮 🍒 🧁 🍍 🥥 🍿 🥦 🍑 🍦 🥚 🍐 🌭 🍊 🎂 🥝 🍆 🍟 🥞 🍫 🍭 🥒 🍯 🥜 🍞 🍗 🥓 🥖 🍳 🍜 🍣 🍙 🥪 🌯 🍲 🥗 🍱 🍝 🍤 🍰 🥧 🍬 🍦 🥛 ☕ 🍵 🥤 🧂 🥟 🥠 🌰',
+  '🌵 🌻 ⭐ 🔥 🌈 🍀 🌙 ⚡ 🍁 🌊 🌷 ⛄ 🌴 💧 🌋 🌹 🌍 🌲 🌸 ⛅ 🌱 🌞 🌺 🌳 🌼 🍂 🌟 🎄 🍃 🌾 🌿 🐚 ☔ 🌂 🌀',
+  '🔑 🎈 💡 🎸 📷 ⏰ 🎁 🔔 💎 🧩 ⌛ 🎩 👑 🔨 📚 🎲 🧲 🎺 👓 🎨 🔒 📌 🧸 🎧 👟 🔦 💻 🧭 🎀 📎 🥁 🎻 👒 🧶 🔮 🎤 🧦 📦 🧤 💰 🎒 🔧 📱 🧣 🎹 👢 💾 🧵 📺 👕 📻 🎉 👖 🧪 🔭 🔬 🧯 🧹 🧺 🧼 🔋 🔌 🧷 🧮 📡 ⏳ ⌚ 💍 👜 👠 🎯 🚪 🛁 🎥 🎵',
+  '🚀 🚲 ⚓ 🚂 🏰 🚁 ⛵ 🚜 🗽 🎡 🚗 🛸 🚒 ⛺ 🏠 🚌 🛴 🎠 🚑 🗼 🚕 🚤 🛵 🎢 🚚 ⛲ 🚓 🚦 🚃 🚠 🛶 🗿 🌉',
+  '⚽ 🏀 🎾 🏈 ⚾ 🏆 🏓 🎳 ⛳ 🥊 🏐 🎱 🏹 🎣 🏸 🥇 🛷 🏉 🎿 🛹 🥏 🏒 🥌 🥍',
+  '🎃 💯 ❓ ⭕ 🔷 💜 ❗ 🧡 🔴 💙 💚 💛 🔶 🔵',
+].map(s => s.split(' '));
+const SYMBOLS = (() => {
+  const out = [], seen = new Set();
+  const longest = Math.max(...SYMBOL_GROUPS.map(g => g.length));
+  for (let i = 0; i < longest; i++)
+    for (const g of SYMBOL_GROUPS)
+      if (i < g.length && !seen.has(g[i])) { seen.add(g[i]); out.push(g[i]); }
+  return out;
+})();
+
+// Where the n symbols sit on a card, as fractions of the card's width.
+function slotLayout(n) {
+  const pad = 0.1, inner = 1 - 2 * pad;
+  let cols, list;
+  if (n === 8) {
+    cols = 3;
+    list = [[0, 0], [1, 0], [2, 0], [2, 1], [2, 2], [1, 2], [0, 2], [0, 1]]; // a ring, clockwise
+  } else {
+    cols = Math.ceil(Math.sqrt(n));
+    const rows = Math.ceil(n / cols);
+    list = [];
+    for (let i = 0; i < n; i++) {
+      const r = Math.floor(i / cols), inRow = r === rows - 1 ? n - cols * (rows - 1) : cols;
+      list.push([(i % cols) + (cols - inRow) / 2, r + (cols - rows) / 2]);
+    }
+  }
+  const pitch = inner / cols;
+  return { pitch, pos: list.map(([c, r]) => [pad + (c + 0.5) * pitch, pad + (r + 0.5) * pitch]) };
+}
+// ---core-end
+
+const $ = s => document.querySelector(s);
+const PRIMES = [5, 7, 11, 13];
+const PRESETS = ['y = 2x + 3', 'x = 3', 'y = x^2', 'y = 1/x', 'x^2 + y^2 = 1', 'y^2 = x^3 + 2', 'y = x^3'];
+const state = {
+  p: 7,
+  centered: false,
+  src: 'y = 1/x',
+  model: null,
+  error: null,
+  cursor: null,          // homogeneous triple [X, Y, Z]
+  cursorByKey: false,    // moved by keyboard or a results click, not by hovering
+  lineMode: false,
+  sel: [],               // up to two picked cards
+  layoutKey: null,
+  geom: null,
+  A: I3(),               // every automorphism applied so far, combined
+  autError: null,
+  phys: new Map(),       // the physical cards, by home point
+  cards: new Map(),      // the same cards, by where they sit now
+};
+const norm = s => s.replace(/\s+/g, '').toLowerCase();
+
+// Display helpers: residues are 0..p-1 internally; labels may be centered.
+const half = () => (state.p - 1) / 2;
+const rep = v => (state.centered && v > half() ? v - state.p : v);
+const pos = v => (state.centered ? rep(v) + half() : v);
+const lab = v => { const r = rep(v); return r < 0 ? '−' + (-r) : String(r); };
+const order = () => Array.from({ length: state.p }, (_, i) => (state.centered ? mod(i - half(), state.p) : i));
+const infList = () => [...order().map(m => [1, m, 0]), [0, 1, 0]];
+const key = t => t.join(',');
+const parseKey = s => s.split(',').map(Number);
+const tripleLabel = t => `[${t.map(lab).join(' : ')}]`;
+const planeHTML = () => `ℙ<sup>2</sup>(𝔽<sub>${state.p}</sub>)`;
+const total = () => state.p * state.p + state.p + 1;
+const symbolsOf = t => state.cards.get(key(t)).syms;   // a card keeps its face wherever it moves
+function allPoints() {
+  const out = [];
+  for (let x = 0; x < state.p; x++) for (let y = 0; y < state.p; y++) out.push([x, y, 1]);
+  return out.concat(infList());
+}
+const byDisplay = (a, b) =>
+  (a[2] === 0) - (b[2] === 0) ||
+  (a[2] === 0 ? (a[0] === 0 ? state.p : pos(a[1])) - (b[0] === 0 ? state.p : pos(b[1]))
+              : pos(a[0]) - pos(b[0]) || pos(a[1]) - pos(b[1]));
+
+// SVG geometry: cards at infinity on a band above the grid of affine cards.
+const NS = 'http://www.w3.org/2000/svg';
+const CELL = 100, CARD = 88, MINCARD = 58, PADL = 40, PADR = 34, PADB = 44;
+const CAP_Y = 18, BAND_TOP = 28, SLOPE_Y = 48;
+function geom(p) {
+  const bandSp = (p * CELL) / (p + 1);
+  const infCard = Math.min(CARD, bandSp - 12);
+  const infY = SLOPE_Y + 12 + infCard / 2;
+  const bandBottom = infY + infCard / 2 + 10;
+  const gridTop = bandBottom + 30;
+  return { bandSp, infCard, infY, bandBottom, gridTop, w: PADL + p * CELL + PADR, h: gridTop + p * CELL + PADB };
+}
+const X = i => PADL + CELL / 2 + i * CELL;
+const Y = j => state.geom.gridTop + CELL / 2 + (state.p - 1 - j) * CELL;
+const IX = k => PADL + (k + 0.5) * state.geom.bandSp;
+function screenOf(t) {
+  if (t[2] === 1) return [X(pos(t[0])), Y(pos(t[1])), CARD];
+  return [IX(t[0] === 0 ? state.p : pos(t[1])), state.geom.infY, state.geom.infCard];
+}
+function el(name, attrs, parent, text) {
+  const e = document.createElementNS(NS, name);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (text !== undefined) e.textContent = text;
+  if (parent) parent.appendChild(e);
+  return e;
+}
+
+function update() {
+  if (!state.src.trim()) {
+    state.error = { empty: true, msg: 'Type an equation, such as y = 1/x.' };
+  } else {
+    try {
+      state.model = buildModel(state.src, state.p);
+      state.error = null;
+    } catch (e) {
+      if (!(e instanceof ParseError)) throw e;
+      state.error = { empty: false, msg: e.message };
+    }
+  }
+  render();
+}
+
+function render() {
+  renderHero();
+  ensureLayout();
+  paint();
+  renderReadout();
+  renderResults();
+  renderControls();
+  renderAut();
+}
+
+function renderHero() {
+  const m = state.model, p = state.p;
+  $('#hero-eq').innerHTML = m ? `${pp(m.lhs).h} = ${pp(m.rhs).h}` : '';
+  $('#hero-over').innerHTML =
+    `in ${planeHTML()}. Each card is a point and each symbol is a line, so any two cards share exactly one symbol.`;
+  $('#hero-homog').innerHTML = m
+    ? `<span class="k">Homogenized:</span> ${ppHom(m.left, m.d, p)} = ${ppHom(m.right, m.d, p)}`
+    : '';
+  $('#hero').classList.toggle('stale', !!state.error);
+}
+
+// Build the cards. Only needed when the field size or labeling changes.
+function ensureLayout() {
+  const svg = $('#plot'), m = state.model;
+  svg.classList.toggle('stale', !!state.error);
+  svg.setAttribute('aria-label', m
+    ? `${total()} cards for the projective plane over the field with ${state.p} elements; ${m.on.length} are on the curve ${state.src.trim()}`
+    : `${total()} cards for the projective plane over the field with ${state.p} elements`);
+  const lk = `${state.p}:${state.centered}`;
+  if (lk === state.layoutKey) return;
+  state.layoutKey = lk;
+
+  const p = state.p, G = geom(p);
+  state.geom = G;
+  svg.setAttribute('viewBox', `0 0 ${G.w} ${G.h}`);
+  svg.style.minWidth = `${Math.round((G.w * MINCARD) / CARD)}px`;
+  svg.replaceChildren();
+
+  const base = el('g', {}, svg);
+  el('text', { x: PADL - 8, y: CAP_Y, class: 'cap' }, base, 'Line at infinity, Z = 0, labeled by slope');
+  el('rect', { x: PADL - 8, y: BAND_TOP, width: p * CELL + 16, height: G.bandBottom - BAND_TOP, rx: 18, class: 'band' }, base);
+  infList().forEach((t, k) => {
+    el('text', { x: IX(k), y: SLOPE_Y, class: 'slope', 'text-anchor': 'middle', 'data-k': key(t) }, base,
+      t[0] === 0 ? '∞' : lab(t[1]));
+  });
+  const tickY = Y(0) + CELL / 2 + 24;
+  for (const v of order()) {
+    el('text', { x: X(pos(v)), y: tickY, class: 'tick', 'text-anchor': 'middle', 'data-ax': 'x', 'data-v': v }, base, lab(v));
+    el('text', { x: PADL - 10, y: Y(pos(v)) + 6, class: 'tick', 'text-anchor': 'end', 'data-ax': 'y', 'data-v': v }, base, lab(v));
+  }
+  el('text', { x: X(p - 1) + CELL / 2 + 12, y: tickY, class: 'atitle' }, base, 'x');
+  el('text', { x: PADL - 10, y: G.gridTop - 6, class: 'atitle', 'text-anchor': 'end' }, base, 'y');
+
+  // Each card is drawn once around (0, 0) at full size; placeCards moves and scales it.
+  const cardsG = el('g', {}, svg);
+  state.phys = new Map();
+  const h0 = -CARD / 2;
+  for (const t of allPoints()) {
+    const syms = cardLines(t, p, order()), L = slotLayout(syms.length);
+    const g = el('g', { class: 'card' }, cardsG);
+    el('rect', { x: h0, y: h0, width: CARD, height: CARD, rx: CARD * 0.13, class: 'face' }, g);
+    const hl = el('circle', { r: (L.pitch * 0.5 * CARD).toFixed(1), class: 'hl', visibility: 'hidden' }, g);
+    const fs = (L.pitch * 0.68 * CARD).toFixed(1);
+    syms.forEach((li, i) => {
+      const [fx, fy] = L.pos[i];
+      el('text', {
+        x: (h0 + fx * CARD).toFixed(1), y: (h0 + fy * CARD).toFixed(1),
+        'font-size': fs, 'text-anchor': 'middle', 'dominant-baseline': 'central', class: 'sym',
+      }, g, SYMBOLS[li]);
+    });
+    state.phys.set(key(t), { g, hl, syms, L, home: t });
+  }
+  svg.classList.add('no-anim');
+  placeCards();
+  requestAnimationFrame(() => requestAnimationFrame(() => svg.classList.remove('no-anim')));
+
+  el('g', { id: 'over' }, svg);
+
+  const hits = el('g', {}, svg);
+  for (const t of allPoints()) {
+    const [cx, cy, s] = screenOf(t);
+    const wd = t[2] === 1 ? CELL : G.bandSp, ht = t[2] === 1 ? CELL : s + 16;
+    el('rect', { x: cx - wd / 2, y: cy - ht / 2, width: wd, height: ht, class: 'hit', 'data-t': key(t) }, hits);
+  }
+}
+
+// Put every card at the image of its home point under the combined automorphism.
+function placeCards() {
+  const p = state.p;
+  state.cards = new Map();
+  for (const c of state.phys.values()) {
+    const q = normPoint(matVec(state.A, c.home, p), p);
+    const [cx, cy, s] = screenOf(q);
+    Object.assign(c, { pos: q, cx, cy, s });
+    c.g.style.transform = `translate(${cx.toFixed(2)}px, ${cy.toFixed(2)}px) scale(${(s / CARD).toFixed(4)})`;
+    state.cards.set(key(q), c);
+  }
+}
+
+function currentLine() {
+  if (state.sel.length < 2) return null;
+  const p = state.p, l = lineThrough(state.sel[0], state.sel[1], p);
+  const points = allPoints().filter(t => mod(l[0] * t[0] + l[1] * t[1] + l[2] * t[2], p) === 0);
+  return { l, points, sym: lineIndex(normLine(vecMat(l, state.A, p), p), p) };
+}
+
+// The affine cards on the line through the origin in a given direction.
+function ringedBy(c) {
+  const out = new Set();
+  if (!c || c[2] !== 0) return out;
+  for (let x = 0; x < state.p; x++) out.add(key(c[0] === 0 ? [0, x, 1] : [x, mod(c[1] * x, state.p), 1]));
+  return out;
+}
+
+// Apply curve, line, selection and cursor state to the cards.
+// With the line tool on, hovering doesn't highlight cards; keyboard moves still do.
+const cursorVisible = () => !state.lineMode || state.cursorByKey;
+
+function paint() {
+  const m = state.model, L = currentLine();
+  const onLine = new Set(L ? L.points.map(key) : []);
+  const sel = new Set(state.sel.map(key));
+  const showCursor = cursorVisible();
+  const cur = showCursor && state.cursor ? key(state.cursor) : null;
+  const ringed = showCursor ? ringedBy(state.cursor) : new Set();
+
+  for (const [k, c] of state.cards) {
+    const on = !!m && m.cells.get(k).on;
+    c.g.classList.toggle('on', on);
+    c.g.classList.toggle('dim', !!m && !on && !onLine.has(k) && !sel.has(k) && k !== cur && !ringed.has(k));
+    const slot = L && onLine.has(k) ? c.syms.indexOf(L.sym) : -1;
+    if (slot >= 0) {
+      const [fx, fy] = c.L.pos[slot];
+      c.hl.setAttribute('cx', (-CARD / 2 + fx * CARD).toFixed(1));
+      c.hl.setAttribute('cy', (-CARD / 2 + fy * CARD).toFixed(1));
+      c.hl.setAttribute('visibility', 'visible');
+    } else {
+      c.hl.setAttribute('visibility', 'hidden');
+    }
+  }
+
+  const over = document.getElementById('over');
+  over.replaceChildren();
+  const halo = (k, cls) => {
+    const c = state.cards.get(k), off = 4;
+    el('rect', {
+      x: c.cx - c.s / 2 - off, y: c.cy - c.s / 2 - off, width: c.s + 2 * off, height: c.s + 2 * off,
+      rx: c.s * 0.13 + off, class: cls,
+    }, over);
+  };
+  onLine.forEach(k => halo(k, 'lhalo'));
+  ringed.forEach(k => halo(k, 'rhalo'));
+  state.sel.forEach((t, i) => {
+    const k = key(t), c = state.cards.get(k);
+    halo(k, 'lhalo shalo');
+    const bx = c.cx + c.s / 2 - 2, by = c.cy - c.s / 2 + 2;
+    el('circle', { cx: bx, cy: by, r: 11, class: 'badge' }, over);
+    el('text', { x: bx, y: by + 4.5, class: 'badgetxt', 'text-anchor': 'middle' }, over, 'AB'[i]);
+  });
+  if (cur) halo(cur, 'chalo');
+
+  document.querySelectorAll('#plot .cur').forEach(t => t.classList.remove('cur'));
+  const c = showCursor ? state.cursor : null;
+  if (c && c[2] === 1) {
+    document.querySelector(`#plot .tick[data-ax="x"][data-v="${c[0]}"]`)?.classList.add('cur');
+    document.querySelector(`#plot .tick[data-ax="y"][data-v="${c[1]}"]`)?.classList.add('cur');
+  } else if (c) {
+    document.querySelector(`#plot .slope[data-k="${key(c)}"]`)?.classList.add('cur');
+  }
+}
+
+function lineThroughOrigin(t) {
+  if (t[0] === 0) return '<i>x</i> = 0';
+  const m = t[1];
+  if (m === 0) return '<i>y</i> = 0';
+  if (m === 1) return '<i>y</i> = <i>x</i>';
+  return `<i>y</i> = ${lab(m)}<i>x</i>`;
+}
+
+function bigCardHTML(t) {
+  const syms = symbolsOf(t), Lo = slotLayout(syms.length), L = currentLine();
+  const hlSym = L && L.points.some(q => key(q) === key(t)) ? L.sym : null;
+  const on = state.model && state.model.cells.get(key(t)).on;
+  return `<div class="bigcard${on ? ' on' : ''}" aria-hidden="true">${syms.map((li, i) => {
+    const [fx, fy] = Lo.pos[i];
+    return `<span${li === hlSym ? ' class="hl"' : ''} style="left:${(fx * 100).toFixed(2)}%;top:${(fy * 100).toFixed(2)}%;` +
+      `font-size:calc(var(--bc) * ${(Lo.pitch * 0.62).toFixed(3)})">${SYMBOLS[li]}</span>`;
+  }).join('')}</div>`;
+}
+
+function renderReadout() {
+  const m = state.model, c = state.cursor, out = $('#readout');
+  if (!m || !c) {
+    out.innerHTML = `<span class="txt">${state.lineMode
+      ? 'Tap two cards to see the line through them and the symbol they share. Hovering shows a card up close. With the graph focused, the arrow keys move between cards and Enter picks one.'
+      : 'Hover or tap a card to see it up close and evaluate the homogenized equation there. The band at the top holds the cards at infinity. With the graph focused, the arrow keys move between cards.'}</span>`;
+    return;
+  }
+  const cell = m.cells.get(key(c));
+  let where;
+  if (c[2] === 1) where = `the affine point (${lab(c[0])}, ${lab(c[1])})`;
+  else if (c[0] === 0) where = `at infinity, where all vertical lines meet (the cards on ${lineThroughOrigin(c)} are ringed)`;
+  else where = `at infinity, where all lines of slope ${lab(c[1])} meet (the cards on ${lineThroughOrigin(c)} are ringed)`;
+  const side = (poly, v) => `<span class="side">${ppHom(poly, m.d, state.p)}</span> is <strong>${lab(v)}</strong>`;
+  const home = state.cards.get(key(c)).home;
+  const moved = key(home) === key(c) ? '' : ` This card started at ${tripleLabel(home)}.`;
+  out.innerHTML = bigCardHTML(c) +
+    `<span class="txt">Card <strong>${tripleLabel(c)}</strong>, ${where}.${moved} The left side ${side(m.left, cell.L)} and the right side ${side(m.right, cell.R)}. ` +
+    (cell.on ? '<span class="yes">On the curve.</span>' : '<span class="no">Not on the curve.</span>') + '</span>';
+}
+
+// Linear forms with signed coefficients, as HTML and as plain text for the equation box.
+const sgn = c => (c > state.p / 2 ? c - state.p : c);
+function fmtLin(terms, plain) {
+  const nz = terms.filter(([c]) => c !== 0);
+  if (!nz.length) return '0';
+  const minus = plain ? '-' : '−';
+  return nz.map(([c, sym], i) => {
+    const r = sgn(c), a = Math.abs(r);
+    const body = (a === 1 && sym ? '' : String(a)) + (sym && !plain ? `<i>${sym}</i>` : sym);
+    return i === 0 ? (r < 0 ? minus : '') + body : (r < 0 ? ` ${minus} ` : ' + ') + body;
+  }).join('');
+}
+function describeLine([a, b, c]) {
+  const p = state.p;
+  if (b) {
+    const m = mod(-a, p), k = mod(-c, p);
+    return {
+      hom: `<i>Y</i> = ${fmtLin([[m, 'X'], [k, 'Z']])}`,
+      aff: `<i>y</i> = ${fmtLin([[m, 'x'], [k, '']])}`,
+      src: `y = ${fmtLin([[m, 'x'], [k, '']], true)}`,
+    };
+  }
+  if (a) {
+    const k = mod(-c, p);
+    return {
+      hom: `<i>X</i> = ${fmtLin([[k, 'Z']])}`,
+      aff: `<i>x</i> = ${fmtLin([[k, '']])}`,
+      src: `x = ${fmtLin([[k, '']], true)}`,
+    };
+  }
+  return { hom: '<i>Z</i> = 0', aff: null, src: null };
+}
+
+function lineSection() {
+  const L = currentLine(), m = state.model, p = state.p, plane = planeHTML();
+  if (!L) return '';
+  const D = describeLine(L.l);
+  let h = '<section class="linebox"><h2>Line through A and B</h2>';
+  h += `<p class="facts">A and B share <span class="emo">${SYMBOLS[L.sym]}</span>. ` +
+    `Every card on this line has it too, because that symbol stands for the line.</p>`;
+  h += `<p class="lineeq">${D.hom}</p>`;
+  h += `<p class="facts">${D.aff ? `In the affine plane this is ${D.aff}.` : 'This is the line at infinity.'} ` +
+    `Its ${p + 1} cards are outlined.</p>`;
+  if (m) {
+    const meet = L.points.filter(t => m.cells.get(key(t)).on).sort(byDisplay);
+    let f;
+    if (m.zero || (m.d > 0 && meet.length > m.d)) f = 'The whole line is part of the curve.';
+    else if (meet.length === p + 1) f = 'Every card on the line is on the curve.';
+    else if (!meet.length) f = `It doesn’t meet the curve anywhere in ${plane}.`;
+    else {
+      const names = meet.map(tripleLabel);
+      const list = names.length === 1 ? names[0] : names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1];
+      f = `It meets the curve at ${meet.length === 1 ? '1 card' : `${meet.length} cards`}: ${list}` +
+        (meet.length === m.d && m.d > 1 ? `, the most possible for a curve of degree ${m.d}.` : '.');
+    }
+    h += `<p class="facts">${f}</p>`;
+  }
+  h += `<div class="pts">${[...L.points].sort(byDisplay).map(t =>
+    `<button type="button" class="pt" data-t="${key(t)}">${tripleLabel(t)}</button>`).join('')}</div>`;
+  if (D.src && norm(D.src) !== norm(state.src)) {
+    h += `<button type="button" class="act" data-act="graph" data-src="${D.src}">Graph ${D.src} as the curve</button>`;
+  }
+  return h + '</section>';
+}
+
+function renderResults() {
+  const m = state.model, box = $('#results'), p = state.p;
+  if (!m) { box.innerHTML = lineSection(); markResults(); return; }
+  const plane = planeHTML();
+  const inf = m.on.filter(t => t[2] === 0);
+  const aff = m.on.filter(t => t[2] === 1);
+  let html = lineSection() + '<h2>Cards on the curve</h2>';
+
+  if (m.zero) {
+    html += `<p class="facts">Both sides are the same polynomial, so all ${total()} cards are on the curve.</p>`;
+  } else if (m.d === 0) {
+    html += `<p class="facts">The equation reduces to a false statement between constants, so no card is on the curve.</p>`;
+  } else {
+    const n = m.on.length;
+    html += `<p class="facts"><strong>${n}</strong> of the ${total()} cards of ${plane} ${n === 1 ? 'is' : 'are'} on the curve: ` +
+      `${aff.length} in the affine plane and ${inf.length ? inf.length : 'none'} at infinity. They have blue borders.</p>`;
+    const kind = { 1: `This is a line. Every line in ${plane} has exactly ${p + 1} cards, all sharing one symbol.`, 2: 'This is a conic (degree 2).', 3: 'This is a cubic (degree 3).' };
+    html += `<p class="facts">${kind[m.d] || `The homogenized equation has degree ${m.d}.`}</p>`;
+    const btns = list => `<div class="pts">${list.map(t =>
+      `<button type="button" class="pt" data-t="${key(t)}">${tripleLabel(t)}</button>`).join('')}</div>`;
+    html += '<h3>At infinity</h3>' + (inf.length ? btns(inf.sort(byDisplay)) : '<p class="none">None. The curve never reaches the line at infinity.</p>');
+    html += '<h3>In the affine plane</h3>' + (aff.length ? btns(aff.sort(byDisplay)) : '<p class="none">None.</p>');
+  }
+  box.innerHTML = html;
+  markResults();
+}
+
+function markResults() {
+  document.querySelectorAll('#results .pt.cur').forEach(e => e.classList.remove('cur'));
+  if (state.cursor && cursorVisible()) document.querySelectorAll(`#results .pt[data-t="${key(state.cursor)}"]`).forEach(e => e.classList.add('cur'));
+}
+
+function buildControls() {
+  const box = $('#presets');
+  for (const src of PRESETS) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'chip';
+    b.dataset.src = src;
+    const e = parse(src);
+    b.innerHTML = `${pp(e.lhs).h} = ${pp(e.rhs).h}`;
+    b.setAttribute('aria-label', src);
+    box.appendChild(b);
+  }
+  for (const p of PRIMES) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.dataset.p = p;
+    b.textContent = p;
+    $('#p-seg').appendChild(b);
+  }
+  for (const mode of ['plain', 'centered']) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.dataset.mode = mode;
+    $('#lab-seg').appendChild(b);
+  }
+}
+
+function renderControls() {
+  const hint = $('#eq-hint'), input = $('#eq-input');
+  if (state.error) {
+    hint.textContent = state.error.msg;
+    hint.classList.toggle('error', !state.error.empty);
+    input.setAttribute('aria-invalid', state.error.empty ? 'false' : 'true');
+  } else {
+    hint.innerHTML = `Use <i>x</i>, <i>y</i>, whole numbers, + − * / ^ and parentheses, with whole-number exponents. Fractions are cleared, then <i>x</i> = <i>X</i>/<i>Z</i> and <i>y</i> = <i>Y</i>/<i>Z</i>.`;
+    hint.classList.remove('error');
+    input.setAttribute('aria-invalid', 'false');
+  }
+  document.querySelectorAll('#presets .chip').forEach(b =>
+    b.setAttribute('aria-pressed', norm(b.dataset.src) === norm(state.src)));
+  document.querySelectorAll('#line-seg button').forEach(b =>
+    b.setAttribute('aria-pressed', (b.dataset.on === '1') === state.lineMode));
+  $('#pick-row').hidden = !state.lineMode;
+  $('#clear-btn').hidden = !state.sel.length;
+  $('#pick-hint').textContent = [
+    'Tap any card to pick it as A.',
+    'Now tap a second card, B.',
+    'Tap A or B again to unpick it, or tap another card to start a new line.',
+  ][state.sel.length];
+  document.querySelectorAll('#p-seg button').forEach(b =>
+    b.setAttribute('aria-pressed', Number(b.dataset.p) === state.p));
+  document.querySelectorAll('#lab-seg button').forEach(b => {
+    const centered = b.dataset.mode === 'centered';
+    const h = half();
+    b.textContent = centered ? `−${h} to ${h}` : `0 to ${state.p - 1}`;
+    b.setAttribute('aria-pressed', centered === state.centered);
+  });
+}
+
+function setCursor(t, byKey = false) {
+  if (state.cursor && key(state.cursor) === key(t) && state.cursorByKey === byKey) return;
+  state.cursor = t;
+  state.cursorByKey = byKey;
+  paint();
+  renderReadout();
+  markResults();
+}
+
+function pick(t) {
+  const i = state.sel.findIndex(s => key(s) === key(t));
+  if (i >= 0) state.sel.splice(i, 1);
+  else if (state.sel.length < 2) state.sel.push(t);
+  else state.sel = [t];
+  paint();
+  renderReadout();
+  renderResults();
+  renderControls();
+}
+
+// Arrow keys: left/right wrap within a row; up from the top row reaches the cards at infinity,
+// and moving past them wraps to the bottom row.
+function move(dx, dy) {
+  const go = t => setCursor(t, true);
+  const p = state.p, c = state.cursor, ord = order();
+  if (!c) { const mid = ord[Math.floor(p / 2)]; go([mid, mid, 1]); return; }
+  if (c[2] === 1) {
+    let col = pos(c[0]), row = pos(c[1]);
+    if (dx) { col = (col + dx + p) % p; go([ord[col], ord[row], 1]); return; }
+    row += dy;
+    if (row < 0 || row >= p) {
+      let best = 0;
+      for (let k = 0; k <= p; k++) if (Math.abs(IX(k) - X(col)) < Math.abs(IX(best) - X(col))) best = k;
+      go(infList()[best]);
+      return;
+    }
+    go([ord[col], ord[row], 1]);
+  } else {
+    let k = c[0] === 0 ? p : pos(c[1]);
+    if (dx) { k = (k + dx + p + 1) % (p + 1); go(infList()[k]); return; }
+    const col = Math.max(0, Math.min(p - 1, Math.round((IX(k) - X(0)) / CELL)));
+    go([ord[col], ord[dy > 0 ? 0 : p - 1], 1]);
+  }
+}
+
+// Events
+const plot = $('#plot');
+function hitFrom(e) {
+  const t = e.target.closest && e.target.closest('.hit');
+  if (t) setCursor(parseKey(t.dataset.t));
+}
+plot.addEventListener('pointerover', hitFrom);
+plot.addEventListener('pointerdown', hitFrom);
+plot.addEventListener('click', e => {
+  if (!state.lineMode) return;
+  const t = e.target.closest && e.target.closest('.hit');
+  if (t) pick(parseKey(t.dataset.t));
+});
+plot.addEventListener('keydown', e => {
+  if (state.lineMode && state.cursor && (e.key === 'Enter' || e.key === ' ')) {
+    e.preventDefault();
+    pick(state.cursor);
+    return;
+  }
+  const moves = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1] };
+  const d = moves[e.key];
+  if (!d) return;
+  e.preventDefault();
+  move(d[0], d[1]);
+});
+
+$('#eq-input').addEventListener('input', e => { state.src = e.target.value; update(); });
+
+$('#presets').addEventListener('click', e => {
+  const b = e.target.closest('.chip');
+  if (!b) return;
+  state.src = b.dataset.src;
+  $('#eq-input').value = state.src;
+  update();
+});
+
+$('#line-seg').addEventListener('click', e => {
+  const b = e.target.closest('button');
+  if (!b) return;
+  const on = b.dataset.on === '1';
+  if (on === state.lineMode) return;
+  state.lineMode = on;
+  state.sel = [];
+  paint();
+  renderReadout();
+  renderResults();
+  renderControls();
+});
+
+$('#clear-btn').addEventListener('click', () => {
+  state.sel = [];
+  paint();
+  renderReadout();
+  renderResults();
+  renderControls();
+});
+
+$('#p-seg').addEventListener('click', e => {
+  const b = e.target.closest('button');
+  if (!b) return;
+  const p = Number(b.dataset.p);
+  if (p === state.p) return;
+  state.p = p;
+  state.cursor = null;
+  state.sel = [];
+  state.A = I3();
+  state.autError = null;
+  setMatInputs(I3());
+  update();
+});
+
+$('#lab-seg').addEventListener('click', e => {
+  const b = e.target.closest('button');
+  if (!b) return;
+  const centered = b.dataset.mode === 'centered';
+  if (centered === state.centered) return;
+  state.centered = centered;
+  render();
+});
+
+$('#results').addEventListener('click', e => {
+  const act = e.target.closest('.act[data-act="graph"]');
+  if (act) {
+    state.src = act.dataset.src;
+    $('#eq-input').value = state.src;
+    update();
+    return;
+  }
+  const pt = e.target.closest('.pt');
+  if (pt) setCursor(parseKey(pt.dataset.t), true);
+});
+
+// ---------- Automorphisms
+const AUT_PRESETS = [
+  { html: '<i>x</i> ↦ <i>x</i> + 1', aria: 'Shift x to x plus 1', M: [[1, 0, 1], [0, 1, 0], [0, 0, 1]] },
+  { html: '<i>y</i> ↦ <i>y</i> + <i>x</i>', aria: 'Shear y to y plus x', M: [[1, 0, 0], [1, 1, 0], [0, 0, 1]] },
+  { html: '<i>x</i> ↔ <i>y</i>', aria: 'Swap x and y', M: [[0, 1, 0], [1, 0, 0], [0, 0, 1]] },
+  { html: '(<i>x</i>, <i>y</i>) ↦ (2<i>x</i>, 2<i>y</i>)', aria: 'Scale by 2', M: [[2, 0, 0], [0, 2, 0], [0, 0, 1]] },
+  { html: '<i>X</i> ↔ <i>Z</i>', aria: 'Swap X and Z', M: [[0, 0, 1], [0, 1, 0], [1, 0, 0]] },
+  { html: 'Random', aria: 'Random automorphism', M: null },
+];
+const isIdentity = M => M.every((r, i) => r.every((v, j) => v === (i === j ? 1 : 0)));
+
+function randomAutomorphism(p) {
+  for (;;) {
+    const M = [0, 1, 2].map(() => [0, 1, 2].map(() => Math.floor(Math.random() * p)));
+    if (det3(M, p) && !isIdentity(M)) return M;
+  }
+}
+
+function buildAut() {
+  AUT_PRESETS.forEach((pr, i) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'act';
+    b.dataset.i = i;
+    b.innerHTML = pr.html;
+    b.setAttribute('aria-label', pr.aria);
+    $('#aut-presets').appendChild(b);
+  });
+  for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) {
+    const inp = document.createElement('input');
+    inp.type = 'text';
+    inp.inputMode = 'numeric';
+    inp.autocomplete = 'off';
+    inp.dataset.r = r;
+    inp.dataset.c = c;
+    inp.setAttribute('aria-label', `Row ${r + 1}, column ${c + 1}`);
+    $('#mat').appendChild(inp);
+  }
+  setMatInputs(I3());
+}
+
+function setMatInputs(M) {
+  document.querySelectorAll('#mat input').forEach(inp => { inp.value = M[inp.dataset.r][inp.dataset.c]; });
+}
+function readMatInputs() {
+  const M = I3();
+  let ok = true;
+  document.querySelectorAll('#mat input').forEach(inp => {
+    const v = inp.value.trim().replace(/[−–]/g, '-');
+    if (!/^-?\d{1,9}$/.test(v)) ok = false;
+    else M[inp.dataset.r][inp.dataset.c] = Number(v);
+  });
+  return ok ? M : null;
+}
+
+function applyAutomorphism(M) {
+  const p = state.p;
+  if (!M) { state.autError = 'Fill in all nine entries with whole numbers.'; renderAut(); return; }
+  M = M.map(r => r.map(v => mod(v, p)));
+  if (!det3(M, p)) {
+    state.autError = `That matrix has determinant 0 mod ${p}, so it isn’t invertible and can’t be an automorphism.`;
+    renderAut();
+    return;
+  }
+  state.autError = null;
+  setMatInputs(M);
+  state.A = matMul(M, state.A, p);
+  state.sel = state.sel.map(t => normPoint(matVec(M, t, p), p));   // picks travel with their cards
+  state.cursor = null;
+  placeCards();
+  paint();
+  renderReadout();
+  renderResults();
+  renderControls();
+  renderAut();
+}
+
+function resetAutomorphism() {
+  state.sel = state.sel.map(t => state.cards.get(key(t)).home);
+  state.A = I3();
+  state.autError = null;
+  state.cursor = null;
+  setMatInputs(I3());
+  placeCards();
+  paint();
+  renderReadout();
+  renderResults();
+  renderControls();
+  renderAut();
+}
+
+function renderAut() {
+  const hint = $('#aut-hint');
+  if (state.autError) {
+    hint.textContent = state.autError;
+    hint.classList.add('error');
+  } else {
+    hint.innerHTML = 'Each card moves from its point <i>P</i> to <i>MP</i>. Lines go to lines, so any two cards still share exactly one symbol, and every card on a line still carries that line’s symbol.';
+    hint.classList.remove('error');
+  }
+  const moved = !isIdentity(state.A);
+  $('#total').hidden = !moved;
+  if (moved) $('#matview').innerHTML = state.A.flat().map(v => `<span>${v}</span>`).join('');
+}
+
+$('#aut-presets').addEventListener('click', e => {
+  const b = e.target.closest('button');
+  if (!b) return;
+  const pr = AUT_PRESETS[Number(b.dataset.i)];
+  applyAutomorphism(pr.M ? pr.M.map(r => r.slice()) : randomAutomorphism(state.p));
+});
+$('#apply-btn').addEventListener('click', () => applyAutomorphism(readMatInputs()));
+$('#mat').addEventListener('keydown', e => { if (e.key === 'Enter') applyAutomorphism(readMatInputs()); });
+$('#reset-btn').addEventListener('click', resetAutomorphism);
+
+// Init
+$('#eq-input').value = state.src;
+buildControls();
+buildAut();
+update();
+</script>
+</body>
+</html>
