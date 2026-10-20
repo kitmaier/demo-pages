@@ -1,0 +1,647 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Trail Making</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..900&family=Atkinson+Hyperlegible:wght@400;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: one-screen test sheet. A compact header strip (name, mode/length switches, clock) over one gridded answer sheet that fills the rest of the screen. */
+:root{
+  --paper:#E8EDE6;        /* page ground: engineering-pad green-grey */
+  --sheet:#F6F8F3;        /* the answer sheet */
+  --grid:rgba(62,110,84,.13);
+  --ink:#18212B;          /* printed circles */
+  --muted:#5A6761;
+  --rule:#C7D1C6;
+  --trail:#2443A6;        /* ballpoint blue: the drawn trail */
+  --trail-soft:#DCE3F6;
+  --error:#BA3923;        /* examiner's red pencil */
+  --error-soft:#F5DBD3;
+  --shadow:rgba(24,33,43,.14);
+  --font-display:"Archivo","Arial Narrow",system-ui,sans-serif;
+  --font-body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0F1518; --sheet:#162026; --grid:rgba(140,190,165,.08); --ink:#E2E9E3; --muted:#93A39B;
+    --rule:#2A3840; --trail:#88A6FF; --trail-soft:#22305A; --error:#FF7C64; --error-soft:#4A261F;
+    --shadow:rgba(0,0,0,.45); color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0F1518; --sheet:#162026; --grid:rgba(140,190,165,.08); --ink:#E2E9E3; --muted:#93A39B;
+  --rule:#2A3840; --trail:#88A6FF; --trail-soft:#22305A; --error:#FF7C64; --error-soft:#4A261F;
+  --shadow:rgba(0,0,0,.45); color-scheme:dark;
+}
+
+html,body{height:100%}
+body{background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:15px}
+
+.app{
+  height:100%;box-sizing:border-box;max-width:1240px;margin:0 auto;
+  display:flex;flex-direction:column;gap:12px;
+  padding-block:14px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+}
+
+/* Header */
+.top{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px}
+.brand{display:flex;align-items:center;gap:10px;margin:0;
+  font-family:var(--font-display);font-weight:850;font-stretch:70%;font-size:30px;line-height:1;letter-spacing:-.005em;text-wrap:balance}
+.logo{width:46px;height:26px;flex:none}
+.logo circle{fill:var(--sheet);stroke:var(--ink);stroke-width:1.6}
+.logo path{fill:none;stroke:var(--trail);stroke-width:2.4;stroke-linecap:round}
+.logo text{fill:var(--ink);font:700 9px var(--font-body);text-anchor:middle}
+
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:6px;overflow:hidden;background:var(--sheet)}
+.seg button{font:700 14px/1 var(--font-body);color:var(--ink);background:transparent;border:0;padding:9px 12px;cursor:pointer;
+  display:inline-flex;gap:7px;align-items:baseline}
+.seg button + button{border-left:1px solid var(--rule)}
+.seg button small{font:500 12px/1 var(--font-mono);color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--sheet)}
+.seg button[aria-pressed="true"] small{color:inherit;opacity:.72}
+@media (hover:hover){ .seg button[aria-pressed="false"]:hover{background:var(--trail-soft)} }
+
+.btn{font:700 14px/1 var(--font-body);padding:10px 14px;border-radius:6px;border:1px solid var(--rule);
+  background:var(--sheet);color:var(--ink);cursor:pointer}
+@media (hover:hover){ .btn:hover{border-color:var(--trail);color:var(--trail)} }
+.btn.primary{background:var(--trail);border-color:var(--trail);color:var(--sheet)}
+@media (hover:hover){ .btn.primary:hover{color:var(--sheet);filter:brightness(1.08)} }
+.btn.plain{border-color:transparent;background:transparent;color:var(--muted);text-decoration:underline;text-underline-offset:3px;padding-inline:6px}
+
+button:focus-visible{outline:2px solid var(--trail);outline-offset:2px}
+
+.stats{margin:0 0 0 auto;display:flex;gap:22px}
+.stats div{display:grid;gap:4px}
+.stats dt{font:700 11px/1 var(--font-display);font-stretch:90%;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.stats dd{margin:0;font:600 21px/1 var(--font-mono);font-variant-numeric:tabular-nums;transition:color .2s}
+.stats .bump dd{color:var(--error)}
+/* Fixed widths so a counter gaining a digit never reflows the header */
+#time{min-width:6ch} #errors{min-width:2ch} #progress{min-width:5ch}
+
+/* Prompt line, with the word strip in Word mode */
+.cue{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;min-height:1.9em}
+.prompt{margin:0;flex:1 1 320px;min-width:0;font-size:15px;line-height:1.4;color:var(--muted)}
+.prompt b{color:var(--ink);font-weight:700}
+.prompt.warn, .prompt.warn b{color:var(--error)}
+/* Every message sits in the same grid cell, so the line is always as tall as its longest message
+   and the board below never changes size mid-game. */
+.prompt{display:grid}
+.prompt > span{grid-area:1 / 1;visibility:hidden}
+.prompt > span.show{visibility:visible}
+.sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+.word{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:0}
+.word .lbl{font:700 11px/1 var(--font-display);font-stretch:90%;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.tiles{display:flex;flex-wrap:wrap;gap:3px}
+.tiles span{display:grid;place-items:center;width:1.7em;height:1.9em;box-sizing:border-box;
+  font:700 15px/1 var(--font-body);color:var(--muted);background:var(--sheet);
+  border:1px solid var(--rule);border-radius:3px;transition:background .15s, color .15s, border-color .15s}
+.tiles span.on{background:var(--trail-soft);color:var(--trail);border-color:var(--trail)}
+.word.plain .tiles span,
+.word.plain .tiles span.on{background:var(--sheet);color:var(--ink);border-color:var(--rule)}
+.hl{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;line-height:1;color:var(--muted);cursor:pointer;user-select:none;white-space:nowrap}
+.hl input{accent-color:var(--trail);width:16px;height:16px;margin:0;cursor:pointer}
+.hl input:focus-visible{outline:2px solid var(--trail);outline-offset:2px}
+
+/* The answer sheet */
+.board{position:relative;flex:1 1 auto;min-height:300px;border:1px solid var(--rule);border-radius:4px;overflow:hidden;
+  background-color:var(--sheet);
+  background-image:linear-gradient(var(--grid) 1px, transparent 1px),linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size:22px 22px;background-position:-1px -1px}
+.board svg{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:manipulation;
+  -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+
+.node{cursor:pointer;outline:none}
+.node .hit{fill:transparent}
+.node .inner{transform-box:fill-box;transform-origin:center}
+.node .ring{fill:var(--sheet);stroke:var(--ink);stroke-width:var(--sw);transition:fill .15s, stroke .15s}
+.node .label{fill:var(--ink);font-family:var(--font-body);font-weight:700;text-anchor:middle;pointer-events:none}
+.node .tag{fill:var(--muted);font-family:var(--font-display);font-weight:800;font-stretch:80%;letter-spacing:.12em;text-anchor:middle;pointer-events:none}
+.node .focus{fill:none;stroke:var(--trail);stroke-width:var(--sw);stroke-dasharray:6 5;opacity:0}
+.node:focus-visible .focus{opacity:1}
+@media (hover:hover){ .node:not(.done):hover .ring{stroke:var(--trail)} }
+.node.done .ring{fill:var(--trail-soft);stroke:var(--trail)}
+.node.done .label{fill:var(--trail)}
+.node.current .ring{stroke-width:calc(var(--sw) * 2)}
+.node.miss .ring{fill:var(--error-soft);stroke:var(--error)}
+.node.miss .label{fill:var(--error)}
+.node.miss .inner{animation:shake .4s ease}
+@keyframes shake{
+  0%,100%{transform:translateX(0)} 20%{transform:translateX(-9%)} 40%{transform:translateX(8%)}
+  60%{transform:translateX(-5%)} 80%{transform:translateX(3%)}
+}
+.trail{fill:none;stroke:var(--trail);stroke-width:calc(var(--sw) * 1.35);stroke-linecap:round;opacity:.9}
+
+/* Result card */
+.result{position:absolute;inset:0;display:grid;place-items:center;padding:16px;
+  background:color-mix(in srgb, var(--sheet) 55%, transparent)}
+.panel{width:min(390px,100%);box-sizing:border-box;background:var(--sheet);border:1px solid var(--rule);border-radius:6px;
+  padding:22px 22px 16px;box-shadow:0 14px 36px var(--shadow);display:grid;gap:12px}
+.eyebrow{margin:0;font:800 12px/1 var(--font-display);font-stretch:85%;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.big{margin:0;font:600 50px/1 var(--font-mono);font-variant-numeric:tabular-nums;color:var(--ink)}
+.facts{margin:0;display:flex;flex-wrap:wrap;gap:6px 16px;color:var(--muted);font-size:14px}
+.facts b{color:var(--ink)}
+.facts .new{color:var(--trail);font-weight:700}
+.compare{margin:0;padding-top:12px;border-top:1px solid var(--rule);font-size:15px;line-height:1.45;color:var(--ink)}
+.compare .spelled{font-family:var(--font-display);font-weight:850;font-stretch:75%;font-size:26px;letter-spacing:.06em;color:var(--trail);display:block;margin-top:2px}
+.compare span{display:block;color:var(--muted);font-size:13.5px;margin-top:4px}
+.actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+
+.note{margin:0;font-size:12.5px;line-height:1.4;color:var(--muted)}
+
+@media (max-width:680px){
+  .brand{flex:1 1 auto;font-size:26px}
+  .controls{order:2;width:100%}
+  .stats{order:3;width:100%;margin-left:0;justify-content:space-between}
+  .prompt{min-height:2.8em}
+}
+@media (max-width:440px){
+  .seg button small{display:none}
+  .seg button{padding:9px 11px}
+  .tiles span{width:1.55em;font-size:14px}
+}
+@media (prefers-reduced-motion: reduce){
+  .node.miss .inner{animation:none}
+  .node .ring,.stats dd,.tiles span{transition:none}
+}
+</style>
+
+<div class="app">
+  <header class="top">
+    <h1 class="brand">
+      <svg class="logo" viewBox="0 0 46 26" aria-hidden="true">
+        <path d="M11 15 Q23 4 35 11"/>
+        <circle cx="11" cy="15" r="8"/><text x="11" y="18.2">1</text>
+        <circle cx="35" cy="11" r="8"/><text x="35" y="14.2">A</text>
+      </svg>
+      Trail Making
+    </h1>
+    <div class="controls">
+      <div class="seg" role="group" aria-label="Mode">
+        <button id="partA" type="button" aria-pressed="true">Part A <small>1-2-3</small></button>
+        <button id="partB" type="button" aria-pressed="false">Part B <small>1-A-2-B</small></button>
+        <button id="partW" type="button" aria-pressed="false">Word <small>1-W-2-O</small></button>
+      </div>
+      <div class="seg" role="group" aria-label="Board size">
+        <button id="lenPractice" type="button" aria-pressed="false">Practice <small>8</small></button>
+        <button id="lenFull" type="button" aria-pressed="true">Full test <small id="fullCount">25</small></button>
+      </div>
+    </div>
+    <button id="newBoard" class="btn" type="button">New board</button>
+    <dl class="stats">
+      <div><dt>Time</dt><dd id="time">0:00.0</dd></div>
+      <div id="errStat"><dt>Errors</dt><dd id="errors">0</dd></div>
+      <div><dt>Connected</dt><dd id="progress">0/25</dd></div>
+    </dl>
+  </header>
+
+  <div class="cue">
+    <p class="prompt" id="prompt"></p>
+    <span class="sr" id="live" aria-live="polite"></span>
+    <div class="word" id="word" hidden>
+      <span class="lbl">Spell</span>
+      <span class="tiles" id="tiles"></span>
+      <label class="hl" for="hlToggle"><input type="checkbox" id="hlToggle" checked> Highlight letters</label>
+    </div>
+  </div>
+
+  <main class="board" id="board">
+    <svg id="svg" role="group" aria-label="Answer sheet"></svg>
+    <div class="result" id="result" hidden>
+      <div class="panel" role="dialog" aria-labelledby="resEyebrow">
+        <p class="eyebrow" id="resEyebrow">Part A complete</p>
+        <p class="big" id="resTime">0:00.0</p>
+        <p class="facts" id="resFacts"></p>
+        <p class="compare" id="resCompare"></p>
+        <div class="actions">
+          <button id="resNew" class="btn primary" type="button">New board</button>
+          <button id="resSwitch" class="btn" type="button">Try Part B</button>
+          <button id="resClose" class="btn plain" type="button">See my trail</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <p class="note">Modeled on the Trail Making Test used in neuropsychology. Times here are for practice and fun, not a clinical score.</p>
+</div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const NS = 'http://www.w3.org/2000/svg';
+  const svg = $('svg'), board = $('board');
+  const reduceMotion = window.matchMedia ? matchMedia('(prefers-reduced-motion: reduce)') : { matches:false };
+
+  // Word bank. Only words with no repeated letters are kept, so each letter appears on exactly one circle.
+  const isogram = w => new Set(w).size === w.length;
+  const WORDS = {
+    practice: ('BIRD CAKE DUSK FROG GLOW HIKE JUMP KITE LION MOTH NEST PINK QUIZ ROSE SNOW TUBA VOLT WAVE YARN ZINC ' +
+               'CORN DESK FARM GOLD HAWK MILK PARK SHIP TRAY WOLF BEAR COLD DRUM FERN GUST HELM IRON JOKE LEAF MINT ' +
+               'NAVY OPAL PLUM RAIN SALT TIDE VINE WIND YOLK FAWN CLAY KELP')
+      .split(' ').filter(w => w.length === 4 && isogram(w)),
+    full: ('BLACKSMITH DOWNSTREAM LUMBERJACK PATHFINDER COMPATIBLE PLAYGROUND BACKGROUND CAMPGROUND AMBIDEXTROUS ' +
+           'THUNDERCLAP DUMBWAITER NIGHTCLUB FLYSWATER TRAMPOLINE BUCKWHEAT QUICKSTEP GUNPOWDER DRAGONFLY COUNTRYSIDE ' +
+           'HARMONICS STOCKPILE TRUCKLOADS JACKFRUIT BLUEPRINT PITCHFORK SHIPWRECK MAGNETIC FLAMINGO SANDWICH HOSPITAL ' +
+           'COMPUTER BIRTHDAY DOLPHINS KEYBOARD UNFORGIVABLE ROUNDTABLE CUSTOMER DAYLIGHTS CHEMISTRY WORKBENCH SPECTRUM ' +
+           'PAINTBRUSH FRUITCAKE SIDEWALK SNOWDRIFT NIGHTMARES CORNFLAKES PUNCHBOWL SKYDIVER')
+      .split(' ').filter(w => w.length >= 8 && w.length <= 12 && isogram(w))
+  };
+  const bag = { practice:[], full:[] };
+  let lastWord = '';
+  function nextWord(len){
+    if (!bag[len].length) {
+      const a = WORDS[len].slice();
+      for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+      if (a.length > 1 && a[a.length - 1] === lastWord) [a[0], a[a.length - 1]] = [a[a.length - 1], a[0]];
+      bag[len] = a;
+    }
+    lastWord = bag[len].pop();
+    return lastWord;
+  }
+
+  const S = {
+    part:'A', len:'full', word:'', seq:[], pts:[], r:40, minD:140, W:1000, H:640,
+    idx:0, started:false, done:false, t0:0, errors:0, raf:0, aspect:0,
+    nodes:[], trailG:null, promptTimer:0
+  };
+  const sessionTimes = {};
+  let best = {};
+  try { best = JSON.parse(localStorage.getItem('trail-making-best') || '{}') || {}; } catch (e) { best = {}; }
+  const saveBest = () => { try { localStorage.setItem('trail-making-best', JSON.stringify(best)); } catch (e) {} };
+
+  // Word mode: whether letters in the word strip light up as they're connected.
+  let highlight = true;
+  try { highlight = localStorage.getItem('trail-making-highlight') !== 'off'; } catch (e) { highlight = true; }
+  function applyHighlight(){
+    $('hlToggle').checked = highlight;
+    $('word').classList.toggle('plain', !highlight);
+  }
+  $('hlToggle').addEventListener('change', e => {
+    highlight = e.target.checked;
+    applyHighlight();
+    try { localStorage.setItem('trail-making-highlight', highlight ? 'on' : 'off'); } catch (err) {}
+  });
+  applyHighlight();
+
+  function rule(){
+    if (S.part === 'A') return 'Connect the numbers in order: <b>1 → 2 → 3 → 4 …</b>';
+    if (S.part === 'B') return 'Alternate numbers and letters: <b>1 → A → 2 → B → 3 → C …</b>';
+    const w = S.word;
+    return 'Alternate numbers with the letters of the word: <b>1 → ' + w[0] + ' → 2 → ' + w[1] + ' → 3 → ' + w[2] + ' …</b>';
+  }
+
+  function sequence(){
+    if (S.part === 'A') {
+      const n = S.len === 'full' ? 25 : 8;
+      return Array.from({ length:n }, (_, i) => String(i + 1));
+    }
+    if (S.part === 'W') {
+      // 1-W-2-O-3-R-4-D: one number before each letter of the word.
+      return [...S.word].flatMap((ch, i) => [String(i + 1), ch]);
+    }
+    // Full: 1-A-2-B … 12-L-13 (25 circles). Practice: 1-A-2-B-3-C-4-D (8 circles).
+    const nums = S.len === 'full' ? 13 : 4, lets = S.len === 'full' ? 12 : 4;
+    const L = 'ABCDEFGHIJKLM', out = [];
+    for (let i = 0; i < nums; i++) { out.push(String(i + 1)); if (i < lets) out.push(L[i]); }
+    return out;
+  }
+
+  function fmt(ms){
+    const tenths = Math.floor(Math.max(0, ms) / 100);
+    const m = Math.floor(tenths / 600), rem = tenths - m * 600;
+    return m + ':' + String(Math.floor(rem / 10)).padStart(2, '0') + '.' + (rem % 10);
+  }
+  const pace = ms => (ms / 1000).toFixed(2) + ' s';
+
+  function makeLayout(count, W, H){
+    // Circle size is set for a 25-circle sheet, so smaller boards use the same size circles.
+    const r = Math.sqrt(W * H / 25) * 0.205;
+    const pad = r * 1.3, padBottom = r * 2.1; // room for the BEGIN / END tag under a circle
+    let minD = r * 3.7;
+    for (let attempt = 0; attempt < 60; attempt++) {
+      const pts = [];
+      let tries = 0;
+      while (pts.length < count && tries < 8000) {
+        tries++;
+        const x = pad + Math.random() * (W - 2 * pad);
+        const y = pad + Math.random() * (H - pad - padBottom);
+        if (pts.every(p => Math.hypot(p.x - x, p.y - y) >= minD)) pts.push({ x, y });
+      }
+      if (pts.length === count) return { pts, r, minD };
+      minD *= 0.95;
+    }
+    return { pts:[], r, minD };
+  }
+
+  function el(tag, attrs, parent){
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+
+  function renderWordStrip(){
+    const box = $('word'), tiles = $('tiles');
+    box.hidden = S.part !== 'W';
+    tiles.innerHTML = '';
+    if (S.part !== 'W') return;
+    box.setAttribute('aria-label', 'Word to spell: ' + S.word);
+    [...S.word].forEach(ch => {
+      const s = document.createElement('span');
+      s.textContent = ch;
+      tiles.appendChild(s);
+    });
+  }
+
+  function newBoard(opts){
+    const keepWord = opts && opts.keepWord;
+    cancelAnimationFrame(S.raf);
+    clearTimeout(S.promptTimer);
+    if (S.part === 'W' && !(keepWord && S.word)) S.word = nextWord(S.len);
+    S.seq = sequence();
+    renderWordStrip();
+    $('fullCount').textContent = S.part === 'W' && S.len === 'full' ? String(S.seq.length) : '25';
+    $('newBoard').textContent = S.part === 'W' ? 'New word' : 'New board';
+    // Set the instruction line before measuring, so the board is sized with its final height.
+    buildPrompt();
+    setPrompt('ready');
+
+    const rect = board.getBoundingClientRect();
+    const W = 1000;
+    let H = (rect.width > 50 && rect.height > 50) ? W * rect.height / rect.width : 640;
+    H = Math.max(420, Math.min(2000, H));
+    S.aspect = rect.width > 0 ? rect.height / rect.width : 0;
+    const L = makeLayout(S.seq.length, W, H);
+    Object.assign(S, { pts:L.pts, r:L.r, minD:L.minD, W, H, idx:0, started:false, done:false, errors:0 });
+    draw();
+    $('time').textContent = fmt(0);
+    updateStats();
+    $('result').hidden = true;
+  }
+
+  function draw(){
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    svg.setAttribute('viewBox', `0 0 ${S.W} ${S.H.toFixed(1)}`);
+    svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+    const r = S.r;
+    svg.style.setProperty('--sw', (r * 0.075).toFixed(2) + 'px');
+    S.trailG = el('g', { class:'trails' }, svg);
+    const nodesG = el('g', { class:'nodes' }, svg);
+    const hitR = Math.min(r * 1.55, S.minD / 2 - 1);
+    const last = S.seq.length - 1;
+
+    S.nodes = S.seq.map((label, i) => {
+      const p = S.pts[i];
+      const g = el('g', { class:'node', 'data-i':i, tabindex:0, role:'button', 'aria-label':'Circle ' + label });
+      el('circle', { class:'hit', cx:p.x, cy:p.y, r:hitR }, g);
+      el('circle', { class:'focus', cx:p.x, cy:p.y, r:r * 1.3 }, g);
+      const inner = el('g', { class:'inner' }, g);
+      el('circle', { class:'ring', cx:p.x, cy:p.y, r }, inner);
+      const t = el('text', { class:'label', x:p.x, y:p.y, dy:'.36em', 'font-size':(r * 0.86).toFixed(1) }, inner);
+      t.textContent = label;
+      if (i === 0 || i === last) {
+        const tag = el('text', { class:'tag', x:p.x, y:p.y + r * 1.72, 'font-size':(r * 0.44).toFixed(1) }, g);
+        tag.textContent = i === 0 ? 'BEGIN' : 'END';
+      }
+      return g;
+    });
+
+    // Reading order in the DOM, so keyboard tabbing doesn't reveal the answer order.
+    S.nodes.map((g, i) => ({ g, p:S.pts[i] }))
+      .sort((a, b) => (Math.round(a.p.y / (r * 2.5)) - Math.round(b.p.y / (r * 2.5))) || (a.p.x - b.p.x))
+      .forEach(o => nodesG.appendChild(o.g));
+  }
+
+  function updateStats(){
+    $('errors').textContent = S.errors;
+    $('progress').textContent = S.idx + '/' + S.seq.length;
+  }
+
+  const PROMPT_KINDS = ['ready', 'run', 'start', 'miss', 'done'];
+  function promptHTML(kind, from){
+    if (kind === 'ready') return 'Tap <b>1</b> to start the clock. ' + rule();
+    if (kind === 'run') return rule();
+    if (kind === 'start') return 'Start at <b>1</b> (marked BEGIN). The clock starts when you tap it.';
+    if (kind === 'miss') return 'That one isn’t next. Keep going from <b>' + from + '</b>.';
+    return S.part === 'W'
+      ? 'Done. Get a new word to go again.'
+      : 'Done. Make a new board to go again, or switch to Part ' + (S.part === 'A' ? 'B' : 'A') + '.';
+  }
+  // All messages are rendered at once (only one visible), so the line's height never changes during play.
+  function buildPrompt(){
+    const p = $('prompt');
+    p.innerHTML = '';
+    const widest = S.seq.reduce((a, b) => (b.length > a.length ? b : a), '');
+    PROMPT_KINDS.forEach(k => {
+      const s = document.createElement('span');
+      s.dataset.k = k;
+      s.innerHTML = promptHTML(k, widest);
+      p.appendChild(s);
+    });
+  }
+  function setPrompt(kind){
+    const p = $('prompt');
+    clearTimeout(S.promptTimer);
+    p.classList.toggle('warn', kind === 'miss' || kind === 'start');
+    const target = p.querySelector('[data-k="' + kind + '"]');
+    if (!target) return;
+    if (kind === 'miss') target.innerHTML = promptHTML('miss', S.seq[S.idx - 1]);
+    for (const s of p.children) s.classList.toggle('show', s === target);
+    $('live').textContent = target.textContent;
+    if (kind === 'start') S.promptTimer = setTimeout(() => setPrompt('ready'), 2200);
+    if (kind === 'miss') S.promptTimer = setTimeout(() => { if (!S.done) setPrompt('run'); }, 1800);
+  }
+
+  function nudge(i){
+    const n = S.nodes[i];
+    n.classList.remove('miss');
+    void n.getBBox();
+    n.classList.add('miss');
+    clearTimeout(n._t);
+    n._t = setTimeout(() => n.classList.remove('miss'), 450);
+  }
+
+  function bumpErrors(){
+    const s = $('errStat');
+    s.classList.add('bump');
+    clearTimeout(s._t);
+    s._t = setTimeout(() => s.classList.remove('bump'), 700);
+  }
+
+  function drawTrail(a, b){
+    const dx = b.x - a.x, dy = b.y - a.y;
+    const k = (Math.random() * 2 - 1) * 0.06; // a little hand-drawn bow in each stroke
+    const cx = (a.x + b.x) / 2 - dy * k, cy = (a.y + b.y) / 2 + dx * k;
+    const path = el('path', { class:'trail', d:`M${a.x.toFixed(1)} ${a.y.toFixed(1)} Q${cx.toFixed(1)} ${cy.toFixed(1)} ${b.x.toFixed(1)} ${b.y.toFixed(1)}` }, S.trailG);
+    if (!reduceMotion.matches && path.getTotalLength) {
+      const len = path.getTotalLength();
+      path.style.strokeDasharray = len;
+      path.style.strokeDashoffset = len;
+      path.getBoundingClientRect();
+      path.style.transition = 'stroke-dashoffset 170ms ease-out';
+      path.style.strokeDashoffset = 0;
+    }
+  }
+
+  function tick(){
+    $('time').textContent = fmt(performance.now() - S.t0);
+    S.raf = requestAnimationFrame(tick);
+  }
+
+  function start(){
+    S.started = true;
+    S.t0 = performance.now();
+    setPrompt('run');
+    S.raf = requestAnimationFrame(tick);
+  }
+
+  function connect(i){
+    const n = S.nodes[i];
+    if (i > 0) { S.nodes[i - 1].classList.remove('current'); drawTrail(S.pts[i - 1], S.pts[i]); }
+    n.classList.add('done', 'current');
+    n.setAttribute('aria-label', 'Circle ' + S.seq[i] + ', connected');
+    if (S.part === 'W' && i % 2 === 1) {
+      const tile = $('tiles').children[(i - 1) / 2];
+      if (tile) tile.classList.add('on');
+    }
+    S.idx++;
+    updateStats();
+    if (S.idx === S.seq.length) finish();
+  }
+
+  function press(i){
+    if (S.done) return;
+    if (i === S.idx) { if (!S.started) start(); connect(i); return; }
+    if (i < S.idx) return; // already on the trail
+    nudge(i);
+    if (!S.started) { setPrompt('start'); return; }
+    S.errors++;
+    updateStats();
+    bumpErrors();
+    setPrompt('miss');
+  }
+
+  function finish(){
+    S.done = true;
+    cancelAnimationFrame(S.raf);
+    const ms = performance.now() - S.t0;
+    $('time').textContent = fmt(ms);
+    const key = S.part + '-' + S.len;
+    // Word lengths vary, so Word mode tracks pace (time per circle) instead of total time.
+    const score = S.part === 'W' ? ms / S.seq.length : ms;
+    sessionTimes[key] = score;
+    const prev = best[key];
+    const isBest = !prev || score < prev;
+    if (isBest) { best[key] = score; saveBest(); }
+    setPrompt('done');
+    showResult(ms, score, isBest, prev);
+  }
+
+  function showResult(ms, score, isBest, prev){
+    const sizeName = S.len === 'full' ? 'full test' : 'practice board';
+    const errText = S.errors === 0 ? '<span><b>No errors</b></span>' : '<span><b>' + S.errors + '</b> error' + (S.errors === 1 ? '' : 's') + '</span>';
+    $('resTime').textContent = fmt(ms);
+
+    if (S.part === 'W') {
+      $('resEyebrow').textContent = S.len === 'full' ? 'Word complete' : 'Practice word complete';
+      let bestText;
+      if (isBest && prev) bestText = '<span class="new">New best pace</span><span>was ' + pace(prev) + '</span>';
+      else if (isBest) bestText = '<span>First recorded pace for this size</span>';
+      else bestText = '<span>Best <b>' + pace(best['W-' + S.len]) + '</b></span>';
+      $('resFacts').innerHTML = errText + '<span><b>' + pace(score) + '</b> per circle</span>' + bestText;
+      $('resCompare').innerHTML = 'You spelled <span class="spelled">' + S.word + '</span>' +
+        '<span>Every word is a different length, so your best is tracked as seconds per circle.</span>';
+      $('resNew').textContent = 'New word';
+      $('resSwitch').textContent = 'Try Part B';
+    } else {
+      const other = S.part === 'A' ? 'B' : 'A';
+      $('resEyebrow').textContent = 'Part ' + S.part + (S.len === 'full' ? ' complete' : ' practice complete');
+      let bestText;
+      if (isBest && prev) bestText = '<span class="new">New best</span><span>was ' + fmt(prev) + '</span>';
+      else if (isBest) bestText = '<span>First recorded time for Part ' + S.part + ' (' + sizeName + ')</span>';
+      else bestText = '<span>Best <b>' + fmt(best[S.part + '-' + S.len]) + '</b></span>';
+      $('resFacts').innerHTML = errText + bestText;
+
+      const a = sessionTimes['A-' + S.len], b = sessionTimes['B-' + S.len];
+      let cmp;
+      if (a && b) {
+        const diff = (b - a) / 1000, ratio = b / a;
+        cmp = diff >= 0
+          ? 'Part B took <b>' + diff.toFixed(1) + ' s</b> longer than Part A. B ÷ A = <b>' + ratio.toFixed(2) + '</b>.'
+          : 'Part B was <b>' + (-diff).toFixed(1) + ' s</b> faster than Part A. B ÷ A = <b>' + ratio.toFixed(2) + '</b>.';
+        cmp += '<span>Part B usually takes longer because you track two sequences and switch between them at every step.</span>';
+      } else {
+        cmp = 'Play Part ' + other + ' on the ' + sizeName + ' to compare your two times.';
+      }
+      $('resCompare').innerHTML = cmp;
+      $('resNew').textContent = 'New board';
+      $('resSwitch').textContent = 'Try Part ' + other;
+    }
+    $('result').hidden = false;
+    $('resNew').focus({ preventScroll:true });
+  }
+
+  function setPart(p){
+    S.part = p;
+    $('partA').setAttribute('aria-pressed', String(p === 'A'));
+    $('partB').setAttribute('aria-pressed', String(p === 'B'));
+    $('partW').setAttribute('aria-pressed', String(p === 'W'));
+    newBoard();
+  }
+  function setLen(l){
+    S.len = l;
+    $('lenPractice').setAttribute('aria-pressed', String(l === 'practice'));
+    $('lenFull').setAttribute('aria-pressed', String(l === 'full'));
+    newBoard();
+  }
+
+  // Input
+  svg.addEventListener('pointerdown', e => {
+    if (e.button > 0) return;
+    const n = e.target.closest && e.target.closest('.node');
+    if (!n) return;
+    e.preventDefault();
+    press(+n.dataset.i);
+  });
+  svg.addEventListener('keydown', e => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    const n = e.target.closest && e.target.closest('.node');
+    if (!n) return;
+    e.preventDefault();
+    press(+n.dataset.i);
+  });
+
+  $('partA').addEventListener('click', () => setPart('A'));
+  $('partB').addEventListener('click', () => setPart('B'));
+  $('partW').addEventListener('click', () => setPart('W'));
+  $('lenPractice').addEventListener('click', () => setLen('practice'));
+  $('lenFull').addEventListener('click', () => setLen('full'));
+  $('newBoard').addEventListener('click', () => newBoard());
+  $('resNew').addEventListener('click', () => newBoard());
+  $('resSwitch').addEventListener('click', () => setPart(S.part === 'A' ? 'B' : S.part === 'B' ? 'A' : 'B'));
+  $('resClose').addEventListener('click', () => { $('result').hidden = true; $('newBoard').focus({ preventScroll:true }); });
+
+  // Refit the sheet to the screen until the clock starts (keeping the same word).
+  let rt = 0;
+  if (window.ResizeObserver) {
+    new ResizeObserver(() => {
+      clearTimeout(rt);
+      rt = setTimeout(() => {
+        if (S.started || S.done) return;
+        const rect = board.getBoundingClientRect();
+        if (rect.width < 50 || rect.height < 50) return;
+        const a = rect.height / rect.width;
+        if (!S.aspect || Math.abs(a - S.aspect) / S.aspect > 0.08) newBoard({ keepWord:true });
+      }, 150);
+    }).observe(board);
+  }
+
+  newBoard();
+})();
+</script>
+
+</body></html>
